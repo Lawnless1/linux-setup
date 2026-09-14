@@ -1,0 +1,39 @@
+# ~/.profile: executed by the command interpreter for login shells.
+# Ubuntu stock file + ubuntu-i3-setup PATH entries (guarded, $HOME-based).
+# See https://help.ubuntu.com/community/EnvironmentVariables for stock docs.
+
+# the default umask is set in /etc/profile; for setting the umask
+# for ssh logins, install and configure the libpam-umask package.
+#umask 022
+
+# if running bash
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+        . "$HOME/.bashrc"
+    fi
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+# ubuntu-i3-setup: micromamba + opencode CLIs when present (no hard-coded user)
+if [ -d "$HOME/.local/share/mamba/bin" ] ; then
+    case ":$PATH:" in
+        *":$HOME/.local/share/mamba/bin:"*) ;;
+        *) PATH="$PATH:$HOME/.local/share/mamba/bin" ;;
+    esac
+fi
+if [ -d "$HOME/.opencode/bin" ] ; then
+    case ":$PATH:" in
+        *":$HOME/.opencode/bin:"*) ;;
+        *) PATH="$HOME/.opencode/bin:$PATH" ;;
+    esac
+fi

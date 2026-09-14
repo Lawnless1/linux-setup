@@ -1,0 +1,175 @@
+# ==============================
+# i3 config — ubuntu-i3-setup
+# Ubuntu 24.04 + i3 + polybar + rofi + picom + feh + dunst
+# ==============================
+
+set $mod Mod4
+font pango:DroidSansMNerdFontMono 8
+
+# ==============================
+# Startup applications
+# ==============================
+exec --no-startup-id dex --autostart --environment i3
+exec --no-startup-id nm-applet
+# File manager providing desktop icons/background (keep only if you use it).
+# If you use feh for wallpaper only, comment this out.
+exec --no-startup-id env G_MESSAGES_DEBUG=none caja --no-desktop
+# for notification (dunst)
+exec_always --no-startup-id dunst
+exec_always --no-startup-id ~/.screenlayout/layout.sh &
+
+# ==============================
+# Floating windows
+# ==============================
+floating_modifier $mod
+
+# ==============================
+# Keybindings
+# ==============================
+
+# Terminal
+bindsym $mod+Return exec i3-sensible-terminal
+
+# Kill window
+bindsym Ctrl+Delete kill
+
+# Launcher
+bindsym $mod+d exec --no-startup-id dmenu_run
+
+# Focus
+bindsym $mod+j focus left
+bindsym $mod+k focus down
+bindsym $mod+l focus up
+bindsym $mod+semicolon focus right
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Right focus right
+
+# Move windows
+bindsym $mod+Shift+j move left
+bindsym $mod+Shift+k move down
+bindsym $mod+Shift+l move up
+bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# Split windows
+bindsym $mod+h split h
+bindsym $mod+v split v
+
+# Fullscreen (single press)
+bindsym $mod+Up fullscreen toggle
+
+# Layouts
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+
+# Floating toggle
+bindsym $mod+Shift+space floating toggle
+
+# Parent/child focus
+bindsym $mod+a focus parent
+
+# Workspaces
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+bindsym $mod+1 workspace number $ws1
+bindsym $mod+2 workspace number $ws2
+bindsym $mod+3 workspace number $ws3
+bindsym $mod+4 workspace number $ws4
+bindsym $mod+5 workspace number $ws5
+bindsym $mod+6 workspace number $ws6
+bindsym $mod+7 workspace number $ws7
+bindsym $mod+8 workspace number $ws8
+bindsym $mod+9 workspace number $ws9
+bindsym $mod+0 workspace number $ws10
+
+bindsym $mod+Shift+1 move container to workspace number $ws1
+bindsym $mod+Shift+2 move container to workspace number $ws2
+bindsym $mod+Shift+3 move container to workspace number $ws3
+bindsym $mod+Shift+4 move container to workspace number $ws4
+bindsym $mod+Shift+5 move container to workspace number $ws5
+bindsym $mod+Shift+6 move container to workspace number $ws6
+bindsym $mod+Shift+7 move container to workspace number $ws7
+bindsym $mod+Shift+8 move container to workspace number $ws8
+bindsym $mod+Shift+9 move container to workspace number $ws9
+bindsym $mod+Shift+0 move container to workspace number $ws10
+
+# Reload / restart / exit
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# ==============================
+# Resize mode
+# ==============================
+mode "resize" {
+    bindsym j resize shrink width 10 px or 10 ppt
+    bindsym k resize grow height 10 px or 10 ppt
+    bindsym l resize shrink height 10 px or 10 ppt
+    bindsym semicolon resize grow width 10 px or 10 ppt
+
+    bindsym Left resize shrink width 10 px or 10 ppt
+    bindsym Down resize grow height 10 px or 10 ppt
+    bindsym Up resize shrink height 10 px or 10 ppt
+    bindsym Right resize grow width 10 px or 10 ppt
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# ==============================
+# Borders / gaps / scratchpad
+# ==============================
+default_border pixel 3
+gaps inner 10
+bindsym $mod+Shift+minus move scratchpad
+bindsym $mod+minus scratchpad show
+
+# Window borders
+for_window [class="^.*"] border pixel 0
+client.focused          #000000 #0000FF #000000 #CDA4FF #9BF6FF
+client.unfocused        #000000 #000000 #000000 #000000 #000000
+bar {
+        status_command i3status
+}
+
+bindsym $mod+Ctrl+Shift+2 move container to workspace 2
+bindsym $mod+Ctrl+Shift+1 move container to workspace 1
+bindsym $mod+Ctrl+Shift+3 move container to workspace 3
+bindsym $mod+Ctrl+Shift+4 move container to workspace 4
+bindsym $mod+Ctrl+Shift+5 move container to workspace 5
+bindsym $mod+Ctrl+Shift+6 move container to workspace 6
+bindsym $mod+space exec rofi -show drun -show-icons
+bindsym $mod+Shift+s exec flameshot gui -c -s
+bindsym Ctrl+Mod1+Delete exec sh ~/.config/rofi/powermenu.sh &>> /tmp/powermenu.log
+exec_always --no-startup-id sh ~/.config/polybar/custom/launch.sh
+exec --no-startup-id feh --bg-fill ~/Pictures/wallpaper/dark.jpg
+
+exec_always --no-startup-id xrdb -merge ~/.Xresources
+# Pointer sensitivity (libinput Accel Speed -1 to 1, higher = faster).
+# ~/.xprofile sources the same file on X login; this exec_always covers i3 restarts.
+# Tune via: scripts/tune-input.sh
+exec_always --no-startup-id sh ~/.config/input/pointer.sh
+
+# Volume Controls (targeting the active device)
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+# Brightness
+bindsym XF86MonBrightnessUp exec "brightnessctl set +5%"
+bindsym XF86MonBrightnessDown exec "brightnessctl set 5%-"

@@ -1,0 +1,58 @@
+#!/bin/bash
+# Sanity checks for ubuntu-i3-setup: required binaries, i3 syntax, script syntax.
+# Exit 0 = all good. Used by install.sh and CI-ish local runs.
+set -u
+FAIL=0
+need() { command -v "$1" >/dev/null 2>&1 || { echo "MISSING: $1 ($2)"; FAIL=1; }; }
+
+echo "--- binaries ---"
+need i3 "apt: i3"
+need polybar "apt: polybar"
+need rofi "apt: rofi"
+need picom "apt: picom (optional, not autostarted)"
+need feh "apt: feh"
+need dunst "apt: dunst"
+need xinput "apt: x11-xserver-utils"
+need xrdb "apt: x11-xserver-utils (package: xrdb)"
+need pactl "apt: pulseaudio-utils"
+need brightnessctl "apt: brightnessctl"
+need jq "apt: jq"
+need curl "apt: curl"
+need nmcli "apt: network-manager"
+need iw "apt: iw"
+need bluetoothctl "apt: bluez"
+need flameshot "apt: flameshot"
+need dex "apt: dex"
+need nm-applet "apt: network-manager-gnome"
+
+echo "--- i3 config ---"
+if command -v i3 >/dev/null 2>&1; then
+    i3 -C -c "$HOME/.config/i3/config" && echo "i3 config OK" || { echo "i3 config INVALID"; FAIL=1; }
+else
+    echo "(skip: i3 not installed)"
+fi
+
+echo "--- shell syntax ---"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ok=1
+while IFS= read -r f; do
+    case "$f" in
+        *.bashrc|.xprofile) bash -n "$f" || { echo "SYNTAX FAIL: $f"; ok=0; };;
+        *) sh -n "$f" 2>/dev/null || bash -n "$f" || { echo "SYNTAX FAIL: $f"; ok=0; };;
+    esac
+done \
+    < <(find "$REPO_DIR/config" "$REPO_DIR/scripts" "$REPO_DIR/shell" "$REPO_DIR/home" \( -name "*.sh" -o -name "*.bashrc" -o -name ".xprofile" \) 2>/dev/null)
+[ "$ok" -eq 1 ] && echo "shell syntax OK" || FAIL=1
+python3 -c "import ast,sys; ast.parse(open(sys.argv[1]).read())" "$REPO_DIR/config/polybar/custom/scripts/rofi-mixer.py" \
+    && echo "rofi-mixer.py OK" || { echo "rofi-mixer.py INVALID"; FAIL=1; }
+
+echo "--- polybar config ---"
+if command -v polybar >/dev/null 2>&1; then
+    polybar --dump=modules-left -c "$HOME/.config/polybar/custom/config.ini" center >/dev/null 2>&1 \
+        && echo "polybar config OK" || echo "(warn: polybar could not dump [bar/center] — check after install)"
+else
+    echo "(skip: polybar not installed)"
+fi
+
+[ "$FAIL" -eq 0 ] && echo "ALL CHECKS PASSED" || echo "CHECKS FAILED"
+exit "$FAIL"

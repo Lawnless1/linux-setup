@@ -1,0 +1,9 @@
+# X session entry: display managers (LightDM/GDM/SDDM) source this on login.
+# i3's `exec` cannot `source` shell code, so the i3 config calls
+# ~/.config/input/pointer.sh directly as well (covers `i3 restart`).
+# Keep this file POSIX sh (it is sourced, not executed).
+
+# Pointer sensitivity lives in one place:
+if [ -f "$HOME/.config/input/pointer.sh" ]; then
+    . "$HOME/.config/input/pointer.sh"
+fi

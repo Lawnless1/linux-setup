@@ -1,0 +1,12 @@
+# secrets / local-only
+config/env
+.config/ubuntu-i3-setup/env
+
+# installer backups (if the repo itself is ever the backup target)
+.config/ubuntu-i3-setup/backups/
+
+# OS / editor noise
+.DS_Store
+*~
+*.swp
+.vscode/
