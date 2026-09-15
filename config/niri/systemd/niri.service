@@ -1,0 +1,12 @@
+[Unit]
+Description=Niri Wayland Compositor
+BindsTo=graphical-session.target
+Before=graphical-session.target
+Wants=graphical-session-pre.target
+After=graphical-session-pre.target
+
+[Service]
+Type=notify
+ExecStart=__NIRI_BIN__ --session
+Slice=session.slice
+Restart=no

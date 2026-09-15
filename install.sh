@@ -5,18 +5,21 @@
 #
 # Usage:
 #   ./install.sh                 # link configs, shell additions, wallpaper, input
-#   ./install.sh --with-apt      # also sudo apt install packages/apt.txt
+#   ./install.sh --with-apt      # also sudo apt install packages/apt.txt (i3 session)
+#   ./install.sh --with-niri     # also sudo apt install packages/apt-niri.txt (Wayland set;
+#                                #   niri binary itself comes from scripts/build-niri.sh)
 #   ./install.sh --with-doas     # also install /etc/doas.conf.d/10-power.conf (needs doas/sudo)
 #   ./install.sh --with-fonts    # also download Nerd Fonts (Inter, FiraCode, DroidSansM)
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKUP_DIR="$HOME/.config/ubuntu-i3-setup/backups/$(date +%Y%m%d-%H%M%S)"
-WITH_APT=0; WITH_DOAS=0; WITH_FONTS=0
+WITH_APT=0; WITH_DOAS=0; WITH_FONTS=0; WITH_NIRI=0
 
 for arg in "$@"; do
     case "$arg" in
         --with-apt) WITH_APT=1;;
+        --with-niri) WITH_NIRI=1;;
         --with-doas) WITH_DOAS=1;;
         --with-fonts) WITH_FONTS=1;;
         -h|--help) sed -n '2,12p' "$0"; exit 0;;
@@ -64,6 +67,13 @@ link_to config/rofi/themes             .config/rofi/themes
 link_to config/flameshot/flameshot.ini .config/flameshot/flameshot.ini
 link_to config/starship.toml           .config/starship.toml
 link_to config/input                   .config/input
+# --- niri (Wayland) session: keybindings mirror config/i3/config (see README) ---
+link_to config/niri/config.kdl          .config/niri/config.kdl
+link_to config/niri/niri-portals.conf   .config/xdg-desktop-portal/niri-portals.conf
+link_to config/niri/scripts             .config/niri/scripts
+link_to config/waybar                   .config/waybar
+link_to config/fuzzel/fuzzel.ini        .config/fuzzel/fuzzel.ini
+link_to config/swaylock/config          .config/swaylock/config
 
 # --- 3. home files ------------------------------------------------------------
 link_to home/.Xresources            .Xresources
@@ -76,6 +86,8 @@ chmod +x "$REPO_DIR"/home/.screenlayout/*.sh \
          "$REPO_DIR"/config/polybar/custom/launch.sh \
          "$REPO_DIR"/config/polybar/custom/scripts/*.sh \
          "$REPO_DIR"/config/rofi/powermenu.sh \
+         "$REPO_DIR"/config/niri/scripts/*.sh \
+         "$REPO_DIR"/config/waybar/scripts/*.sh \
          "$REPO_DIR"/scripts/*.sh
 
 # --- 4. wallpaper (copied: Pictures/ is data, not config) ----------------------
@@ -141,6 +153,16 @@ fi
 # --- 8. optional: nerd fonts ---------------------------------------------------------
 if [ "$WITH_FONTS" -eq 1 ]; then
     "$REPO_DIR/scripts/install-fonts.sh"
+fi
+
+# --- 8b. optional: niri (Wayland) apt set ---------------------------------------------
+if [ "$WITH_NIRI" -eq 1 ]; then
+    log "installing apt packages for the niri session..."
+    # shellcheck disable=SC2046
+    sudo apt update && sudo apt install -y $(grep -v '^\s*#' "$REPO_DIR/packages/apt-niri.txt" | grep -v '^\s*$' | xargs)
+    log "niri binary still needed (not in Ubuntu repos): run ./scripts/build-niri.sh"
+else
+    log "skipping niri apt set (re-run with --with-niri; then scripts/build-niri.sh)"
 fi
 
 # --- 9. validate ----------------------------------------------------------------------

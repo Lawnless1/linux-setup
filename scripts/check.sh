@@ -54,5 +54,28 @@ else
     echo "(skip: polybar not installed)"
 fi
 
+echo "--- niri / waybar (Wayland session; soft checks until installed) ---"
+for b in niri waybar fuzzel swaylock swayidle swaybg grim slurp wl-copy; do
+    command -v "$b" >/dev/null 2>&1 || echo "(info: $b not installed yet — ./install.sh --with-niri + scripts/build-niri.sh)"
+done
+if command -v niri >/dev/null 2>&1; then
+    niri validate --config "$HOME/.config/niri/config.kdl" \
+        && echo "niri config OK" || { echo "niri config INVALID"; FAIL=1; }
+else
+    echo "(skip: niri validate — niri not installed)"
+fi
+# waybar config is JSON-with-comments: strip full-line // comments, then parse.
+python3 - "$HOME/.config/waybar/config.jsonc" <<'EOF' \
+    && echo "waybar config OK" || { echo "waybar config INVALID"; FAIL=1; }
+import json, sys
+lines = open(sys.argv[1]).read().splitlines()
+lines = [l for l in lines if not l.lstrip().startswith("//")]
+json.loads("\n".join(lines))
+EOF
+[ -f "$HOME/.config/fuzzel/fuzzel.ini" ] && echo "fuzzel config linked" \
+    || { echo "MISSING: ~/.config/fuzzel/fuzzel.ini (run ./install.sh)"; FAIL=1; }
+[ -f "$HOME/.config/xdg-desktop-portal/niri-portals.conf" ] && echo "niri portals linked" \
+    || { echo "MISSING: niri-portals.conf (run ./install.sh)"; FAIL=1; }
+
 [ "$FAIL" -eq 0 ] && echo "ALL CHECKS PASSED" || echo "CHECKS FAILED"
 exit "$FAIL"

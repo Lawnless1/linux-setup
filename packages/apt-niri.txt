@@ -1,0 +1,29 @@
+# APT packages for the niri (Wayland) session on Ubuntu 24.04.
+# Side-by-side with packages/apt.txt (the i3 session stays untouched).
+# Install with: sudo apt install $(grep -v '^#' packages/apt-niri.txt | xargs)
+# or: ./install.sh --with-niri
+# The niri binary itself is NOT here (not packaged for noble) — build it with
+# scripts/build-niri.sh. systemctl/loginctl, pipewire, portals and pactl/
+# brightnessctl/jq/curl come from the base Ubuntu install or apt.txt.
+
+# --- bar / launcher / locker ---
+waybar
+fuzzel
+swaylock
+swayidle
+
+# --- wallpaper / screenshots / clipboard ---
+swaybg
+grim
+slurp
+wl-clipboard
+
+# --- power menu UI ---
+wlogout
+
+# --- auth agent for GUI sudo prompts inside the niri session ---
+policykit-1-gnome
+
+# --- portals for screen sharing / screenshots (usually preinstalled) ---
+xdg-desktop-portal-gnome
+xdg-desktop-portal-gtk

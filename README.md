@@ -10,6 +10,12 @@ Private, replicable i3 desktop for Ubuntu 24.04. Symlinked configs + one install
 |---|---|---|
 | `config/i3/config` | `~/.config/i3/config` | cleaned keybindings, gaps, volume/brightness keys |
 | `config/input/pointer.sh` | `~/.config/input/pointer.sh` | **single source of truth** for mouse + touchpad speed |
+| `config/niri/config.kdl` | `~/.config/niri/config.kdl` | niri Wayland session; keybindings mirror i3 (see below) |
+| `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu (`Ctrl+Alt+Del`), grim/slurp screenshot (`$mod+Shift+s`) |
+| `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals for niri |
+| `config/waybar/` | `~/.config/waybar/` | waybar bar + scripts (niri session; mirrors polybar modules) |
+| `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Wayland launcher (`$mod+d` / `$mod+space`) |
+| `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu) |
 | `config/polybar/custom/` | `~/.config/polybar/custom/` | single `center` bar + curated scripts (wifi, sound, battery, bluetooth, weather, calendar, powermenu) |
 | `config/rofi/` | `~/.config/rofi/` | drun config + Ctrl+Alt+Del power menu |
 | `config/picom/picom.conf` | `~/.config/picom/picom.conf` | glx backend, rounded corners, blur |
@@ -34,7 +40,6 @@ git clone <this-repo> ~/ubuntu-i3-setup && cd ~/ubuntu-i3-setup
 ./install.sh --with-apt --with-fonts   # add --with-doas for passwordless power menu
 # log out/in, or: i3-msg restart
 ```
-
 `install.sh` is idempotent — anything it overwrites is backed up to
 `~/.config/ubuntu-i3-setup/backups/<timestamp>/`, and configs are symlinked
 so `git pull` updates the live setup.
@@ -70,3 +75,63 @@ Pointer speeds persist in `config/input/pointer.sh` (`POINTER_MOUSE_SPEED`,
 | `$mod+r` | resize mode |
 | `Ctrl+Alt+Del` | rofi power menu |
 | media keys | volume / brightness via pactl / brightnessctl |
+
+## Niri session (Wayland, side-by-side with i3)
+
+Niri is a scrollable-tiling Wayland compositor: windows form a horizontal
+strip of columns you scroll through, instead of i3's tree. It is **not** in
+Ubuntu 24.04's repos, so the binary is compiled from source; everything else
+(bar, launcher, locker) comes from apt. i3 stays untouched — pick
+**Niri** vs **i3** at the login screen.
+
+```bash
+./install.sh --with-niri        # links niri/waybar/fuzzel configs + apt Wayland set
+./scripts/build-niri.sh         # sudo: build deps, rustup, compile niri + xwayland-satellite,
+                                # install to /usr/local, add GDM session entry + systemd units
+bash scripts/check.sh           # must end ALL CHECKS PASSED
+# log out, choose "Niri" at the login screen
+```
+
+`scripts/build-niri.sh` env knobs: `PREFIX=$HOME/.local` (user-local install),
+`SKIP_XSATELLITE=1` (no X11 backend — Zoom/Steam/old toolkits won't run),
+`SRC_DIR=` (where git sources live, default `~/.local/src`).
+Intel/AMD GPUs need `video`+`render` group membership
+(`sudo usermod -aG render $USER` if `check.sh`/build warns).
+
+### i3 → niri keybinding map (`$mod` = Super in both)
+
+Identical unless noted:
+
+| i3 bind | niri bind | Notes |
+|---|---|---|
+| `$mod+Return` terminal | same | `i3-sensible-terminal` (Wayland-safe) |
+| `Ctrl+Delete` kill | same | `close-window` |
+| `$mod+d` dmenu / `$mod+space` rofi | same keys → **fuzzel** | dmenu/rofi are X11-only |
+| `$mod+j/k/l/;` + arrows focus | same | incl. i3 quirk: `$mod+Up` is fullscreen, **not** focus-up |
+| `$mod+Shift+j/k/l/;` + arrows move | same | `move-column-*` / `move-window-*` |
+| `$mod+h` / `$mod+v` split | same keys → consume/expel column | closest analog to split h/v |
+| `$mod+Up` fullscreen | same | `fullscreen-window` |
+| `$mod+s` stacking / `$mod+w` tabbed / `$mod+e` toggle-split | same keys → tabbed display / maximize-column / center-column | approximations, niri has no i3 layouts |
+| `$mod+Shift+space` floating | same | `toggle-window-floating` |
+| `$mod+1..0` / `$mod+Shift+1..0` workspaces | same | workspaces 1..10 pre-created |
+| `$mod+Ctrl+Shift+1..6` move to ws | same | kept for muscle memory |
+| `$mod+Shift+e` exit nagbar | same keys → `quit` | niri's own confirm dialog |
+| `$mod+r` resize mode | same key → cycle column widths | niri has no modal resize; `Minus/Equal` fine-tune size |
+| `$mod+Shift+s` flameshot | same keys → grim+slurp script | flameshot is broken on Wayland; shot saved + copied |
+| `Ctrl+Alt+Del` rofi powermenu | same keys → fuzzel powermenu | Lock uses swaylock, logout uses loginctl like i3 |
+| media keys | same | identical pactl/brightnessctl commands |
+| `$mod+a` focus parent | — | dropped: columns have no parent container |
+| `$mod+Shift+c` reload / `$mod+Shift+r` restart | — | dropped: niri hot-reloads `config.kdl` on save |
+| scratchpad (`$mod±minus`) | — | dropped: no niri equivalent; `Minus/Equal` resize instead |
+
+Niri-native extras: `$mod+O` overview, `$mod+Shift+/` hotkey overlay,
+`Super+Alt+L` lock, `Print`/`Ctrl+Print`/`Alt+Print` screenshots,
+auto-lock after 5 min idle (swayidle+swaylock).
+
+Waybar mirrors the polybar modules (workspaces/cpu/mem left, clock center,
+weather/bluetooth/wifi/sound/battery/tray/powermenu right). Two noble
+limitations, both documented in `config/waybar/config.jsonc`: waybar 0.9.24
+has no `niri/workspaces`, so a `custom/niri-workspaces` script polls
+`niri msg` (flip to the native module after upgrading waybar ≥ 0.12);
+rofi click-menus (wifi/bluetooth/mixer/calendar) have no Wayland port, so
+clicks are plain toggles/mute, and scroll on sound changes volume.

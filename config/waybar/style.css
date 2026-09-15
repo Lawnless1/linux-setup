@@ -1,0 +1,63 @@
+/* Waybar style — ubuntu-i3-setup (niri session). Dark bar matching polybar. */
+* {
+    font-family: "Inter Nerd Font", "Inter", "DejaVu Sans", sans-serif;
+    font-size: 12px;
+    min-height: 0;
+}
+
+window#waybar {
+    background: rgba(31, 31, 31, 0.9);
+    color: #FFFFFF;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+}
+
+#custom-niri-workspaces,
+#cpu,
+#memory,
+#clock,
+#custom-weather,
+#bluetooth,
+#network,
+#pulseaudio,
+#battery,
+#tray,
+#custom-powermenu {
+    padding: 0 8px;
+    margin: 2px 0;
+    color: #FFFFFF;
+}
+
+#clock {
+    font-weight: bold;
+}
+
+#battery.warning {
+    color: #E5C07B;
+}
+
+#battery.critical {
+    color: #E06C75;
+}
+
+#battery.charging {
+    color: #98C379;
+}
+
+#pulseaudio.muted {
+    color: #707880;
+}
+
+#network.disconnected {
+    color: #E06C75;
+}
+
+#bluetooth.disabled,
+#bluetooth.off {
+    color: #707880;
+}
+
+#custom-powermenu {
+    color: #E06C75;
+    font-size: 14px;
+    padding-right: 12px;
+}

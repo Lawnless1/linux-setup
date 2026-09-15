@@ -1,0 +1,225 @@
+// niri config — ubuntu-i3-setup (Wayland session, side-by-side with i3).
+// Mirrors ~/.config/i3/config keybindings as closely as niri's scrollable-tiling
+// model allows. i3 concepts with no niri equivalent are noted at the bind site.
+// Full mapping rationale: README.md ("Niri session" section).
+//
+// Notation: "Mod" below IS Super (Mod4), same as $mod in the i3 config.
+
+// Wayland-first env so apps don't fall back to Xwayland unnecessarily.
+environment {
+    GDK_BACKEND "wayland,x11"
+    QT_QPA_PLATFORM "wayland;xcb"
+    MOZ_ENABLE_WAYLAND "1"
+    ELECTRON_OZONE_PLATFORM_HINT "auto"
+    SDL_VIDEODRIVER "wayland"
+}
+
+input {
+    keyboard {
+        xkb {
+            // Empty: niri fetches layout from org.freedesktop.locale1
+            // (same layout you use on X11 / GNOME Wayland).
+        }
+        numlock
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+        // Keep in sync with POINTER_TOUCHPAD_SPEED in config/input/pointer.sh (0.3).
+        // (That script is X11/xinput only; niri reads this value instead.)
+        accel-speed 0.3
+    }
+
+    mouse {
+        // Keep in sync with POINTER_MOUSE_SPEED in config/input/pointer.sh (0.8).
+        accel-speed 0.8
+    }
+}
+
+layout {
+    // i3 parity: `gaps inner 10`.
+    gaps 10
+
+    center-focused-column "never"
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+
+    default-column-width { proportion 0.5; }
+
+    // i3 parity: `default_border pixel 3`, focused border blue.
+    focus-ring {
+        width 3
+        active-color "#0000FF"
+        inactive-color "#000000"
+    }
+
+    border {
+        off
+    }
+}
+
+// Pre-create workspaces 1..10 so $mod+1..0 always has a stable target,
+// like i3's `set $ws1..$ws10` + `workspace number` binds.
+workspace "1" {}
+workspace "2" {}
+workspace "3" {}
+workspace "4" {}
+workspace "5" {}
+workspace "6" {}
+workspace "7" {}
+workspace "8" {}
+workspace "9" {}
+workspace "10" {}
+
+spawn-at-startup "waybar"
+spawn-at-startup "dunst"
+spawn-sh-at-startup "swaybg -i \"$HOME/Pictures/wallpaper/dark.jpg\" -m fill"
+spawn-sh-at-startup "[ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
+// Idle: lock after 5 min, lock before suspend.
+spawn-sh-at-startup "exec swayidle -w timeout 300 'swaylock -f' before-sleep 'swaylock -f'"
+
+hotkey-overlay {
+    // Keep the overlay on first login so translated i3 binds are discoverable.
+}
+
+prefer-no-csd
+
+// Same naming as the i3 setup: ~/Pictures/Screenshots/.
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+binds {
+    // ---- terminal / launcher (i3: $mod+Return, $mod+d, $mod+space) ----
+    Mod+Return hotkey-overlay-title="Terminal: i3-sensible-terminal" { spawn "i3-sensible-terminal"; }
+    // i3 `$mod+d` ran dmenu; dmenu is X11-only so fuzzel takes both launcher binds.
+    Mod+D hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
+    // i3 `$mod+space` ran `rofi -show drun`; rofi is X11-only.
+    Mod+Space hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
+
+    // ---- kill window (i3: Ctrl+Delete) ----
+    Ctrl+Delete { close-window; }
+
+    // ---- focus (i3: $mod+j/k/l/; + arrows) ----
+    // NOTE: i3 binds $mod+Up to fullscreen (below), NOT focus-up, so Mod+L is
+    // the only focus-up bind here too. This is deliberate i3 parity.
+    Mod+J { focus-column-left; }
+    Mod+K { focus-window-down; }
+    Mod+L { focus-window-up; }
+    Mod+Semicolon { focus-column-right; }
+    Mod+Left { focus-column-left; }
+    Mod+Down { focus-window-down; }
+    Mod+Right { focus-column-right; }
+
+    // ---- move windows (i3: $mod+Shift+j/k/l/; + arrows) ----
+    Mod+Shift+J { move-column-left; }
+    Mod+Shift+K { move-window-down; }
+    Mod+Shift+L { move-window-up; }
+    Mod+Shift+Semicolon { move-column-right; }
+    Mod+Shift+Left { move-column-left; }
+    Mod+Shift+Down { move-window-down; }
+    Mod+Shift+Up { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
+
+    // ---- join/split columns (i3: $mod+h split h, $mod+v split v) ----
+    // niri has no h/v splits; consuming/expelling a column is the equivalent
+    // of joining/splitting the horizontal tiling.
+    Mod+H hotkey-overlay-title="Join/split column to the left" { consume-or-expel-window-left; }
+    Mod+V hotkey-overlay-title="Join/split column to the right" { consume-or-expel-window-right; }
+
+    // ---- fullscreen (i3: $mod+Up, single press) ----
+    Mod+Up { fullscreen-window; }
+
+    // ---- layouts (i3: $mod+s stacking, $mod+w tabbed, $mod+e toggle split) ----
+    // Approximations: niri's tabbed-column display looks like i3 stacking;
+    // maximize-column isolates one window like i3 tabbed focus;
+    // center-column is the "re-arrange" toggle for $mod+e.
+    Mod+S { toggle-column-tabbed-display; }
+    Mod+W { maximize-column; }
+    Mod+E { center-column; }
+
+    // ---- floating toggle (i3: $mod+Shift+space) ----
+    Mod+Shift+Space { toggle-window-floating; }
+
+    // i3 `$mod+a focus parent`: no niri equivalent (columns have no
+    // parent container). Dropped; Mod+J/Semicolon covers column focus.
+
+    // ---- workspaces (i3: $mod+1..0 focus, $mod+Shift+1..0 move) ----
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+0 { focus-workspace 10; }
+
+    Mod+Shift+1 { move-window-to-workspace 1; }
+    Mod+Shift+2 { move-window-to-workspace 2; }
+    Mod+Shift+3 { move-window-to-workspace 3; }
+    Mod+Shift+4 { move-window-to-workspace 4; }
+    Mod+Shift+5 { move-window-to-workspace 5; }
+    Mod+Shift+6 { move-window-to-workspace 6; }
+    Mod+Shift+7 { move-window-to-workspace 7; }
+    Mod+Shift+8 { move-window-to-workspace 8; }
+    Mod+Shift+9 { move-window-to-workspace 9; }
+    Mod+Shift+0 { move-window-to-workspace 10; }
+
+    // i3 extras ($mod+Ctrl+Shift+1..6 move container): same target, kept for
+    // muscle memory.
+    Mod+Ctrl+Shift+1 { move-window-to-workspace 1; }
+    Mod+Ctrl+Shift+2 { move-window-to-workspace 2; }
+    Mod+Ctrl+Shift+3 { move-window-to-workspace 3; }
+    Mod+Ctrl+Shift+4 { move-window-to-workspace 4; }
+    Mod+Ctrl+Shift+5 { move-window-to-workspace 5; }
+    Mod+Ctrl+Shift+6 { move-window-to-workspace 6; }
+
+    // ---- reload / restart / exit ----
+    // i3 `$mod+Shift+c reload`: niri hot-reloads this file on save; no bind needed.
+    // i3 `$mod+Shift+r restart`: meaningless in niri (session restart = log out/in),
+    // so the bind cycles column widths in reverse instead (see resize below).
+    // i3 `$mod+Shift+e` exit confirm: niri's quit dialog is the equivalent.
+    Mod+Shift+E { quit; }
+
+    // ---- resize (i3: $mod+r resize mode, j/k/l/; + arrows inside) ----
+    // niri has no modal resize; $mod+r cycles the preset column widths and
+    // Minus/Equal fine-tune width/height directly.
+    Mod+R { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-column-width-back; }
+    Mod+Minus { set-column-width "-10%"; }
+    Mod+Equal { set-column-width "+10%"; }
+    Mod+Shift+Minus { set-window-height "-10%"; }
+    Mod+Shift+Equal { set-window-height "+10%"; }
+    // i3 scratchpad ($mod+Shift+minus stash, $mod+minus recall) has no niri
+    // equivalent, so Minus/Equal are repurposed for sizing (above).
+
+    // ---- screenshot (i3: $mod+Shift+s flameshot; flameshot is X11-broken) ----
+    Mod+Shift+S { spawn-sh "~/.config/niri/scripts/screenshot.sh"; }
+
+    // ---- power menu (i3: Ctrl+Mod1+Delete rofi powermenu) ----
+    Ctrl+Alt+Delete { spawn-sh "~/.config/niri/scripts/powermenu-fuzzel.sh"; }
+
+    // ---- volume (i3: pactl binds, kept identical — works via pipewire-pulse) ----
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "pactl set-sink-volume @DEFAULT_SINK@ +5%"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "pactl set-sink-volume @DEFAULT_SINK@ -5%"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "pactl set-sink-mute @DEFAULT_SINK@ toggle"; }
+
+    // ---- brightness (i3: brightnessctl binds, kept identical) ----
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "+5%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "5%-"; }
+
+    // ---- niri-native extras (no i3 counterpart; listed in README) ----
+    Mod+O repeat=false { toggle-overview; }
+    Mod+Shift+Slash { show-hotkey-overlay; }
+    Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+    Mod+Shift+P { power-off-monitors; }
+    Print { screenshot; }
+    Ctrl+Print { screenshot-screen; }
+    Alt+Print { screenshot-window; }
+    Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
+}

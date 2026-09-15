@@ -15,6 +15,10 @@ If you make a **meaningful change** to the user's setup, you MUST also update th
 - `~/.screenlayout/**`, `~/.Xresources`, `~/.config/flameshot/*`, `~/.config/starship.toml`
 - `~/.bashrc.d/10-ubuntu-i3-setup.bashrc`, `shell/profile` contents, wallpaper in `~/Pictures/wallpaper/`
 - `packages/apt.txt`, `system/doas.conf.d/*`, `scripts/*`, `assets/wallpapers/*`
+- niri session: `~/.config/niri/config.kdl`, `~/.config/niri/scripts/*`,
+  `~/.config/xdg-desktop-portal/niri-portals.conf`, `~/.config/waybar/**`,
+  `~/.config/fuzzel/fuzzel.ini`, `~/.config/swaylock/config`,
+  `packages/apt-niri.txt`, `config/niri/niri.desktop`, `config/niri/systemd/*`
 
 **Not meaningful** (skip repo update): read-only probes (`xinput list`, `i3 -C`), transient testing reverted before finishing, files outside the table in `README.md`.
 
