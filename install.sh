@@ -90,6 +90,7 @@ chmod +x "$REPO_DIR"/home/.screenlayout/*.sh \
          "$REPO_DIR"/config/polybar/custom/scripts/*.sh \
          "$REPO_DIR"/config/rofi/powermenu.sh \
          "$REPO_DIR"/config/niri/scripts/*.sh \
+         "$REPO_DIR"/config/waybar/launch.sh \
          "$REPO_DIR"/config/waybar/scripts/*.sh \
          "$REPO_DIR"/scripts/*.sh
 

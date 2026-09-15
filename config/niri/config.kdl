@@ -76,7 +76,7 @@ workspace "8" {}
 workspace "9" {}
 workspace "10" {}
 
-spawn-at-startup "waybar"
+spawn-sh-at-startup "exec ~/.config/waybar/launch.sh"
 spawn-at-startup "dunst"
 spawn-sh-at-startup "swaybg -i \"$HOME/Pictures/wallpaper/dark.jpg\" -m fill"
 spawn-sh-at-startup "[ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
@@ -88,6 +88,12 @@ hotkey-overlay {
 }
 
 prefer-no-csd
+
+// i3 parity: ~/.Xresources sets `Xcursor.theme: Yaru` (size default 24).
+cursor {
+    xcursor-theme "Yaru"
+    xcursor-size 24
+}
 
 // Same naming as the i3 setup: ~/Pictures/Screenshots/.
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
