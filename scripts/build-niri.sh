@@ -36,7 +36,8 @@ fi
 # --- 1. build dependencies -------------------------------------------------------
 BUILD_DEPS="gcc clang pkg-config git curl libudev-dev libgbm-dev libxkbcommon-dev
     libegl1-mesa-dev libwayland-dev libinput-dev libdbus-1-dev libsystemd-dev
-    libseat-dev libpipewire-0.3-dev libpango1.0-dev libdisplay-info-dev"
+    libseat-dev libpipewire-0.3-dev libpango1.0-dev libdisplay-info-dev
+    libxcb-cursor-dev"
 # shellcheck disable=SC2086
 if ! dpkg -s $BUILD_DEPS >/dev/null 2>&1; then
     log "installing niri build dependencies (sudo)..."
