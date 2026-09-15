@@ -89,9 +89,9 @@ hotkey-overlay {
 
 prefer-no-csd
 
-// i3 parity: ~/.Xresources sets `Xcursor.theme: Yaru` (size default 24).
+// i3 parity: ~/.Xresources sets `Xcursor.theme: DMZ-White` (size default 24).
 cursor {
-    xcursor-theme "Yaru"
+    xcursor-theme "DMZ-White"
     xcursor-size 24
 }
 
