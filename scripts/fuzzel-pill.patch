@@ -62,7 +62,7 @@ index d0f842b..3fce9fa 100644
  
  void render_background(const struct render *render, struct buffer *buf);
 diff --git a/wayland.c b/wayland.c
-index 15185ff..8da5eda 100644
+index 15185ff..968efb6 100644
 --- a/wayland.c
 +++ b/wayland.c
 @@ -140,6 +140,7 @@ struct wayland {
@@ -73,7 +73,7 @@ index 15185ff..8da5eda 100644
  
      enum { KEEP_RUNNING, EXIT_UPDATE_CACHE, EXIT} status;
      int exit_code;
-@@ -2059,13 +2060,28 @@ wayl_refresh(struct wayland *wayl)
+@@ -2059,15 +2060,33 @@ wayl_refresh(struct wayland *wayl)
      /* Window content */
      matches_lock(wayl->matches);
      render_prompt(wayl->render, buf, wayl->prompt, wayl->matches);
@@ -84,10 +84,47 @@ index 15185ff..8da5eda 100644
 -            goto skip_list;
 -        }
 -    }
+-    render_match_list(wayl->render, buf, wayl->prompt, wayl->matches);
+-skip_list:
 +    const bool hide_list = wayl->hide_when_prompt_empty &&
 +        prompt_text(wayl->prompt)[0] == '\0';
++    bool skip_list = hide_list;
 +    if (hide_list != wayl->list_hidden) {
-+        /* ubuntu-i3-setup pill mode: grow/shrink the window with the list */
++        /* ubuntu-i3-setup pill mode: grow/shrink the window with the list.
++         * The list is (re)painted by the fresh frame the configure event
++         * triggers: painting it here would render full-size rows into the
++         * old-size buffer while render workers may still be active. */
++        wayl->list_hidden = hide_list;
++        render_set_visible_lines(
++            wayl->render, hide_list ? 0 : wayl->conf->lines);
++
++        int new_width, new_height;
++        render_set_font_and_update_sizes(
++            wayl->render, NULL, NULL, wayl->scale, wayl->dpi,
++            wayl->font_is_sized_by_dpi, &new_width, &new_height);
++        wayl->width = new_width;
++        wayl->height = new_height;
++        zwlr_layer_surface_v1_set_size(
++            wayl->layer_surface,
++            roundf(wayl->width / wayl->scale),
++            roundf(wayl->height / wayl->scale));
++        wl_surface_commit(wayl->surface);
++        skip_list = true;
++    }
++    if (!skip_list)
++        render_match_list(wayl->render, buf, wayl->prompt, wayl->matches);
+     matches_unlock(wayl->matches);
+ 
+ #if defined(FUZZEL_ENABLE_CAIRO)
+@@ -2075,6 +2094,28 @@ skip_list:
+         cairo_surface_flush(cairo_get_target(buf->cairo[0]));
+ #endif
+ 
++    if (hide_list != wayl->list_hidden) {
++        /* ubuntu-i3-setup pill mode: grow/shrink the window with the list.
++         * Done here, after the list has rendered: render_match_list waits
++         * for all render workers before returning, so no worker thread can
++         * be reading the metrics we are about to change. */
 +        wayl->list_hidden = hide_list;
 +        render_set_visible_lines(
 +            wayl->render, hide_list ? 0 : wayl->conf->lines);
@@ -104,8 +141,7 @@ index 15185ff..8da5eda 100644
 +            roundf(wayl->height / wayl->scale));
 +        wl_surface_commit(wayl->surface);
 +    }
-+    if (hide_list)
-+        goto skip_list;
-     render_match_list(wayl->render, buf, wayl->prompt, wayl->matches);
- skip_list:
-     matches_unlock(wayl->matches);
++
+ commit:
+     /* No pending frames - render immediately */
+     assert(!wayl->need_refresh);
