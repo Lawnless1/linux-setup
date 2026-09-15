@@ -51,8 +51,11 @@ link_to() {
 # --- 1. optional: system packages -------------------------------------------
 if [ "$WITH_APT" -eq 1 ]; then
     log "installing apt packages..."
+    # NOTE: NOT `apt update && apt install`: with `set -e`, a failed update
+    # inside an &&-list silently skips the install instead of aborting.
+    sudo apt update || { log "apt update FAILED — fix broken sources (see /etc/apt/sources.list.d/) and re-run"; exit 1; }
     # shellcheck disable=SC2046
-    sudo apt update && sudo apt install -y $(grep -v '^\s*#' "$REPO_DIR/packages/apt.txt" | grep -v '^\s*$' | xargs)
+    sudo apt install -y $(grep -v '^\s*#' "$REPO_DIR/packages/apt.txt" | grep -v '^\s*$' | xargs)
 else
     log "skipping apt (re-run with --with-apt to install packages/apt.txt)"
 fi
@@ -158,8 +161,10 @@ fi
 # --- 8b. optional: niri (Wayland) apt set ---------------------------------------------
 if [ "$WITH_NIRI" -eq 1 ]; then
     log "installing apt packages for the niri session..."
+    # NOTE: see --with-apt above: no &&-list here, a failed update must abort.
+    sudo apt update || { log "apt update FAILED — fix broken sources (see /etc/apt/sources.list.d/) and re-run"; exit 1; }
     # shellcheck disable=SC2046
-    sudo apt update && sudo apt install -y $(grep -v '^\s*#' "$REPO_DIR/packages/apt-niri.txt" | grep -v '^\s*$' | xargs)
+    sudo apt install -y $(grep -v '^\s*#' "$REPO_DIR/packages/apt-niri.txt" | grep -v '^\s*$' | xargs)
     log "niri binary still needed (not in Ubuntu repos): run ./scripts/build-niri.sh"
 else
     log "skipping niri apt set (re-run with --with-niri; then scripts/build-niri.sh)"

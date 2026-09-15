@@ -40,8 +40,11 @@ BUILD_DEPS="gcc clang pkg-config git curl libudev-dev libgbm-dev libxkbcommon-de
 # shellcheck disable=SC2086
 if ! dpkg -s $BUILD_DEPS >/dev/null 2>&1; then
     log "installing niri build dependencies (sudo)..."
+    # NOTE: NOT `apt update && apt install`: with `set -e`, a failed update
+    # inside an &&-list silently skips the install instead of aborting.
+    sudo apt update || { log "apt update FAILED — fix broken sources (see /etc/apt/sources.list.d/) and re-run"; exit 1; }
     # shellcheck disable=SC2086
-    sudo apt update && sudo apt install -y $BUILD_DEPS
+    sudo apt install -y $BUILD_DEPS
 else
     log "build dependencies already present"
 fi
