@@ -83,6 +83,15 @@ if command -v fuzzel >/dev/null 2>&1; then
 fi
 [ -f "$HOME/.config/dunst/dunstrc" ] && echo "dunst config linked" \
     || { echo "MISSING: ~/.config/dunst/dunstrc (run ./install.sh)"; FAIL=1; }
+[ -f "$HOME/.config/walker/config.toml" ] && echo "walker config linked" \
+    || { echo "MISSING: ~/.config/walker/config.toml (run ./install.sh)"; FAIL=1; }
+for b in elephant walker; do
+    command -v "$b" >/dev/null 2>&1 || echo "(info: $b not installed yet — ./scripts/build-walker.sh)"
+done
+for p in desktopapplications files; do
+    [ -f "$HOME/.config/elephant/providers/$p.so" ] && echo "elephant provider $p OK" \
+        || echo "(info: elephant provider $p missing — ./scripts/build-walker.sh)"
+done
 [ -f "$HOME/.config/xdg-desktop-portal/niri-portals.conf" ] && echo "niri portals linked" \
     || { echo "MISSING: niri-portals.conf (run ./install.sh)"; FAIL=1; }
 

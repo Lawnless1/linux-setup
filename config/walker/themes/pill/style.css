@@ -1,0 +1,166 @@
+/* Walker "pill" theme — ubuntu-i3-setup (niri session).
+ * Inherits the default theme's layouts; only colors/type/padding here.
+ * Matches waybar/dunst/fuzzel: dark-navy pill (#010B17), light-grey text
+ * (#E1E2E6), 1px muted-grey frame (#C5C8C6), pastel-cyan match accent. */
+@define-color window_bg_color #010b17;
+@define-color accent_bg_color #1e2e44;
+@define-color theme_fg_color #e1e2e6;
+@define-color match_color #9bf6ff;
+@define-color muted_color #707880;
+@define-color frame_color #c5c8c6;
+@define-color error_bg_color #900000;
+@define-color error_fg_color #ffffff;
+
+* {
+  all: unset;
+  font-family: "Inter Nerd Font", "Inter", sans-serif;
+  font-size: 14px;
+}
+
+popover {
+  background: @window_bg_color;
+  border: 1px solid @frame_color;
+  border-radius: 16px;
+  padding: 8px;
+}
+
+.normal-icons {
+  -gtk-icon-size: 20px;
+}
+
+.large-icons {
+  -gtk-icon-size: 32px;
+}
+
+scrollbar {
+  opacity: 0;
+}
+
+.box-wrapper {
+  box-shadow:
+    0 19px 38px rgba(0, 0, 0, 0.35),
+    0 15px 12px rgba(0, 0, 0, 0.22);
+  background: alpha(@window_bg_color, 0.94);
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid @frame_color;
+}
+
+.preview-box,
+.elephant-hint,
+.placeholder {
+  color: @theme_fg_color;
+}
+
+.search-container {
+  border-radius: 10px;
+}
+
+.input placeholder {
+  opacity: 0.5;
+  color: @muted_color;
+}
+
+.input selection {
+  background: @accent_bg_color;
+}
+
+.input {
+  caret-color: @theme_fg_color;
+  background: transparent;
+  padding: 8px 4px;
+  color: @theme_fg_color;
+  font-size: 15px;
+}
+
+.input:focus,
+.input:active {
+}
+
+.placeholder {
+}
+
+.scroll {
+}
+
+.list {
+  color: @theme_fg_color;
+}
+
+child {
+}
+
+.item-box {
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.item-quick-activation {
+  background: alpha(@accent_bg_color, 0.6);
+  border-radius: 5px;
+  padding: 8px;
+}
+
+/* child:hover .item-box, */
+child:selected .item-box,
+row:selected .item-box {
+  background: @accent_bg_color;
+}
+
+.item-text-box {
+}
+
+.item-subtext {
+  font-size: 12px;
+  opacity: 0.55;
+}
+
+.item-image-text {
+  font-size: 28px;
+}
+
+.preview {
+  border: 1px solid alpha(@frame_color, 0.25);
+  border-radius: 10px;
+  color: @theme_fg_color;
+}
+
+.keybinds {
+  padding-top: 8px;
+  font-size: 12px;
+  color: @muted_color;
+}
+
+.global-keybinds {
+}
+
+.item-keybinds {
+}
+
+.keybind {
+}
+
+.keybind-button {
+  opacity: 0.5;
+}
+
+.keybind-button:hover {
+  opacity: 0.75;
+}
+
+.keybind-bind {
+  text-transform: lowercase;
+  opacity: 0.35;
+}
+
+.keybind-label {
+  padding: 2px 4px;
+  border-radius: 4px;
+  border: 1px solid @theme_fg_color;
+}
+
+.error {
+  padding: 8px;
+  background: @error_bg_color;
+  color: @error_fg_color;
+}

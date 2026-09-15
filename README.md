@@ -14,7 +14,8 @@ Private, replicable i3 desktop for Ubuntu 24.04. Symlinked configs + one install
 | `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu (`Ctrl+Alt+Del`), grim/slurp screenshot (`$mod+Shift+s`) |
 | `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals for niri |
 | `config/waybar/` | `~/.config/waybar/` | waybar bar + scripts (niri session; mirrors polybar modules) |
-| `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Spotlight-like pill theme for the app grid (`$mod+d`) and unified search (`$mod+space`/`$mod+F`; needs 1.12 from `scripts/build-fuzzel.sh`) |
+| `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Spotlight-like pill theme for the app grid (`$mod+d`) and text search (`$mod+F`; needs 1.12 from `scripts/build-fuzzel.sh`) |
+| `config/walker/` | `~/.config/walker/` | walker omnibar theme + config (`$mod+space`; apps + indexed files with icons; needs `scripts/build-walker.sh`) |
 | `config/dunst/dunstrc` | `~/.config/dunst/dunstrc` | modern minimal notifications (shared i3 + niri) |
 | `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu) |
 | `config/polybar/custom/` | `~/.config/polybar/custom/` | single `center` bar + curated scripts (wifi, sound, battery, bluetooth, weather, calendar, powermenu) |
@@ -91,6 +92,8 @@ Ubuntu 24.04's repos, so the binary is compiled from source; everything else
                                 # install to /usr/local, add GDM session entry + systemd units
 ./scripts/build-fuzzel.sh       # sudo: build deps, compile fuzzel 1.12 (noble ships
                                 # 1.9.2, which lacks the omnibar keys) to /usr/local
+./scripts/build-walker.sh       # sudo: GTK4 deps, gtk4-layer-shell + elephant +
+                                # walker (none packaged for noble) to /usr/local
 bash scripts/check.sh           # must end ALL CHECKS PASSED
 # log out, choose "Niri" at the login screen
 ```
@@ -109,7 +112,7 @@ Identical unless noted:
 |---|---|---|
 | `$mod+Return` terminal | same key → **foot** | Wayland-native instead of `i3-sensible-terminal` |
 | `Ctrl+Delete` kill | same | `close-window` |
-| `$mod+d` dmenu / `$mod+space` rofi | `$mod+d` → **fuzzel** app grid; `$mod+space`/`$mod+F` → unified search (apps > folders > files) | dmenu/rofi are X11-only |
+| `$mod+d` dmenu / `$mod+space` rofi | `$mod+d` → **fuzzel** app grid; `$mod+space` → **walker** omnibar (apps + files, real icons); `$mod+F` → fuzzel text search | dmenu/rofi are X11-only |
 | `$mod+j/k/l/;` + arrows focus | same | incl. i3 quirk: `$mod+Up` is fullscreen, **not** focus-up |
 | `$mod+Shift+j/k/l/;` + arrows move | same | `move-column-*` / `move-window-*` |
 | `$mod+h` / `$mod+v` split | same keys → consume/expel column | closest analog to split h/v |

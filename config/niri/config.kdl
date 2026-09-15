@@ -82,6 +82,9 @@ workspace "10" {}
 
 spawn-sh-at-startup "exec ~/.config/waybar/launch.sh"
 spawn-at-startup "dunst"
+// Spotlight backend (apps + indexed files) and instant launcher service.
+spawn-at-startup "elephant"
+spawn-sh-at-startup "exec walker --gapplication-service"
 spawn-sh-at-startup "swaybg -i \"$HOME/Pictures/wallpaper/dark.jpg\" -m fill"
 spawn-sh-at-startup "[ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
 // Idle: lock after 5 min, lock before suspend.
@@ -114,8 +117,9 @@ binds {
     // i3 `$mod+d` ran dmenu; dmenu is X11-only so fuzzel takes the launcher bind.
     Mod+D hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
     // i3 `$mod+space` ran `rofi -show drun`; unified Spotlight search instead:
-    // apps rank above folders above files (same script as $mod+f).
-    Mod+Space hotkey-overlay-title="Search: unified" { spawn-sh "~/.config/niri/scripts/file-search-fuzzel.sh"; }
+    // walker (apps + files, real icons). $mod+d keeps the fuzzel grid,
+    // $mod+f keeps the fuzzel text search as fallback.
+    Mod+Space hotkey-overlay-title="Search: walker" { spawn "walker"; }
     // No i3 counterpart: Spotlight-style file search (fd + fuzzel dmenu).
     Mod+F hotkey-overlay-title="File search: fuzzel" { spawn-sh "~/.config/niri/scripts/file-search-fuzzel.sh"; }
 
