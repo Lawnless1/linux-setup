@@ -74,6 +74,8 @@ json.loads("\n".join(lines))
 EOF
 [ -f "$HOME/.config/fuzzel/fuzzel.ini" ] && echo "fuzzel config linked" \
     || { echo "MISSING: ~/.config/fuzzel/fuzzel.ini (run ./install.sh)"; FAIL=1; }
+[ -f "$HOME/.config/dunst/dunstrc" ] && echo "dunst config linked" \
+    || { echo "MISSING: ~/.config/dunst/dunstrc (run ./install.sh)"; FAIL=1; }
 [ -f "$HOME/.config/xdg-desktop-portal/niri-portals.conf" ] && echo "niri portals linked" \
     || { echo "MISSING: niri-portals.conf (run ./install.sh)"; FAIL=1; }
 

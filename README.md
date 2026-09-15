@@ -15,6 +15,7 @@ Private, replicable i3 desktop for Ubuntu 24.04. Symlinked configs + one install
 | `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals for niri |
 | `config/waybar/` | `~/.config/waybar/` | waybar bar + scripts (niri session; mirrors polybar modules) |
 | `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Wayland launcher (`$mod+d` / `$mod+space`) |
+| `config/dunst/dunstrc` | `~/.config/dunst/dunstrc` | modern minimal notifications (shared i3 + niri) |
 | `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu) |
 | `config/polybar/custom/` | `~/.config/polybar/custom/` | single `center` bar + curated scripts (wifi, sound, battery, bluetooth, weather, calendar, powermenu) |
 | `config/rofi/` | `~/.config/rofi/` | drun config + Ctrl+Alt+Del power menu |

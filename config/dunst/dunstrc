@@ -1,0 +1,128 @@
+# dunst config — ubuntu-i3-setup (shared i3 + niri sessions).
+# Modern minimal theme matching waybar (`config/waybar/style.css`):
+# dark-navy pill (#010B17), light-grey text (#E1E2E6), 1px muted-grey
+# frame (#C5C8C6, same as fuzzel border), 12px rounding.
+# Deployed to ~/.config/dunst/dunstrc by install.sh.
+# Replaces the stock dunst look (thick 3px frame, blue #285577 /
+# red #900000 bodies, Monospace 8) which looked antiquated next to niri.
+
+[global]
+    ### Display ###
+    monitor = 0
+    follow = none
+
+    ### Geometry ###
+    # Adaptive width: compact for one-liners, grows to 360px max.
+    width = (280, 360)
+    height = 80
+
+    # Top-right, dropped below the waybar pill (bar height 30 + margins).
+    origin = top-right
+    offset = 12x48
+
+    scale = 0
+    # Minimal stacking: max 5 visible instead of the stock 20-wall.
+    notification_limit = 5
+
+    ### Progress bar (volume/brightness hints via dunstify -h int:value:) ###
+    progress_bar = true
+    progress_bar_height = 6
+    progress_bar_frame_width = 0
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+    progress_bar_corner_radius = 3
+    icon_corner_radius = 6
+    indicate_hidden = yes
+
+    # Subtle translucency matching waybar rgba(1,11,23,0.92). X11-only;
+    # harmless under Wayland (niri composites the window itself).
+    transparency = 8
+
+    # Modern gaps instead of the stock 2px separator line.
+    separator_height = 0
+    padding = 12
+    horizontal_padding = 14
+    text_icon_padding = 12
+    frame_width = 1
+    frame_color = "#C5C8C6"
+    gap_size = 8
+    separator_color = frame
+    sort = yes
+
+    ### Text ###
+    font = Inter Nerd Font:size=10
+    line_height = 0
+    markup = full
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    # No age stamp ("42 seconds ago") — cleaner single-glance banners.
+    show_age_threshold = -1
+    ellipsize = middle
+    ignore_newline = no
+    word_wrap = yes
+    stack_duplicates = true
+    hide_duplicate_count = false
+    # Hide (U)/(A) URL/action markers for a quieter body.
+    show_indicators = no
+
+    ### Icons (smaller than stock 32/128 for a compact banner) ###
+    enable_recursive_icon_lookup = true
+    icon_theme = Adwaita
+    icon_position = left
+    min_icon_size = 24
+    max_icon_size = 48
+    icon_path = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
+
+    ### History ###
+    sticky_history = no
+    history_length = 15
+
+    ### Misc ###
+    # fuzzel is the Wayland launcher (dmenu is X11-only); keeps the
+    # dunst context menu working inside the niri session.
+    dmenu = /usr/bin/fuzzel --dmenu -p dunst:
+    browser = /usr/bin/xdg-open
+    always_run_script = true
+    title = Dunst
+    class = Dunst
+    corner_radius = 12
+    ignore_dbusclose = false
+
+    ### Wayland ###
+    # Stay visible over fullscreen video so volume/brightness hints read.
+    layer = top
+    force_xwayland = false
+
+    ### Legacy ###
+    force_xinerama = false
+
+    ### mouse ###
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[experimental]
+    per_monitor_dpi = false
+
+# All urgencies share the same dark pill — urgency is signalled by
+# timeout + frame only, not the stock blue/red bodies.
+[urgency_low]
+    background = "#010B17"
+    foreground = "#E1E2E6"
+    frame_color = "#C5C8C6"
+    timeout = 5
+
+[urgency_normal]
+    background = "#010B17"
+    foreground = "#E1E2E6"
+    frame_color = "#C5C8C6"
+    timeout = 8
+
+[urgency_critical]
+    background = "#010B17"
+    foreground = "#E1E2E6"
+    # Warning amber (same as waybar battery.warning) so critical
+    # stands out without the old alarm-red body.
+    frame_color = "#E7BF01"
+    timeout = 0
