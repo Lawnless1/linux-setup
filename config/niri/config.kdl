@@ -111,10 +111,11 @@ window-rule {
 binds {
     // ---- terminal / launcher (i3: $mod+Return, $mod+d, $mod+space) ----
     Mod+Return hotkey-overlay-title="Terminal: foot" { spawn "foot"; }
-    // i3 `$mod+d` ran dmenu; dmenu is X11-only so fuzzel takes both launcher binds.
+    // i3 `$mod+d` ran dmenu; dmenu is X11-only so fuzzel takes the launcher bind.
     Mod+D hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
-    // i3 `$mod+space` ran `rofi -show drun`; rofi is X11-only.
-    Mod+Space hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
+    // i3 `$mod+space` ran `rofi -show drun`; unified Spotlight search instead:
+    // apps rank above folders above files (same script as $mod+f).
+    Mod+Space hotkey-overlay-title="Search: unified" { spawn-sh "~/.config/niri/scripts/file-search-fuzzel.sh"; }
     // No i3 counterpart: Spotlight-style file search (fd + fuzzel dmenu).
     Mod+F hotkey-overlay-title="File search: fuzzel" { spawn-sh "~/.config/niri/scripts/file-search-fuzzel.sh"; }
 
