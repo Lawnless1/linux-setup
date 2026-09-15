@@ -53,7 +53,7 @@ export PATH="$HOME/.local/go/bin:$PATH"
 export GOTOOLCHAIN=local
 
 # --- 1. system build dependencies (sudo) -------------------------------------------
-BUILD_DEPS="meson ninja-build pkg-config git curl cmake libgtk-4-dev
+BUILD_DEPS="meson ninja-build pkg-config git curl cmake valac libgtk-4-dev
     libpoppler-glib-dev libwayland-dev wayland-protocols
     libgirepository1.0-dev gobject-introspection"
 # shellcheck disable=SC2086
