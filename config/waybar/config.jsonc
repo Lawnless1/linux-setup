@@ -18,9 +18,14 @@
     "margin-right": 4,
     "spacing": 6,
 
-    "modules-left": ["custom/niri-workspaces", "cpu", "memory"],
+    "modules-left": ["group/left"],
     "modules-center": ["clock"],
     "modules-right": ["group/status"],
+
+    "group/left": {
+        "orientation": "horizontal",
+        "modules": ["custom/niri-workspaces", "cpu", "memory"]
+    },
 
     "custom/niri-workspaces": {
         "exec": "$HOME/.config/waybar/scripts/niri-workspaces.sh",
