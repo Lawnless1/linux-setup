@@ -80,6 +80,12 @@ link_to config/swaylock/config          .config/swaylock/config
 
 # --- 3. home files ------------------------------------------------------------
 link_to home/.Xresources            .Xresources
+# --- 3b. GNOME Terminal prefs (i3-sensible-terminal default; idempotent) -----------
+if command -v gsettings >/dev/null 2>&1 && command -v gnome-terminal >/dev/null 2>&1; then
+    "$REPO_DIR/scripts/gnome-terminal-prefs.sh" || log "(warn: gnome-terminal prefs failed)"
+else
+    log "(skip: gnome-terminal prefs — gsettings/gnome-terminal missing)"
+fi
 link_to home/.xprofile              .xprofile
 mkdir -p "$HOME/.screenlayout"
 for f in laptop.sh layout.sh triple.sh; do
