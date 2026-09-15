@@ -115,6 +115,8 @@ binds {
     Mod+D hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
     // i3 `$mod+space` ran `rofi -show drun`; rofi is X11-only.
     Mod+Space hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
+    // No i3 counterpart: Spotlight-style file search (fd + fuzzel dmenu).
+    Mod+F hotkey-overlay-title="File search: fuzzel" { spawn-sh "~/.config/niri/scripts/file-search-fuzzel.sh"; }
 
     // ---- kill window (i3: Ctrl+Delete) ----
     Ctrl+Delete { close-window; }
