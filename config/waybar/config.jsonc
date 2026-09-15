@@ -29,7 +29,7 @@
         "tooltip": true
     },
     "clock": {
-        "format": "{:%d - %I:%M %p}",
+        "format": " {:%d - %I:%M %p}",
         "format-alt": "{:%A, %d %b %Y, %H:%M %p}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "on-click-right": "mode"
@@ -40,16 +40,16 @@
     },
     "network": {
         "interval": 5,
-        "format-wifi": "{essid} {signalStrength}%",
-        "format-ethernet": "{ipaddr}",
+        "format-wifi": " {essid} {signalStrength}%",
+        "format-ethernet": "󰈀 {ipaddr}",
         "format-linked": "{ifname} (no IP)",
-        "format-disconnected": "offline",
+        "format-disconnected": "󰖪 offline",
         "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
         "tooltip-format-ethernet": "{ifname}\n{ipaddr}"
     },
     "pulseaudio": {
-        "format": "{volume}%",
-        "format-muted": "muted",
+        "format": " {volume}%",
+        "format-muted": " muted",
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
         "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
@@ -60,11 +60,13 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{capacity}%",
-        "format-charging": "+{capacity}%"
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-icons": ["", "", "", "", ""]
     },
     "custom/powermenu": {
-        "format": "⏻",
+        "format": "",
         "tooltip": "Power menu (Ctrl+Alt+Delete)",
         "on-click": "$HOME/.config/niri/scripts/powermenu-fuzzel.sh"
     }
