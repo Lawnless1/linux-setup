@@ -104,7 +104,7 @@ Identical unless noted:
 
 | i3 bind | niri bind | Notes |
 |---|---|---|
-| `$mod+Return` terminal | same | `i3-sensible-terminal` (Wayland-safe) |
+| `$mod+Return` terminal | same key → **foot** | Wayland-native instead of `i3-sensible-terminal` |
 | `Ctrl+Delete` kill | same | `close-window` |
 | `$mod+d` dmenu / `$mod+space` rofi | same keys → **fuzzel** | dmenu/rofi are X11-only |
 | `$mod+j/k/l/;` + arrows focus | same | incl. i3 quirk: `$mod+Up` is fullscreen, **not** focus-up |

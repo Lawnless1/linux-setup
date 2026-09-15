@@ -100,7 +100,7 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 binds {
     // ---- terminal / launcher (i3: $mod+Return, $mod+d, $mod+space) ----
-    Mod+Return hotkey-overlay-title="Terminal: i3-sensible-terminal" { spawn "i3-sensible-terminal"; }
+    Mod+Return hotkey-overlay-title="Terminal: foot" { spawn "foot"; }
     // i3 `$mod+d` ran dmenu; dmenu is X11-only so fuzzel takes both launcher binds.
     Mod+D hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
     // i3 `$mod+space` ran `rofi -show drun`; rofi is X11-only.

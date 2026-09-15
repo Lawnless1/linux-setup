@@ -6,9 +6,10 @@
 # scripts/build-niri.sh. systemctl/loginctl, pipewire, portals and pactl/
 # brightnessctl/jq/curl come from the base Ubuntu install or apt.txt.
 
-# --- bar / launcher / locker ---
+# --- bar / launcher / locker / terminal ---
 waybar
 fuzzel
+foot
 swaylock
 swayidle
 
