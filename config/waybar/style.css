@@ -1,14 +1,16 @@
-/* Waybar style — ubuntu-i3-setup (niri session). Dark bar matching polybar. */
+/* Waybar style — ubuntu-i3-setup (niri session).
+ * Modern floating "pill" bar matching the retrowave terminal theme:
+ * transparent bar, dark-navy pills (#010B17), neon cyan/pink accents. */
 * {
     font-family: "Inter Nerd Font", "Inter", "DejaVu Sans", sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     min-height: 0;
+    border: none;
 }
 
 window#waybar {
-    background: rgba(31, 31, 31, 0.9);
-    color: #FFFFFF;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.6);
+    background: transparent;
+    color: #E1E2E6;
 }
 
 #custom-niri-workspaces,
@@ -22,42 +24,104 @@ window#waybar {
 #battery,
 #tray,
 #custom-powermenu {
-    padding: 0 8px;
-    margin: 2px 0;
-    color: #FFFFFF;
+    background: rgba(1, 11, 23, 0.92);
+    border: 1px solid rgba(17, 218, 228, 0.25);
+    border-radius: 12px;
+    padding: 4px 12px;
+    margin: 6px 3px 2px 3px;
+    color: #E1E2E6;
 }
 
-#clock {
+#custom-niri-workspaces {
+    border-color: rgba(17, 218, 228, 0.45);
     font-weight: bold;
 }
 
-#battery.warning {
-    color: #E5C07B;
+#clock {
+    border-color: rgba(234, 4, 122, 0.45);
+    font-weight: bold;
+    padding: 4px 16px;
 }
 
-#battery.critical {
-    color: #E06C75;
+#cpu {
+    color: #35EAE4;
 }
 
-#battery.charging {
-    color: #98C379;
+#memory {
+    color: #9A6DED;
 }
 
-#pulseaudio.muted {
-    color: #707880;
+#custom-weather {
+    color: #E7BF01;
+}
+
+#network {
+    color: #2A7BDE;
 }
 
 #network.disconnected {
-    color: #E06C75;
+    color: #EE3191;
+    border-color: rgba(238, 49, 145, 0.5);
+}
+
+#pulseaudio {
+    color: #2FEFA9;
+}
+
+#pulseaudio.muted {
+    color: #465159;
+}
+
+#bluetooth {
+    color: #2A7BDE;
 }
 
 #bluetooth.disabled,
 #bluetooth.off {
-    color: #707880;
+    color: #465159;
+}
+
+#battery {
+    color: #2FEFA9;
+}
+
+#battery.warning {
+    color: #E7BF01;
+    border-color: rgba(231, 191, 1, 0.5);
+}
+
+#battery.critical {
+    color: #EE3191;
+    border-color: rgba(238, 49, 145, 0.5);
+}
+
+#battery.charging {
+    color: #2FEFA9;
+}
+
+#tray {
+    padding: 4px 10px;
+}
+
+#tray > .passive {
+    -gtk-icon-effect: dim;
 }
 
 #custom-powermenu {
-    color: #E06C75;
+    color: #EE3191;
+    border-color: rgba(238, 49, 145, 0.5);
     font-size: 14px;
-    padding-right: 12px;
+    padding: 4px 14px 4px 12px;
+    margin-right: 8px;
+}
+
+#custom-niri-workspaces {
+    margin-left: 8px;
+}
+
+tooltip {
+    background: rgba(1, 11, 23, 0.97);
+    border: 1px solid rgba(17, 218, 228, 0.4);
+    border-radius: 8px;
+    color: #E1E2E6;
 }

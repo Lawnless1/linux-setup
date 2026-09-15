@@ -1,6 +1,6 @@
 // Waybar config — ubuntu-i3-setup (niri session).
-// Mirrors the polybar [bar/center] module set (left: workspaces/cpu/memory,
-// center: date, right: weather/bluetooth/wifi/sound/battery/tray/powermenu).
+// Floating pill bar (see style.css): transparent background, modules grouped
+// in rounded pills. Module set mirrors polybar [bar/center].
 //
 // NOTE: Ubuntu 24.04 ships waybar 0.9.24, which has no `niri/workspaces`
 // module, so workspaces are drawn by custom/niri-workspaces polling
@@ -10,8 +10,11 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 28,
-    "spacing": 4,
+    "height": 30,
+    "margin-top": 0,
+    "margin-left": 4,
+    "margin-right": 4,
+    "spacing": 0,
 
     "modules-left": ["custom/niri-workspaces", "cpu", "memory"],
     "modules-center": ["clock"],
@@ -25,14 +28,14 @@
     },
     "cpu": {
         "interval": 10,
-        "format": "CPU {usage}%"
+        "format": " {usage}%"
     },
     "memory": {
         "interval": 10,
-        "format": "MEM {}%"
+        "format": " {}%"
     },
     "clock": {
-        "format": " {:%d - %I:%M %p}",
+        "format": " {:%d - %I:%M %p}",
         "format-alt": "{:%A, %d %b %Y, %H:%M %p}",
         "tooltip-format": "<tt><small>{calendar}</small></tt>",
         "on-click-right": "mode"
@@ -41,19 +44,20 @@
         "exec": "$HOME/.config/waybar/scripts/weather.sh",
         "return-type": "json",
         "interval": 600,
-        "tooltip": true
+        "tooltip": true,
+        "format": " {}"
     },
     "bluetooth": {
-        "format": "BT {status}",
-        "format-connected": " {device_alias}",
-        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
+        "format": " {status}",
+        "format-connected": " {device_alias}",
+        "format-connected-battery": " {device_alias} {device_battery_percentage}%",
         "tooltip-format": "{controller_alias}\t{controller_address}\n\n{num_connections} connected",
         "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
         "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}"
     },
     "network": {
         "interval": 5,
-        "format-wifi": "{essid} ({signalStrength}%)",
+        "format-wifi": " {essid} ({signalStrength}%)",
         "format-ethernet": "{ipaddr}",
         "format-linked": "{ifname} (no IP)",
         "format-disconnected": "Disconnected",
@@ -61,8 +65,8 @@
         "tooltip-format-ethernet": "{ifname}\n{ipaddr}"
     },
     "pulseaudio": {
-        "format": "♪ {volume}%",
-        "format-muted": "MUTE",
+        "format": " {volume}%",
+        "format-muted": " MUTE",
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
         "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
@@ -73,16 +77,17 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{capacity}%",
-        "format-charging": "+{capacity}%",
-        "format-plugged": "={capacity}%"
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}%",
+        "format-plugged": " {capacity}%",
+        "format-icons": ["", "", "", "", ""]
     },
     "tray": {
         "icon-size": 16,
         "spacing": 8
     },
     "custom/powermenu": {
-        "format": "⏻",
+        "format": "",
         "tooltip": "Power menu (Ctrl+Alt+Delete)",
         "on-click": "$HOME/.config/niri/scripts/powermenu-fuzzel.sh"
     }
