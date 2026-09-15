@@ -57,6 +57,19 @@ fi
 log "checking out fuzzel $FUZZEL_TAG"
 git -C "$SRC_DIR/fuzzel" checkout -q "$FUZZEL_TAG"
 
+# --- 2b. pill patch: true expanding pill (empty = prompt row only).
+# Upstream 1.12 reserves lines*row_height always and latches
+# hide-before-typing off after the first keystroke; the patch (kept in
+# git) makes the window grow/shrink with the list instead.
+if [ "$FUZZEL_TAG" = "1.12.0" ]; then
+    log "applying pill patch..."
+    git -C "$SRC_DIR/fuzzel" checkout -q "$FUZZEL_TAG" -- render.c render.h wayland.c
+    git -C "$SRC_DIR/fuzzel" apply "$REPO_DIR/scripts/fuzzel-pill.patch"
+else
+    log "WARNING: pill patch targets 1.12.0, skipping for $FUZZEL_TAG"
+    log "         (empty state will be a fixed-height box, not a slim pill)"
+fi
+
 # --- 3. build ----------------------------------------------------------------------
 log "configuring fuzzel $FUZZEL_TAG..."
 # meson setup [options] <builddir> <srcdir>

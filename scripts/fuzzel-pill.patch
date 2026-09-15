@@ -1,55 +1,27 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-Subject: [PATCH] Pill mode: shrink the window when the match list is hidden
-
-Upstream 1.12 keeps the window at `lines * row_height` even with
-hide-before-typing (hidden rows are painted background), and the hide
-flag latches off permanently after the first keystroke. Result: the
-"empty pill" is a fat box, and stays fat after any typing.
-
-This makes the empty state a true single-row pill that grows into the
-full list while searching:
-
-- render: window height (and inner pad) follow a runtime
-  `visible_lines` count (0 when hidden) instead of the static
-  `conf->lines`.
-- wayland: no longer clears hide_when_prompt_empty on first input;
-  on empty<->non-empty transitions, recompute sizes and resize the
-  layer-shell surface (same set_size + commit pattern as the scale
-  handler). Buffers are allocated per-frame at the current size, so
-  the next configure paints the resized window.
-
-Applies to fuzzel 1.12.0 (see scripts/build-fuzzel.sh).
----
- render.c  | 15 +++++++++++++--
- render.h  |  2 ++
- wayland.c | 27 +++++++++++++++++++++++----
- 3 files changed, 38 insertions(+), 6 deletions(-)
-
 diff --git a/render.c b/render.c
-index 0000000..0000000 100644
+index 2ef4d19..6fdde03 100644
 --- a/render.c
 +++ b/render.c
-@@ -80,6 +80,7 @@ struct render {
+@@ -81,6 +81,7 @@ struct render {
      unsigned border_size;
      unsigned row_height;
      unsigned icon_height;
 +    size_t visible_lines;
-
+ 
      struct {
          uint16_t count;
-@@ -1241,6 +1242,8 @@ render_init(const struct config *conf, mtx_t *icon_lo
+@@ -1241,6 +1242,7 @@ render_init(const struct config *conf, mtx_t *icon_lock)
+         .conf = conf,
          .icon_lock = icon_lock,
      };
-
 +    render->visible_lines = conf->lines;
-+
+ 
      render->pix_background_color = rgba2pixman(render->conf->colors.background);
      render->pix_border_color = rgba2pixman(render->conf->colors.border);
-     render->pix_text_color = rgba2pixman(render->conf->colors.text);
-@@ -1308,6 +1311,12 @@ render_init(const struct config *conf, mtx_t *icon_lo
-     return render;
+@@ -1307,6 +1309,12 @@ render_set_subpixel(struct render *render, enum fcft_subpixel subpixel)
+     render->subpixel = subpixel;
  }
-
+ 
 +void
 +render_set_visible_lines(struct render *render, size_t lines)
 +{
@@ -59,17 +31,16 @@ index 0000000..0000000 100644
  bool
  render_set_font_and_update_sizes(struct render *render, struct fcft_font *font,
                                   struct fcft_font *font_bold,
-@@ -1338,7 +1347,7 @@ render_set_font_and_update_sizes(struct render *rende
-
+@@ -1338,7 +1346,7 @@ render_set_font_and_update_sizes(struct render *render, struct fcft_font *font,
+ 
      const unsigned x_margin = render->conf->pad.x * scale;
      const unsigned y_margin = render->conf->pad.y * scale;
 -    const unsigned inner_pad = render->conf->lines > 0
 +    const unsigned inner_pad = render->visible_lines > 0
          ? render->conf->pad.inner * scale
          : 0;
-
-@@ -1355,7 +1364,7 @@ render_set_font_and_update_sizes(struct render *rende
-         border_size +                        /* Top border */
+ 
+@@ -1355,7 +1363,7 @@ render_set_font_and_update_sizes(struct render *render, struct fcft_font *font,
          y_margin +
          row_height +                         /* The prompt */
          inner_pad +                          /* Padding between prompt and matches */
@@ -77,39 +48,32 @@ index 0000000..0000000 100644
 +        render->visible_lines * row_height + /* Matches */
          y_margin +
          border_size;                         /* Bottom border */
-
+ 
 diff --git a/render.h b/render.h
-index 0000000..0000000 100644
+index d0f842b..3fce9fa 100644
 --- a/render.h
 +++ b/render.h
-@@ -18,6 +18,8 @@ void render_set_subpixel(struct render *render, enum
- bool render_set_font_and_update_sizes(
+@@ -19,6 +19,7 @@ bool render_set_font_and_update_sizes(
      struct render *render, struct fcft_font *font, struct fcft_font *font_bold,
      float scale, float dpi, bool size_font_by_dpi,
      int *new_width, int *new_height);
 +void render_set_visible_lines(struct render *render, size_t lines);
  void render_flush_text_run_cache(struct render *render);
-
+ 
  void render_background(const struct render *render, struct buffer *buf);
 diff --git a/wayland.c b/wayland.c
-index 0000000..0000000 100644
+index 15185ff..8da5eda 100644
 --- a/wayland.c
 +++ b/wayland.c
-@@ -145,6 +145,7 @@ struct wayland {
-     float dpi;
+@@ -140,6 +140,7 @@ struct wayland {
      enum fcft_subpixel subpixel;
      bool font_is_sized_by_dpi;
      bool hide_when_prompt_empty;
 +    bool list_hidden;
-
+ 
      enum { KEEP_RUNNING, EXIT_UPDATE_CACHE, EXIT} status;
      int exit_code;
-@@ -2059,11 +2060,29 @@ commit:
-     render_set_subpixel(wayl->render, wayl->subpixel);
-
-     /* Background + border */
-     render_background(wayl->render, buf);
-
+@@ -2059,13 +2060,28 @@ wayl_refresh(struct wayland *wayl)
      /* Window content */
      matches_lock(wayl->matches);
      render_prompt(wayl->render, buf, wayl->prompt, wayl->matches);
@@ -119,10 +83,11 @@ index 0000000..0000000 100644
 -        } else {
 -            goto skip_list;
 -        }
+-    }
 +    const bool hide_list = wayl->hide_when_prompt_empty &&
 +        prompt_text(wayl->prompt)[0] == '\0';
 +    if (hide_list != wayl->list_hidden) {
-+        /* Pill mode: grow/shrink the window with the list */
++        /* ubuntu-i3-setup pill mode: grow/shrink the window with the list */
 +        wayl->list_hidden = hide_list;
 +        render_set_visible_lines(
 +            wayl->render, hide_list ? 0 : wayl->conf->lines);
@@ -138,10 +103,9 @@ index 0000000..0000000 100644
 +            roundf(wayl->width / wayl->scale),
 +            roundf(wayl->height / wayl->scale));
 +        wl_surface_commit(wayl->surface);
-     }
++    }
 +    if (hide_list)
 +        goto skip_list;
      render_match_list(wayl->render, buf, wayl->prompt, wayl->matches);
  skip_list:
--- 
-2.34.1
+     matches_unlock(wayl->matches);
