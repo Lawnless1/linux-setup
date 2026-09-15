@@ -14,7 +14,7 @@ Private, replicable i3 desktop for Ubuntu 24.04. Symlinked configs + one install
 | `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu (`Ctrl+Alt+Del`), grim/slurp screenshot (`$mod+Shift+s`) |
 | `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals for niri |
 | `config/waybar/` | `~/.config/waybar/` | waybar bar + scripts (niri session; mirrors polybar modules) |
-| `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Wayland launcher (`$mod+d` / `$mod+space`) |
+| `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Spotlight-like omnibar (`$mod+d` / `$mod+space`; needs 1.12 from `scripts/build-fuzzel.sh`) |
 | `config/dunst/dunstrc` | `~/.config/dunst/dunstrc` | modern minimal notifications (shared i3 + niri) |
 | `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu) |
 | `config/polybar/custom/` | `~/.config/polybar/custom/` | single `center` bar + curated scripts (wifi, sound, battery, bluetooth, weather, calendar, powermenu) |
@@ -89,6 +89,8 @@ Ubuntu 24.04's repos, so the binary is compiled from source; everything else
 ./install.sh --with-niri        # links niri/waybar/fuzzel configs + apt Wayland set
 ./scripts/build-niri.sh         # sudo: build deps, rustup, compile niri + xwayland-satellite,
                                 # install to /usr/local, add GDM session entry + systemd units
+./scripts/build-fuzzel.sh       # sudo: build deps, compile fuzzel 1.12 (noble ships
+                                # 1.9.2, which lacks the omnibar keys) to /usr/local
 bash scripts/check.sh           # must end ALL CHECKS PASSED
 # log out, choose "Niri" at the login screen
 ```

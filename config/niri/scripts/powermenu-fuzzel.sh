@@ -5,7 +5,7 @@
 # active local session).
 set -u
 
-FUZZEL="/usr/bin/fuzzel"
+FUZZEL="$(command -v fuzzel)"
 LOGINCTL="/usr/bin/loginctl"
 SYSTEMCTL="/usr/bin/systemctl"
 

@@ -74,6 +74,13 @@ json.loads("\n".join(lines))
 EOF
 [ -f "$HOME/.config/fuzzel/fuzzel.ini" ] && echo "fuzzel config linked" \
     || { echo "MISSING: ~/.config/fuzzel/fuzzel.ini (run ./install.sh)"; FAIL=1; }
+# The omnibar config needs fuzzel >= 1.12 (noble ships 1.9.2, which rejects
+# its keys) — provided by scripts/build-fuzzel.sh in /usr/local/bin.
+if command -v fuzzel >/dev/null 2>&1; then
+    fuzzel --version | head -1 | grep -Eq "version: 1\.(1[2-9]|[2-9][0-9])" \
+        && echo "fuzzel >= 1.12 OK ($(command -v fuzzel))" \
+        || { echo "OLD FUZZEL: $(fuzzel --version | head -1) — run ./scripts/build-fuzzel.sh"; FAIL=1; }
+fi
 [ -f "$HOME/.config/dunst/dunstrc" ] && echo "dunst config linked" \
     || { echo "MISSING: ~/.config/dunst/dunstrc (run ./install.sh)"; FAIL=1; }
 [ -f "$HOME/.config/xdg-desktop-portal/niri-portals.conf" ] && echo "niri portals linked" \

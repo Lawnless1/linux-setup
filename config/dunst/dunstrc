@@ -80,8 +80,9 @@
 
     ### Misc ###
     # fuzzel is the Wayland launcher (dmenu is X11-only); keeps the
-    # dunst context menu working inside the niri session.
-    dmenu = /usr/bin/fuzzel --dmenu -p dunst:
+    # dunst context menu working inside the niri session. Bare name so it
+    # resolves via PATH to the source-built 1.12 (/usr/local/bin wins).
+    dmenu = fuzzel --dmenu -p dunst:
     browser = /usr/bin/xdg-open
     always_run_script = true
     title = Dunst
