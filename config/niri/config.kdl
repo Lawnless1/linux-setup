@@ -12,6 +12,10 @@ environment {
     MOZ_ENABLE_WAYLAND "1"
     ELECTRON_OZONE_PLATFORM_HINT "auto"
     SDL_VIDEODRIVER "wayland"
+    // One cursor theme everywhere: Xwayland/Qt/Electron clients that ignore
+    // the compositor theme read these (real Windows 10 set, size 24).
+    XCURSOR_THEME "wincursors"
+    XCURSOR_SIZE "24"
 }
 
 input {
@@ -89,9 +93,9 @@ hotkey-overlay {
 
 prefer-no-csd
 
-// i3 parity: ~/.Xresources sets `Xcursor.theme: DMZ-White` (size default 24).
+// i3 parity: ~/.Xresources sets `Xcursor.theme: wincursors` (size 24).
 cursor {
-    xcursor-theme "DMZ-White"
+    xcursor-theme "wincursors"
     xcursor-size 24
 }
 

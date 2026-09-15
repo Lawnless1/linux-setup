@@ -24,7 +24,7 @@ Private, replicable i3 desktop for Ubuntu 24.04. Symlinked configs + one install
 | `config/starship.toml` | `~/.config/starship.toml` | prompt theme (opt-in, see shell) |
 | `home/.xprofile` | `~/.xprofile` | X-login loader for pointer speeds |
 | `home/.screenlayout/` | `~/.screenlayout/` | laptop / docked-dual layouts, auto-selected |
-| `home/.Xresources` | `~/.Xresources` | cursor theme |
+| `home/.Xresources` | `~/.Xresources` | cursor theme (`wincursors` via `scripts/install-windows-cursors.sh`) |
 | `shell/` | `~/.bashrc.d/` | prompt, git helpers, guarded tool init (zoxide, micromamba, atuin) |
 | `assets/wallpapers/` | `~/Pictures/wallpaper/` | `dark.jpg` (the active one) |
 | `system/doas.conf.d/` | `/etc/doas.conf.d/` | optional passwordless power actions |
