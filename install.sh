@@ -82,6 +82,7 @@ link_to config/swaylock/config          .config/swaylock/config
 link_to home/.Xresources            .Xresources
 # --- 3b. GNOME Terminal prefs (i3-sensible-terminal default; idempotent) -----------
 if command -v gsettings >/dev/null 2>&1 && command -v gnome-terminal >/dev/null 2>&1; then
+    chmod +x "$REPO_DIR/scripts/gnome-terminal-prefs.sh"  # runs before the chmod section below
     "$REPO_DIR/scripts/gnome-terminal-prefs.sh" || log "(warn: gnome-terminal prefs failed)"
 else
     log "(skip: gnome-terminal prefs — gsettings/gnome-terminal missing)"
