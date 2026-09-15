@@ -102,6 +102,12 @@ cursor {
 // Same naming as the i3 setup: ~/Pictures/Screenshots/.
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
+// Rounded corners on every window (matches the floating waybar pills).
+window-rule {
+    geometry-corner-radius 12
+    clip-to-geometry true
+}
+
 binds {
     // ---- terminal / launcher (i3: $mod+Return, $mod+d, $mod+space) ----
     Mod+Return hotkey-overlay-title="Terminal: foot" { spawn "foot"; }
