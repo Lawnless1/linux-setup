@@ -142,6 +142,7 @@ binds {
 
     // ---- fullscreen (i3: $mod+Up, single press) ----
     Mod+Up { fullscreen-window; }
+    Ctrl+F { fullscreen-window; }
 
     // ---- layouts (i3: $mod+s stacking, $mod+w tabbed, $mod+e toggle split) ----
     // Approximations: niri's tabbed-column display looks like i3 stacking;
