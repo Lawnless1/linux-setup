@@ -13,9 +13,9 @@ environment {
     ELECTRON_OZONE_PLATFORM_HINT "auto"
     SDL_VIDEODRIVER "wayland"
     // One cursor theme everywhere: Xwayland/Qt/Electron clients that ignore
-    // the compositor theme read these (real Windows 10 set, size 24).
+    // the compositor theme read these (real Windows 10 set, size 32).
     XCURSOR_THEME "wincursors"
-    XCURSOR_SIZE "24"
+    XCURSOR_SIZE "32"
 }
 
 input {
@@ -93,10 +93,10 @@ hotkey-overlay {
 
 prefer-no-csd
 
-// i3 parity: ~/.Xresources sets `Xcursor.theme: wincursors` (size 24).
+// i3 parity: ~/.Xresources sets `Xcursor.theme: wincursors` (size 32).
 cursor {
     xcursor-theme "wincursors"
-    xcursor-size 24
+    xcursor-size 32
 }
 
 // Same naming as the i3 setup: ~/Pictures/Screenshots/.

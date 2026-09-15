@@ -65,8 +65,8 @@ log "wrote ~/.icons/default fallback"
 # Native Wayland GTK apps read the settings portal -> gsettings.
 if command -v gsettings >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.interface cursor-theme "$THEME" || true
-    gsettings set org.gnome.desktop.interface cursor-size 24 || true
-    log "gsettings cursor-theme=$THEME size=24"
+    gsettings set org.gnome.desktop.interface cursor-size 32 || true
+    log "gsettings cursor-theme=$THEME size=32"
 else
     log "(skip: gsettings missing)"
 fi
