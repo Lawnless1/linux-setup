@@ -51,10 +51,10 @@ layout {
 
     default-column-width { proportion 0.5; }
 
-    // i3 parity: `default_border pixel 3`, focused border blue.
+    // i3 parity: thin pastel border (i3 `client.focused` border was #9BF6FF).
     focus-ring {
-        width 3
-        active-color "#0000FF"
+        width 2
+        active-color "#9BF6FF"
         inactive-color "#000000"
     }
 
