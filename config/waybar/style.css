@@ -16,6 +16,8 @@ window#waybar {
 
 #custom-niri-workspaces,
 #clock,
+#cpu,
+#memory,
 #status {
     background: rgba(1, 11, 23, 0.92);
     border-radius: 14px;

@@ -1,8 +1,8 @@
 // Waybar config — ubuntu-i3-setup (niri session).
-// Minimal 3-pill bar (see style.css): left = workspaces, center = clock,
-// right = essential status (network, sound, battery, powermenu).
-// CPU/memory/weather/bluetooth/tray dropped from the bar (kept in style.css
-// selectors as no-ops in case a module is re-added later).
+// Minimal 3-pill bar (see style.css): left = workspaces + cpu/mem,
+// center = clock, right = essential status (network, sound, battery, powermenu).
+// Weather/bluetooth/tray dropped from the bar (kept out of the config; re-add
+// the module name to re-enable).
 //
 // NOTE: Ubuntu 24.04 ships waybar 0.9.24, which has no `niri/workspaces`
 // module, so workspaces are drawn by custom/niri-workspaces polling
@@ -18,7 +18,7 @@
     "margin-right": 4,
     "spacing": 6,
 
-    "modules-left": ["custom/niri-workspaces"],
+    "modules-left": ["custom/niri-workspaces", "cpu", "memory"],
     "modules-center": ["clock"],
     "modules-right": ["group/status"],
 
@@ -27,6 +27,14 @@
         "return-type": "json",
         "interval": 1,
         "tooltip": true
+    },
+    "cpu": {
+        "interval": 10,
+        "format": " {usage}%"
+    },
+    "memory": {
+        "interval": 10,
+        "format": " {}%"
     },
     "clock": {
         "format": " {:%d - %I:%M %p}",
@@ -60,9 +68,9 @@
             "warning": 30,
             "critical": 15
         },
-        "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",
-        "format-plugged": " {capacity}%",
+        "format": "{icon}  {capacity}%",
+        "format-charging": "  {capacity}%",
+        "format-plugged": "  {capacity}%",
         "format-icons": ["", "", "", "", ""]
     },
     "custom/powermenu": {
