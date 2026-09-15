@@ -129,7 +129,7 @@ Identical unless noted:
 
 Niri-native extras: `$mod+O` overview, `$mod+Shift+/` hotkey overlay,
 `Super+Alt+L` lock, `Print`/`Ctrl+Print`/`Alt+Print` screenshots,
-`$mod+F` file search (fd + fuzzel dmenu, opens via xdg-open),
+`$mod+F` file search (apps rank above folders above files; opens via entry/xdg-open),
 auto-lock after 5 min idle (swayidle+swaylock).
 
 Waybar mirrors the polybar modules (workspaces/cpu/mem left, clock center,
