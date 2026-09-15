@@ -21,11 +21,11 @@ text=""
 i=1
 while [ "$i" -le 10 ]; do
     if [ "$i" -eq "$focused" ]; then
-        text="$text<b><span foreground=\"#11DAE4\">$i</span></b> "
+        text="$text<b><span foreground=\"#11DAE4\">$i</span></b>  "
     elif printf '%s' " $active_list " | grep -q " $i "; then
-        text="$text<b>$i</b> "
+        text="$text<b>$i</b>  "
     else
-        text="$text<span foreground=\"#465159\">$i</span> "
+        text="$text<span foreground=\"#465159\">$i</span>  "
     fi
     i=$((i + 1))
 done

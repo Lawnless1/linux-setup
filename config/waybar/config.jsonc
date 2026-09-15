@@ -12,11 +12,11 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 30,
+    "height": 38,
     "margin-top": 0,
     "margin-left": 4,
     "margin-right": 4,
-    "spacing": 0,
+    "spacing": 6,
 
     "modules-left": ["custom/niri-workspaces"],
     "modules-center": ["clock"],
