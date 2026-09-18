@@ -9,8 +9,17 @@ FUZZEL="$(command -v fuzzel)"
 LOGINCTL="/usr/bin/loginctl"
 SYSTEMCTL="/usr/bin/systemctl"
 
+# Dmenu theme with the option list visible from the start (the omnibar
+# fuzzel.ini hides results until first keystroke; see fuzzel-dmenu.ini).
+DMENU_INI="$HOME/.config/fuzzel/fuzzel-dmenu.ini"
+if [ -f "$DMENU_INI" ]; then
+    MENU=( "$FUZZEL" --config "$DMENU_INI" --dmenu )
+else
+    MENU=( "$FUZZEL" --dmenu )
+fi
+
 choice=$(printf '%s\n' "Lock" "Logout" "Suspend" "Reboot" "Poweroff" \
-    | "$FUZZEL" --dmenu --prompt "Power: ")
+    | "${MENU[@]}" --prompt "Power: ")
 
 run_power() {
     if command -v doas >/dev/null 2>&1 && doas -n true 2>/dev/null; then
