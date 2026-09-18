@@ -57,6 +57,7 @@ window#waybar {
 }
 
 #network,
+#bluetooth,
 #pulseaudio,
 #battery,
 #custom-powermenu {
@@ -76,7 +77,9 @@ window#waybar {
     color: #E7BF01;
 }
 
-#pulseaudio.muted {
+#pulseaudio.muted,
+#bluetooth.off,
+#bluetooth.disabled {
     color: #707880;
 }
 

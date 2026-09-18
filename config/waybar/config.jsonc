@@ -1,8 +1,8 @@
 // Waybar config — ubuntu-i3-setup (niri session).
 // Minimal 3-pill bar (see style.css): left = workspaces + cpu/mem,
-// center = clock, right = essential status (network, sound, battery, powermenu).
-// Weather/bluetooth/tray dropped from the bar (kept out of the config; re-add
-// the module name to re-enable).
+// center = clock, right = essential status (network, bluetooth, sound,
+// battery, powermenu). Weather/tray dropped from the bar (kept out of the
+// config; re-add the module name to re-enable).
 //
 // NOTE: Ubuntu 24.04 ships waybar 0.9.24, which has no `niri/workspaces`
 // module, so workspaces are drawn by custom/niri-workspaces polling
@@ -49,7 +49,7 @@
     },
     "group/status": {
         "orientation": "horizontal",
-        "modules": ["network", "pulseaudio", "battery", "custom/powermenu"]
+        "modules": ["network", "bluetooth", "pulseaudio", "battery", "custom/powermenu"]
     },
     "network": {
         "interval": 5,
@@ -66,6 +66,19 @@
         "on-click": "pactl set-sink-mute @DEFAULT_SINK@ toggle",
         "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
         "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%"
+    },
+    "bluetooth": {
+        "format": " {status}",
+        "format-disabled": " off",
+        "format-off": " off",
+        "format-on": " on",
+        "format-connected": " {num_connections}",
+        "format-no-controller": " --",
+        "tooltip-format": "{status}",
+        "tooltip-format-connected": "{device_enumerate}",
+        "tooltip-format-enumerate-connected": "{device_alias}",
+        "on-click": "$HOME/.config/waybar/scripts/bluetooth-fuzzel.sh",
+        "on-click-right": "$HOME/.config/waybar/scripts/bluetooth-fuzzel.sh --toggle-power"
     },
     "battery": {
         "interval": 30,
