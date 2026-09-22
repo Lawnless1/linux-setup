@@ -157,8 +157,10 @@ binds {
     // ---- clipboard history (Windows Win+V analog; no i3 counterpart) ----
     // Walker + elephant clipboard provider (text + images, pin/search;
     // requires wl-clipboard + imagemagick, provider built by
-    // scripts/build-walker.sh). Enter copies back to clipboard.
-    Mod+V hotkey-overlay-title="Clipboard history: walker" { spawn "walker" "-m" "clipboard"; }
+    // scripts/build-walker.sh). Minimal clipboard theme (-t), no
+    // quick-activation chips (-H), no keybind hint bar (-N).
+    // Enter copies back to clipboard.
+    Mod+V hotkey-overlay-title="Clipboard history: walker" { spawn "walker" "-m" "clipboard" "-t" "clipboard" "-H" "-N"; }
 
     // ---- fullscreen (i3: $mod+Up, single press) ----
     Mod+Up { fullscreen-window; }

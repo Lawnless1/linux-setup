@@ -37,6 +37,7 @@ anchor_right = true
 
 [placeholders]
 "default" = { input = "Search apps and files", list = "No Results" } # placeholders for input and empty list, key is the providers name, so f.e. "desktopapplications" or "menus:other"
+"clipboard" = { input = "Clipboard history", list = "Nothing copied yet" }
 
 [keybinds]
 close = ["Escape"]
@@ -67,6 +68,7 @@ max_results = 15 # global max results (compact pill list)
 
 [providers.sets] # define your own defaults/empty sets of providers
 [providers.max_results_provider] # define max results per provider in here
+clipboard = 8 # short minimal popup; scrolls past 8
 
 [[providers.prefixes]]
 prefix = ";"

@@ -1,0 +1,134 @@
+/* Walker "clipboard" theme — ubuntu-i3-setup (niri Super+V).
+ * Minimal sibling of the pill theme: same dark-navy palette, but tighter
+ * rows, smaller type, no keybind bar, quick-activation badges hidden
+ * (also suppressed with walker's -H flag at launch). */
+@define-color window_bg_color #010b17;
+@define-color accent_bg_color #1e2e44;
+@define-color theme_fg_color #e1e2e6;
+@define-color match_color #9bf6ff;
+@define-color muted_color #707880;
+@define-color frame_color #c5c8c6;
+@define-color error_bg_color #900000;
+@define-color error_fg_color #ffffff;
+
+* {
+  all: unset;
+  font-family: "Inter Nerd Font", "Inter", sans-serif;
+  font-size: 13px;
+}
+
+popover {
+  background: @window_bg_color;
+  border: 1px solid @frame_color;
+  border-radius: 14px;
+  padding: 6px;
+}
+
+.normal-icons {
+  -gtk-icon-size: 16px;
+}
+
+.large-icons {
+  -gtk-icon-size: 28px;
+}
+
+scrollbar {
+  opacity: 0;
+}
+
+.box-wrapper {
+  box-shadow:
+    0 19px 38px rgba(0, 0, 0, 0.35),
+    0 15px 12px rgba(0, 0, 0, 0.22);
+  background: alpha(@window_bg_color, 0.96);
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid @frame_color;
+}
+
+.preview-box,
+.elephant-hint,
+.placeholder {
+  color: @muted_color;
+  font-size: 12px;
+}
+
+.search-container {
+  border-radius: 8px;
+}
+
+.input placeholder {
+  opacity: 0.5;
+  color: @muted_color;
+}
+
+.input selection {
+  background: @accent_bg_color;
+}
+
+.input {
+  caret-color: @theme_fg_color;
+  background: transparent;
+  padding: 6px 2px;
+  color: @theme_fg_color;
+  font-size: 14px;
+}
+
+.list {
+  color: @theme_fg_color;
+}
+
+.item-box {
+  border-radius: 8px;
+  padding: 5px 10px;
+}
+
+/* Belt and suspenders with the -H launch flag: no quick-activation chips. */
+.item-quick-activation {
+  opacity: 0;
+  font-size: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* child:hover .item-box, */
+child:selected .item-box,
+row:selected .item-box {
+  background: @accent_bg_color;
+}
+
+.item-text {
+  color: @theme_fg_color;
+}
+
+.item-subtext {
+  font-size: 11px;
+  opacity: 0.4;
+  color: @muted_color;
+}
+
+.item-image-text {
+  font-size: 22px;
+}
+
+.preview {
+  border: 1px solid alpha(@frame_color, 0.25);
+  border-radius: 8px;
+  color: @theme_fg_color;
+}
+
+/* No keybind bar in this layout, but hide the classes defensively. */
+.keybinds,
+.global-keybinds,
+.item-keybinds {
+  opacity: 0;
+  font-size: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.error {
+  padding: 6px;
+  background: @error_bg_color;
+  color: @error_fg_color;
+}
