@@ -55,7 +55,7 @@ else
 fi
 
 echo "--- niri / waybar (Wayland session; soft checks until installed) ---"
-for b in niri waybar fuzzel swaylock swayidle swaybg grim slurp wl-copy; do
+for b in niri waybar fuzzel swaylock swayidle swaybg grim slurp wl-copy convert; do
     command -v "$b" >/dev/null 2>&1 || echo "(info: $b not installed yet — ./install.sh --with-niri + scripts/build-niri.sh)"
 done
 if command -v niri >/dev/null 2>&1; then
@@ -88,7 +88,7 @@ fi
 for b in elephant walker; do
     command -v "$b" >/dev/null 2>&1 || echo "(info: $b not installed yet — ./scripts/build-walker.sh)"
 done
-for p in desktopapplications files; do
+for p in desktopapplications files clipboard; do
     [ -f "$HOME/.config/elephant/providers/$p.so" ] && echo "elephant provider $p OK" \
         || echo "(info: elephant provider $p missing — ./scripts/build-walker.sh)"
 done

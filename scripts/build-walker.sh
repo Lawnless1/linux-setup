@@ -32,7 +32,7 @@ ELEPHANT_TAG="${ELEPHANT_TAG:-v2.22.0}"
 WALKER_REPO="https://github.com/abenz1267/walker.git"
 WALKER_TAG="${WALKER_TAG:-v2.17.0}"
 # Providers compiled as .so plugins (must match what config enables).
-ELEPHANT_PROVIDERS="${ELEPHANT_PROVIDERS:-desktopapplications files}"
+ELEPHANT_PROVIDERS="${ELEPHANT_PROVIDERS:-desktopapplications files clipboard}"
 
 log() { printf '==> %s\n' "$*"; }
 

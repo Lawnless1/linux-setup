@@ -149,9 +149,16 @@ binds {
 
     // ---- join/split columns (i3: $mod+h split h, $mod+v split v) ----
     // niri has no h/v splits; consuming/expelling a column is the equivalent
-    // of joining/splitting the horizontal tiling.
+    // of joining/splitting the horizontal tiling. Only the left direction
+    // is bound: Mod+V is the Windows-style clipboard history (below), so
+    // the expel-right bind was dropped (per user choice, 2026-09-22).
     Mod+H hotkey-overlay-title="Join/split column to the left" { consume-or-expel-window-left; }
-    Mod+V hotkey-overlay-title="Join/split column to the right" { consume-or-expel-window-right; }
+
+    // ---- clipboard history (Windows Win+V analog; no i3 counterpart) ----
+    // Walker + elephant clipboard provider (text + images, pin/search;
+    // requires wl-clipboard + imagemagick, provider built by
+    // scripts/build-walker.sh). Enter copies back to clipboard.
+    Mod+V hotkey-overlay-title="Clipboard history: walker" { spawn "walker" "-m" "clipboard"; }
 
     // ---- fullscreen (i3: $mod+Up, single press) ----
     Mod+Up { fullscreen-window; }

@@ -115,7 +115,7 @@ Identical unless noted:
 | `$mod+d` dmenu / `$mod+space` rofi | `$mod+d` → **fuzzel** app grid; `$mod+space` → **walker** omnibar (apps + files, real icons); `$mod+F` → fuzzel text search | dmenu/rofi are X11-only |
 | `$mod+j/k/l/;` + arrows focus | same | incl. i3 quirk: `$mod+Up` is fullscreen, **not** focus-up |
 | `$mod+Shift+j/k/l/;` + arrows move | same | `move-column-*` / `move-window-*` |
-| `$mod+h` / `$mod+v` split | same keys → consume/expel column | closest analog to split h/v |
+| `$mod+h` / `$mod+v` split | `$mod+h` → consume/expel column; `$mod+v` → **clipboard history** (walker) | split-v bind yielded to Win+V parity; expel-right dropped |
 | `$mod+Up` fullscreen | same, plus `Ctrl+F` | `fullscreen-window` |
 | `$mod+s` stacking / `$mod+w` tabbed / `$mod+e` toggle-split | same keys → tabbed display / maximize-column / center-column | approximations, niri has no i3 layouts |
 | `$mod+Shift+space` floating | same | `toggle-window-floating` |
@@ -132,6 +132,9 @@ Identical unless noted:
 
 Niri-native extras: `$mod+O` overview, `$mod+Shift+/` hotkey overlay,
 `Super+Alt+L` lock, `Print`/`Ctrl+Print`/`Alt+Print` screenshots,
+`$mod+V` clipboard history (walker + elephant provider: text + images,
+pin with `Ctrl+p`, clear with `Ctrl+Shift+d`; `:` prefix inside
+`$mod+space` queries it too),
 `$mod+space`/`$mod+F` unified search (apps rank above folders above files; opens via entry/xdg-open),
 auto-lock after 5 min idle (swayidle+swaylock).
 

@@ -18,6 +18,8 @@ swaybg
 grim
 slurp
 wl-clipboard
+# ImageMagick for the elephant clipboard provider (image history thumbnails).
+imagemagick
 
 # --- power menu UI ---
 wlogout
