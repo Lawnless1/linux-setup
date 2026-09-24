@@ -57,6 +57,9 @@ fi
 if command -v micromamba >/dev/null 2>&1; then
     eval "$(micromamba shell hook --shell bash)"
 fi
+if command -v fzf >/dev/null 2>&1; then
+    eval "$(fzf --bash)"  # Ctrl+R history, Ctrl+T files, Alt+C dirs
+fi
 # Uncomment to prefer starship over the fallback PS1 above:
 # if command -v starship >/dev/null 2>&1; then
 #     eval "$(starship init bash)"
