@@ -163,8 +163,8 @@ binds {
     Mod+V hotkey-overlay-title="Clipboard history: walker" { spawn "walker" "-m" "clipboard" "-t" "clipboard" "-H" "-N"; }
 
     // ---- fullscreen (i3: $mod+Up, single press) ----
+    // NOTE: Ctrl+F intentionally unbound — it belongs to apps (find).
     Mod+Up { fullscreen-window; }
-    Ctrl+F { fullscreen-window; }
 
     // ---- layouts (i3: $mod+s stacking, $mod+w tabbed, $mod+e toggle split) ----
     // Approximations: niri's tabbed-column display looks like i3 stacking;

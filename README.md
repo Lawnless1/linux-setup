@@ -116,7 +116,7 @@ Identical unless noted:
 | `$mod+j/k/l/;` + arrows focus | same | incl. i3 quirk: `$mod+Up` is fullscreen, **not** focus-up |
 | `$mod+Shift+j/k/l/;` + arrows move | same | `move-column-*` / `move-window-*` |
 | `$mod+h` / `$mod+v` split | `$mod+h` → consume/expel column; `$mod+v` → **clipboard history** (walker) | split-v bind yielded to Win+V parity; expel-right dropped |
-| `$mod+Up` fullscreen | same, plus `Ctrl+F` | `fullscreen-window` |
+| `$mod+Up` fullscreen | same (`Ctrl+F` left for apps/find) | `fullscreen-window` |
 | `$mod+s` stacking / `$mod+w` tabbed / `$mod+e` toggle-split | same keys → tabbed display / maximize-column / center-column | approximations, niri has no i3 layouts |
 | `$mod+Shift+space` floating | same | `toggle-window-floating` |
 | `$mod+1..0` / `$mod+Shift+1..0` workspaces | same | workspaces 1..10 pre-created |
