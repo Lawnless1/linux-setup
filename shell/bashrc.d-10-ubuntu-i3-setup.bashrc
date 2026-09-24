@@ -57,9 +57,6 @@ fi
 if command -v micromamba >/dev/null 2>&1; then
     eval "$(micromamba shell hook --shell bash)"
 fi
-if command -v atuin >/dev/null 2>&1; then
-    eval "$(atuin init bash --disable-up-arrow)"
-fi
 # Uncomment to prefer starship over the fallback PS1 above:
 # if command -v starship >/dev/null 2>&1; then
 #     eval "$(starship init bash)"

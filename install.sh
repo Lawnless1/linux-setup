@@ -117,7 +117,7 @@ fi
 # --- 5. shell additions ---------------------------------------------------------
 mkdir -p "$HOME/.bashrc.d"
 link_to shell/bashrc.d-10-ubuntu-i3-setup.bashrc .bashrc.d/10-ubuntu-i3-setup.bashrc
-HOOK_MARKER="bashrc.d/10-ubuntu-i3-setup"
+HOOK_MARKER="ubuntu-i3-setup (managed by install.sh"
 if ! grep -q "$HOOK_MARKER" "$HOME/.bashrc" 2>/dev/null; then
     touch "$HOME/.bashrc"
     mkdir -p "$BACKUP_DIR"
