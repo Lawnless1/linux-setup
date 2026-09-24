@@ -182,6 +182,16 @@ else
     log "skipping niri apt set (re-run with --with-niri; then scripts/build-niri.sh)"
 fi
 
+# --- 8c. niri owns waybar: mask distro user unit so only launch.sh spawns it ---
+# waybar.service is globally enabled on Ubuntu; left enabled it stacks a second
+# bar under the one niri spawns via config/waybar/launch.sh.
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl --user mask waybar.service >/dev/null 2>&1 || log "(warn: could not mask waybar.service)"
+    systemctl --user disable --now waybar.service >/dev/null 2>&1 || true
+else
+    log "(skip: mask waybar.service — systemctl missing)"
+fi
+
 # --- 9. validate ----------------------------------------------------------------------
 log "validating..."
 bash -n "$REPO_DIR/scripts/tune-input.sh"
