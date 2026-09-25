@@ -4,7 +4,7 @@
 # Edit the two numbers below to taste, then run: scripts/tune-input.sh
 
 # Mouse: comfortable desktop speed
-POINTER_MOUSE_SPEED="${POINTER_MOUSE_SPEED:-0.6}"
+POINTER_MOUSE_SPEED="${POINTER_MOUSE_SPEED:-0.5}"
 # Touchpad: slightly calmer than the mouse
 POINTER_TOUCHPAD_SPEED="${POINTER_TOUCHPAD_SPEED:-0.3}"
 
