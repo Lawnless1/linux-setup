@@ -113,7 +113,9 @@ window-rule {
 
 binds {
     // ---- terminal / launcher (i3: $mod+Return, $mod+d, $mod+space) ----
-    Mod+Return hotkey-overlay-title="Terminal: foot" { spawn "foot"; }
+    // foot runs `tmux new-session`: every window gets its own fresh session
+    // (separate sessions, per user choice 2026-09-25 — not one shared session).
+    Mod+Return hotkey-overlay-title="Terminal: foot + tmux" { spawn "foot" "tmux" "new-session"; }
     // i3 `$mod+d` ran dmenu; dmenu is X11-only so fuzzel takes the launcher bind.
     Mod+D hotkey-overlay-title="Launcher: fuzzel" { spawn "fuzzel"; }
     // i3 `$mod+space` ran `rofi -show drun`; unified Spotlight search instead:

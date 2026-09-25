@@ -27,8 +27,10 @@ floating_modifier $mod
 # Keybindings
 # ==============================
 
-# Terminal
-bindsym $mod+Return exec i3-sensible-terminal
+# Terminal (fresh tmux session per window, mirrors niri's foot bind).
+# gnome-terminal 3.52 dropped -e, so call it directly with `--` instead of
+# going through i3-sensible-terminal.
+bindsym $mod+Return exec --no-startup-id gnome-terminal -- tmux new-session
 
 # Kill window
 bindsym Ctrl+Delete kill

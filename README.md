@@ -69,7 +69,7 @@ Pointer speeds persist in `config/input/pointer.sh` (`POINTER_MOUSE_SPEED`,
 
 | Keys | Action |
 |---|---|
-| `$mod+Return` | terminal |
+| `$mod+Return` | terminal (fresh tmux session per window) |
 | `$mod+d` / `$mod+space` | dmenu / rofi drun |
 | `$mod+Shift+s` | flameshot screenshot |
 | `$mod+j/k/l/;` + arrows | focus / move with Shift |
@@ -110,7 +110,7 @@ Identical unless noted:
 
 | i3 bind | niri bind | Notes |
 |---|---|---|
-| `$mod+Return` terminal | same key → **foot** | Wayland-native instead of `i3-sensible-terminal` |
+| `$mod+Return` terminal | same key → **foot** running `tmux new-session` | Wayland-native instead of `gnome-terminal`; fresh tmux session per window |
 | `Ctrl+Delete` kill | same | `close-window` |
 | `$mod+d` dmenu / `$mod+space` rofi | `$mod+d` → **fuzzel** app grid; `$mod+space` → **walker** omnibar (apps + files, real icons); `$mod+F` → fuzzel text search | dmenu/rofi are X11-only |
 | `$mod+j/k/l/;` + arrows focus | same | incl. i3 quirk: `$mod+Up` is fullscreen, **not** focus-up |
