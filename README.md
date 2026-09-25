@@ -114,7 +114,7 @@ Identical unless noted:
 | `Ctrl+Delete` kill | same | `close-window` |
 | `$mod+d` dmenu / `$mod+space` rofi | `$mod+d` → **fuzzel** app grid; `$mod+space` → **walker** omnibar (apps + files, real icons); `$mod+F` → fuzzel text search | dmenu/rofi are X11-only |
 | `$mod+j/k/l/;` + arrows focus | same | incl. i3 quirk: `$mod+Up` is fullscreen, **not** focus-up |
-| `$mod+Shift+j/k/l/;` + arrows move | same | `move-column-*` / `move-window-*` |
+| `$mod+Shift+j/k/l/;` + arrows move | same (left/right use `move-column-*-or-to-monitor-*`) | left/right reorder on-screen, jump screens at edge |
 | `$mod+h` / `$mod+v` split | `$mod+h` → consume/expel column; `$mod+v` → **clipboard history** (walker) | split-v bind yielded to Win+V parity; expel-right dropped |
 | `$mod+Up` fullscreen | same (`Ctrl+F` left for apps/find) | `fullscreen-window` |
 | `$mod+s` stacking / `$mod+w` tabbed / `$mod+e` toggle-split | same keys → tabbed display / maximize-column / center-column | approximations, niri has no i3 layouts |

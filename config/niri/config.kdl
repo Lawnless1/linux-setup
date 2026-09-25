@@ -138,14 +138,17 @@ binds {
     Mod+Right { focus-column-right; }
 
     // ---- move windows (i3: $mod+Shift+j/k/l/; + arrows) ----
-    Mod+Shift+J { move-column-left; }
+    // Left/right use the `-or-to-monitor-` variants so Win+Shift+Left/Right
+    // reorders within the screen, then jumps to the adjacent screen at the
+    // edge (Windows-style move-window-across-monitors, 3-screen setup).
+    Mod+Shift+J { move-column-left-or-to-monitor-left; }
     Mod+Shift+K { move-window-down; }
     Mod+Shift+L { move-window-up; }
-    Mod+Shift+Semicolon { move-column-right; }
-    Mod+Shift+Left { move-column-left; }
+    Mod+Shift+Semicolon { move-column-right-or-to-monitor-right; }
+    Mod+Shift+Left { move-column-left-or-to-monitor-left; }
     Mod+Shift+Down { move-window-down; }
     Mod+Shift+Up { move-window-up; }
-    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+Right { move-column-right-or-to-monitor-right; }
 
     // ---- join/split columns (i3: $mod+h split h, $mod+v split v) ----
     // niri has no h/v splits; consuming/expelling a column is the equivalent
