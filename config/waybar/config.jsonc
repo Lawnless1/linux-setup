@@ -58,7 +58,9 @@
         "format-linked": "{ifname} (no IP)",
         "format-disconnected": "󰖪 offline",
         "tooltip-format-wifi": "{essid} ({signalStrength}%)\n{ipaddr}",
-        "tooltip-format-ethernet": "{ifname}\n{ipaddr}"
+        "tooltip-format-ethernet": "{ifname}\n{ipaddr}",
+        "on-click": "$HOME/.config/waybar/scripts/wifi-fuzzel.sh",
+        "on-click-right": "$HOME/.config/waybar/scripts/wifi-fuzzel.sh --toggle-wifi"
     },
     "pulseaudio": {
         "format": " {volume}%",

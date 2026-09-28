@@ -139,9 +139,12 @@ pin with `Ctrl+p`, clear with `Ctrl+Shift+d`; `:` prefix inside
 auto-lock after 5 min idle (swayidle+swaylock).
 
 Waybar mirrors the polybar modules (workspaces/cpu/mem left, clock center,
-weather/bluetooth/wifi/sound/battery/tray/powermenu right). Two noble
+network/bluetooth/sound/battery/powermenu right). Two noble
 limitations, both documented in `config/waybar/config.jsonc`: waybar 0.9.24
 has no `niri/workspaces`, so a `custom/niri-workspaces` script polls
 `niri msg` (flip to the native module after upgrading waybar ≥ 0.12);
-rofi click-menus (wifi/bluetooth/mixer/calendar) have no Wayland port, so
-clicks are plain toggles/mute, and scroll on sound changes volume.
+rofi click-menus (mixer/calendar) have no Wayland port, so those
+clicks are plain mute toggles, and scroll on sound changes volume.
+Wifi and bluetooth clicks open fuzzel menus instead
+(`config/waybar/scripts/wifi-fuzzel.sh` — switch/join hidden/forget/
+rescan/toggle plus nmtui fallback; `bluetooth-fuzzel.sh` — connect/pair).
