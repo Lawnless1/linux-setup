@@ -244,9 +244,13 @@ fi
 # Kick off a background rescan so the list is fresh; show cached results now.
 nmcli device wifi rescan >/dev/null 2>&1 || true
 
-# Build AP menu: "● ssid 74% 🔒" (active) / "○ ssid 60%" rows, deduped by
-# SSID keeping the strongest signal. terse ':' inside SSIDs is backslash-
-# escaped by nmcli, so parse with a placeholder first.
+# Build AP menu rows: "● <ssid>  ▂▄▆█ " (active) / "○ <ssid>  ▂▄·· "
+# (other). SSIDs are left-aligned and padded so the signal meter + lock
+# form a tidy right-hand column; the meter replaces raw percentages and
+# the lock is the minimal Nerd-Font glyph (same family as the waybar
+# icons), not emoji. Deduped by SSID keeping the strongest signal.
+# terse ':' inside SSIDs is backslash-escaped by nmcli, so parse with a
+# placeholder first.
 tmpmap=$(mktemp)
 tmpmenu=$(mktemp)
 trap 'rm -f "$tmpmap" "$tmpmenu"' EXIT
@@ -274,83 +278,110 @@ while IFS= read -r line; do
     [ "$active" = "*" ] && seen_active["$ssid"]=1
 done < <(nmcli -t -f IN-USE,SSID,SIGNAL,SECURITY device wifi list --rescan no 2>/dev/null)
 
+# Minimal lock marker: Font Awesome lock (U+F023) via ANSI-C quoting so
+# the byte sequence survives any transport encoding. It ships in
+# "Inter Nerd Font", the same family the bar icons use.
+LOCK=$'\uf023'
+# Signal meter (fixed 4 cells wide so the lock column stays aligned).
+sig_bars() {
+    local s="$1"
+    if   [ "$s" -ge 76 ]; then printf '▂▄▆█'
+    elif [ "$s" -ge 51 ]; then printf '▂▄▆·'
+    elif [ "$s" -ge 26 ]; then printf '▂▄··'
+    elif [ "$s" -ge 1 ];  then printf '▂···'
+    else printf '····'
+    fi
+}
+
 menu=""
 cur=""
+maxlen=0
+for ssid in "${!seen_sig[@]}"; do
+    ((${#ssid} > maxlen)) && maxlen=${#ssid}
+done
+[ "$maxlen" -gt 28 ] && maxlen=28
 for ssid in "${!seen_sig[@]}"; do
     sig="${seen_sig[$ssid]}"
     sec="${seen_sec[$ssid]}"
     lock=""
     case "$sec" in
-        *WPA*|*WEP*|*802.1X*|*EAP*|*SAE*|*OWE*) lock=" 🔒" ;;
+        *WPA*|*WEP*|*802.1X*|*EAP*|*SAE*|*OWE*) lock=" $LOCK" ;;
     esac
     printf '%s\t%s\n' "$ssid" "$sec" >>"$tmpmap"
+    # Display-only copy: no tabs (column separator), truncated to the
+    # shared width. Safe: fuzzel returns the full SSID via --accept-nth.
+    ssid_disp="${ssid//$'\t'/ }"
+    ssid_disp="${ssid_disp:0:$maxlen}"
+    bars="$(sig_bars "$sig")"
     if [ -n "${seen_active[$ssid]:-}" ]; then
         cur="$ssid"
-        printf '%d\t● %s %s%%%s\n' "$sig" "$ssid" "$sig" "$lock" >>"$tmpmenu"
+        # shellcheck disable=SC2059
+        printf "%d\t● %-${maxlen}s  %s%s\t%s\n" \
+            "$sig" "$ssid_disp" "$bars" "$lock" "$ssid" >>"$tmpmenu"
     else
-        printf '%d\t○ %s %s%%%s\n' "$sig" "$ssid" "$sig" "$lock" >>"$tmpmenu"
+        # shellcheck disable=SC2059
+        printf "%d\t○ %-${maxlen}s  %s%s\t%s\n" \
+            "$sig" "$ssid_disp" "$bars" "$lock" "$ssid" >>"$tmpmenu"
     fi
 done
 # Strongest signal first (numeric prefix; SSIDs may contain spaces).
+# Output lines are "DISPLAY<TAB>SSID"; actions below reuse the same shape
+# ("TEXT<TAB>TEXT") so one fuzzel call serves both with --accept-nth 2.
 if [ -s "$tmpmenu" ]; then
     menu="$(sort -rn "$tmpmenu" | cut -f2-)"
     menu="$menu
 "
 fi
 
-actions="＋ Join hidden network…
-✓ Saved connections…
-⛔ Disconnect${cur:+ ($cur)}
-🗑 Forget saved network…
-ℹ Details${cur:+ ($cur)}
-🔄 Rescan
-✎ Edit connections (nmtui)…
-⚙ Advanced editor…
-📡 Wi-Fi: ON — turn off"
+actions="＋ Join hidden network…	＋ Join hidden network…
+✓ Saved connections…	✓ Saved connections…
+⛔ Disconnect${cur:+ ($cur)}	⛔ Disconnect${cur:+ ($cur)}
+🗑 Forget saved network…	🗑 Forget saved network…
+ℹ Details${cur:+ ($cur)}	ℹ Details${cur:+ ($cur)}
+🔄 Rescan	🔄 Rescan
+✎ Edit connections (nmtui)…	✎ Edit connections (nmtui)…
+⚙ Advanced editor…	⚙ Advanced editor…
+📡 Wi-Fi: ON — turn off	📡 Wi-Fi: ON — turn off"
 menu="${menu}${actions}"
 
 prompt="Wi-Fi${cur:+: $cur}: "
-choice=$(printf '%s' "$menu" | "${MENU[@]}" --prompt "$prompt") || exit 0
+choice=$(printf '%s' "$menu" | "${MENU[@]}" --with-nth 1 --accept-nth 2 --prompt "$prompt") || exit 0
 [ -n "${choice:-}" ] || exit 0
 
 case "$choice" in
-    "＋ Join"*)
+    "＋ Join hidden network…")
         add_hidden
         ;;
-    "✓ Saved"*)
+    "✓ Saved connections…")
         saved_menu
         ;;
     "⛔ Disconnect"*)
         disconnect_current
         ;;
-    "🗑 Forget"*)
+    "🗑 Forget saved network…")
         forget_menu
         ;;
     "ℹ Details"*)
         show_details
         ;;
-    "🔄 Rescan"*)
+    "🔄 Rescan")
         notify "Scanning..."
         nmcli device wifi rescan >/dev/null 2>&1 || true
         sleep 3
         exec "$0"
         ;;
-    "✎ Edit"*)
+    "✎ Edit connections (nmtui)…")
         open_nmtui
         ;;
-    "⚙ Advanced"*)
+    "⚙ Advanced editor…")
         open_adv_editor
         ;;
-    "📡 Wi-Fi"*)
+    "📡 Wi-Fi: ON — turn off")
         toggle_wifi
         ;;
-    "● "*|"○ "*)
-        # Row: "●|○ SSID SIGNAL% [🔒]" — SSID may contain spaces, so
-        # strip the leading glyph, then cut the trailing " NN%..." part.
-        row="${choice#? }"
-        ssid="$(printf '%s' "$row" | sed 's/ [0-9][0-9]*%.*$//')"
-        [ -n "$ssid" ] || { notify "Could not parse selection"; exit 0; }
-        sec="$(awk -F '\t' -v n="$ssid" '$1==n {print $2; exit}' "$tmpmap")"
-        connect_ssid "$ssid" "$sec"
+    *)
+        # Bare SSID straight from --accept-nth: no display parsing needed.
+        sec="$(SSID="$choice" awk -F '\t' '$1==ENVIRON["SSID"] {print $2; exit}' "$tmpmap")"
+        connect_ssid "$choice" "$sec"
         ;;
 esac
