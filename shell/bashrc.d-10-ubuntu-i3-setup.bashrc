@@ -64,4 +64,22 @@ fi
 # if command -v starship >/dev/null 2>&1; then
 #     eval "$(starship init bash)"
 # fi
+
+# --- GTK_MODULES hygiene: appmenu-gtk-module segfaults blueman-manager ---
+# /etc/profile.d/vala-panel-appmenu.sh (orphan config from removed
+# vala-panel-appmenu-common) appends `appmenu-gtk-module` on every login
+# shell, and even a single copy crashes blueman-manager with SIGSEGV
+# (infinite recursion in libgtk-3). Neither i3 nor niri uses a global menu,
+# so strip it user-wide and disable the proxy.
+if [ -n "${GTK_MODULES:-}" ]; then
+    _i3s_gtk=""; _i3s_sep=""; _i3s_oifs="$IFS"; IFS=":"
+    for _i3s_m in $GTK_MODULES; do
+        case "$_i3s_m" in ""|appmenu-gtk-module) continue;; esac
+        case ":$_i3s_gtk:" in *":$_i3s_m:"*) continue;; esac
+        _i3s_gtk="$_i3s_gtk$_i3s_sep$_i3s_m"; _i3s_sep=":"
+    done
+    IFS="$_i3s_oifs"; unset _i3s_oifs _i3s_m _i3s_sep
+    export GTK_MODULES="$_i3s_gtk"; unset _i3s_gtk
+fi
+export UBUNTU_MENUPROXY=0
 # <<< ubuntu-i3-setup <<<

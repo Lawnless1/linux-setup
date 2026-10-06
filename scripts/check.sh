@@ -25,6 +25,15 @@ need flameshot "apt: flameshot"
 need dex "apt: dex"
 need nm-applet "apt: network-manager-gnome"
 
+echo "--- gtk env (blueman crash guard) ---"
+case ":${GTK_MODULES:-}:" in
+    *:appmenu-gtk-module:*)
+        echo "BAD GTK_MODULES (segfaults blueman-manager): $GTK_MODULES"
+        echo "strip appmenu-gtk-module: purge orphan vala-panel-appmenu-common + see shell/profile hygiene block"
+        FAIL=1;;
+    *) echo "GTK_MODULES OK (${GTK_MODULES:-(unset)})";;
+esac
+
 echo "--- i3 config ---"
 if command -v i3 >/dev/null 2>&1; then
     i3 -C -c "$HOME/.config/i3/config" && echo "i3 config OK" || { echo "i3 config INVALID"; FAIL=1; }
