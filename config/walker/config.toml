@@ -60,7 +60,7 @@ default = [
   "files",
 ] # providers to be queried by default (order = rank priority)
 empty = ["desktopapplications"] # providers to be queried when query is empty
-ignore_preview = ["files", "clipboard"] # side preview panel (+400px) breaks the fixed 770px box; files still open/copy normally (matches the clipboard theme's no-preview intent)
+ignore_preview = [] # side preview panel for files/clipboard (adds width on demand)
 max_results = 15 # global max results (compact pill list)
 
 [providers.argument_delimiter] # define the argument delimiter per provider
