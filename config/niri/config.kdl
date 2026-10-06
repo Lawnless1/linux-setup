@@ -124,7 +124,7 @@ binds {
     // i3 `$mod+space` ran `rofi -show drun`; unified Spotlight search instead:
     // walker (apps + files, real icons). $mod+d keeps the fuzzel grid,
     // $mod+f keeps the fuzzel text search as fallback.
-    Mod+Space hotkey-overlay-title="Search: walker" { spawn "walker"; }
+    Mod+Space hotkey-overlay-title="Search: walker" { spawn "walker" "--width" "770" "--maxheight" "400"; }
     // Raycast-style omnibar (vicinae): extensions, clipboard, emoji, calculator.
     // Trial alongside walker (walker keeps Mod+Space); promote to Mod+Space if
     // it wins. Needs `vicinae server` (see spawn-at-startup above).
