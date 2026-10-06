@@ -100,7 +100,12 @@
                     <property name="hexpand">true</property>
                     <property name="vexpand">true</property>
                     <property name="max-content-width">500</property>
-                    <property name="min-content-width">500</property>
+                    <!-- Narrow floor (not 500): when the side preview panel
+                      (~400px) appears, list + panel + spacing = ~740px still
+                      fits the 770px box, so the list squeezes instead of the
+                      window widening. Without preview the list expands to
+                      fill (hexpand). -->
+                    <property name="min-content-width">330</property>
                     <property name="max-content-height">330</property>
                     <property name="propagate-natural-height">true</property>
                     <property name="propagate-natural-width">true</property>

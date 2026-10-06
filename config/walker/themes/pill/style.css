@@ -9,6 +9,7 @@
 @define-color theme_fg_color #ffffff;
 @define-color match_color #7aa2f7;
 @define-color muted_color #565f89;
+@define-color placeholder_color #8b91a5;
 @define-color frame_color #373842;
 @define-color error_bg_color #900000;
 @define-color error_fg_color #ffffff;
@@ -66,8 +67,8 @@ scrollbar {
 }
 
 .input placeholder {
-  opacity: 0.5;
-  color: @muted_color;
+  opacity: 0.85;
+  color: @placeholder_color;
 }
 
 .input selection {
