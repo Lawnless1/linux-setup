@@ -99,13 +99,14 @@
                     <property name="overlay-scrolling">true</property>
                     <property name="hexpand">true</property>
                     <property name="vexpand">true</property>
-                    <property name="max-content-width">500</property>
-                    <!-- Narrow floor (not 500): when the side preview panel
-                      (~400px) appears, list + panel + spacing = ~740px still
-                      fits the 770px box, so the list squeezes instead of the
-                      window widening. Without preview the list expands to
-                      fill (hexpand). -->
-                    <property name="min-content-width">330</property>
+                    <!-- Fixed 320px list column (min = max): without preview
+                      it expands to fill the box (hexpand); with the ~400px
+                      side preview panel showing, 320 + 400 + spacing +
+                      padding stays under the 770px box, so the window never
+                      widens. A lone min- only lets the list keep its 500px
+                      natural width and the panel adds on top. -->
+                    <property name="max-content-width">320</property>
+                    <property name="min-content-width">320</property>
                     <property name="max-content-height">330</property>
                     <property name="propagate-natural-height">true</property>
                     <property name="propagate-natural-width">true</property>
