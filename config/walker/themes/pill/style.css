@@ -58,6 +58,11 @@ scrollbar {
 
 .search-container {
   border-radius: 10px;
+  /* Hairline between the input and the results, vicinae-style, plus
+   * breathing room so the list doesn't crowd the search bar. */
+  border-bottom: 1px solid @frame_color;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
 }
 
 .input placeholder {
