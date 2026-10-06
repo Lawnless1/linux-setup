@@ -137,6 +137,9 @@ pin with `Ctrl+p`, clear with `Ctrl+Shift+d`; `:` prefix inside
 `$mod+space` queries it too),
 `$mod+space`/`$mod+F` unified search (apps rank above folders above files; opens via entry/xdg-open),
 auto-lock after 5 min idle (swayidle+swaylock).
+Trial: `$mod+P` omnibar via **vicinae** (Raycast-style, user-local install —
+no apt; server autostarted from `config/niri/config.kdl`). Walker keeps
+`$mod+space`; promote vicinae if it wins.
 
 Waybar mirrors the polybar modules (workspaces/cpu/mem left, clock center,
 network/bluetooth/sound/battery/powermenu right). Two noble
