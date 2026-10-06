@@ -1,0 +1,59 @@
+diff --git a/src/preview/mod.rs b/src/preview/mod.rs
+index 8a9dfe0..9fb865c 100644
+--- a/src/preview/mod.rs
++++ b/src/preview/mod.rs
+@@ -193,6 +193,9 @@ impl PreviewWidget {
+         scrolled.set_child(Some(&label));
+         scrolled.set_policy(PolicyType::Automatic, PolicyType::Automatic);
+         scrolled.set_size_request(400, 300);
++        // ubuntu-i3-setup: cap panel height so tall content scrolls instead
++        // of growing our fixed-size omnibar box.
++        scrolled.set_max_content_height(300);
+         scrolled.set_vadjustment(Some(&gtk4::Adjustment::new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)));
+ 
+         self.preview_area.add_child(&scrolled);
+@@ -262,6 +265,8 @@ impl PreviewWidget {
+         scrolled.set_child(Some(&text_view));
+         scrolled.set_policy(PolicyType::Automatic, PolicyType::Automatic);
+         scrolled.set_size_request(400, 300);
++        // ubuntu-i3-setup: cap panel height (see above).
++        scrolled.set_max_content_height(300);
+ 
+         self.preview_area.add_child(&scrolled);
+         self.preview_area.set_visible_child(&scrolled);
+@@ -366,7 +371,9 @@ impl PreviewWidget {
+         let scrolled = ScrolledWindow::new();
+         scrolled.set_child(Some(&pdf));
+         scrolled.set_policy(PolicyType::Never, PolicyType::Automatic);
+-        scrolled.set_width_request(800);
++        scrolled.set_width_request(380);
++        // ubuntu-i3-setup: cap panel height (see above).
++        scrolled.set_max_content_height(300);
+ 
+         self.preview_area.add_child(&scrolled);
+         self.preview_area.set_visible_child(&scrolled);
+@@ -381,7 +388,9 @@ impl PreviewWidget {
+ 
+         let (width, height) = page.size();
+ 
+-        let target_width = 800.0;
++        // ubuntu-i3-setup: render at split-panel width so the page fits our
++        // fixed-size omnibar box instead of widening it.
++        let target_width = 380.0;
+         let display_scale = target_width / width;
+ 
+         let render_scale = (display_scale * 1.5).min(2.0);
+@@ -614,9 +623,10 @@ impl PreviewWidget {
+         let cancellable = gio::Cancellable::new();
+         let pixbuf = gdk_pixbuf::Pixbuf::from_stream(&stream, Some(&cancellable))?;
+ 
+-        // Resize to reasonable preview size (max 800x600)
+-        let max_width = 800;
+-        let max_height = 600;
++        // Resize to split-panel preview size (fits our fixed-size omnibar
++        // box: list ~330 + panel + spacing stays within 770px).
++        let max_width = 380;
++        let max_height = 300;
+         let (width, height) = (pixbuf.width(), pixbuf.height());
+ 
+         let (new_width, new_height) = if width > max_width || height > max_height {

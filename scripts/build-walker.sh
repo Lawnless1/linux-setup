@@ -125,6 +125,14 @@ else
 fi
 log "checking out walker $WALKER_TAG"
 git -C "$SRC_DIR/walker" checkout -q "$WALKER_TAG"
+# ubuntu-i3-setup: pin preview panels to the fixed 770px omnibar box
+# (images/PDFs render at 380px, tall content scrolls at 300px).
+if [ -f "$REPO_DIR/scripts/walker-preview-size.patch" ]; then
+    log "applying walker-preview-size.patch..."
+    git -C "$SRC_DIR/walker" apply --check "$REPO_DIR/scripts/walker-preview-size.patch" \
+        && git -C "$SRC_DIR/walker" apply "$REPO_DIR/scripts/walker-preview-size.patch" \
+        || log "(warn: preview patch did not apply cleanly — see scripts/walker-preview-size.patch)"
+fi
 export PATH="$HOME/.cargo/bin:$PATH"
 log "building walker $WALKER_TAG (release; takes a while, ~10 min)..."
 cargo build --release --manifest-path "$SRC_DIR/walker/Cargo.toml"
