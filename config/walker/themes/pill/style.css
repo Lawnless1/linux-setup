@@ -1,13 +1,14 @@
 /* Walker "pill" theme — ubuntu-i3-setup (niri session).
  * Inherits the default theme's layouts; only colors/type/padding here.
- * Matches waybar/dunst/fuzzel: dark-navy pill (#010B17), light-grey text
- * (#E1E2E6), 1px muted-grey frame (#C5C8C6), pastel-cyan match accent. */
-@define-color window_bg_color #010b17;
-@define-color accent_bg_color #1e2e44;
-@define-color theme_fg_color #e1e2e6;
-@define-color match_color #9bf6ff;
-@define-color muted_color #707880;
-@define-color frame_color #c5c8c6;
+ * Palette follows vicinae's Tokyo Night look: dark-blue window (#1A1B26),
+ * soft lavender-grey text (#C0CAF5), subtle slate frame (#414868) instead
+ * of a bright border, muted selection (#3B4261), soft-cyan match accent. */
+@define-color window_bg_color #1a1b26;
+@define-color accent_bg_color #3b4261;
+@define-color theme_fg_color #c0caf5;
+@define-color match_color #7dcfff;
+@define-color muted_color #565f89;
+@define-color frame_color #414868;
 @define-color error_bg_color #900000;
 @define-color error_fg_color #ffffff;
 
