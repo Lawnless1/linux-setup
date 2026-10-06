@@ -126,7 +126,8 @@ binds {
     // $mod+f keeps the fuzzel text search as fallback.
     // Fixed 770x480 box like vicinae: stable window regardless of result
     // count (empty space when few results instead of a shrinking pill).
-    Mod+Space hotkey-overlay-title="Search: walker" { spawn "walker" "--width" "770" "--height" "480"; }
+    // --height floors the box, --maxheight caps the list (rest scrolls).
+    Mod+Space hotkey-overlay-title="Search: walker" { spawn "walker" "--width" "770" "--height" "480" "--maxheight" "330"; }
     // Raycast-style omnibar (vicinae): extensions, clipboard, emoji, calculator.
     // Trial alongside walker (walker keeps Mod+Space); promote to Mod+Space if
     // it wins. Needs `vicinae server` (see spawn-at-startup above).
