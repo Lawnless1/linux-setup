@@ -1,13 +1,15 @@
 /* Walker "clipboard" theme — ubuntu-i3-setup (niri Super+V).
- * Minimal sibling of the pill theme: same dark-navy palette, but tighter
- * rows, smaller type, no keybind bar, quick-activation badges hidden
+ * Minimal sibling of the pill theme: same vicinae-dark tokens (near-black
+ * window, white text, dim slate frame, no preview border), tighter rows,
+ * smaller type, no keybind bar, quick-activation badges hidden
  * (also suppressed with walker's -H flag at launch). */
-@define-color window_bg_color #010b17;
-@define-color accent_bg_color #1e2e44;
-@define-color theme_fg_color #e1e2e6;
-@define-color match_color #9bf6ff;
-@define-color muted_color #707880;
-@define-color frame_color #c5c8c6;
+@define-color window_bg_color #0f111a;
+@define-color accent_bg_color #353946;
+@define-color theme_fg_color #ffffff;
+@define-color match_color #7aa2f7;
+@define-color muted_color #565f89;
+@define-color placeholder_color #8b91a5;
+@define-color frame_color #373842;
 @define-color error_bg_color #900000;
 @define-color error_fg_color #ffffff;
 
@@ -40,9 +42,9 @@ scrollbar {
   box-shadow:
     0 19px 38px rgba(0, 0, 0, 0.35),
     0 15px 12px rgba(0, 0, 0, 0.22);
-  /* Semi-transparent so niri's ext-background-effect blur shows through
-   * (enabled via ext_background_effect_blur in config.toml). */
-  background: alpha(@window_bg_color, 0.78);
+  /* Fully opaque like the pill theme: translucency lets the desktop bleed
+   * through and reads as a lighter palette. */
+  background: @window_bg_color;
   padding: 10px 12px;
   border-radius: 14px;
   border: 1px solid @frame_color;
@@ -57,11 +59,15 @@ scrollbar {
 
 .search-container {
   border-radius: 8px;
+  /* Hairline between input and results + breathing room, like the pill. */
+  border-bottom: 1px solid @frame_color;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
 }
 
 .input placeholder {
-  opacity: 0.5;
-  color: @muted_color;
+  opacity: 0.85;
+  color: @placeholder_color;
 }
 
 .input selection {
@@ -105,8 +111,7 @@ row:selected .item-box {
 
 .item-subtext {
   font-size: 11px;
-  opacity: 0.4;
-  color: @muted_color;
+  opacity: 0.55;
 }
 
 .item-image-text {
@@ -114,7 +119,8 @@ row:selected .item-box {
 }
 
 .preview {
-  border: 1px solid alpha(@frame_color, 0.25);
+  /* No border (same as pill): the panel slides, and an empty collapsed
+   * panel must stay invisible. */
   border-radius: 8px;
   color: @theme_fg_color;
 }
