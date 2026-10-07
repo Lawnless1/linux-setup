@@ -18,9 +18,10 @@ window#waybar {
 #clock,
 #left,
 #status {
-    /* Semi-transparent so niri's layer-rule blur shows through
-     * (match namespace="^waybar$", background-effect { blur true }). */
-    background: rgba(1, 11, 23, 0.68);
+    /* Nearly opaque: niri cannot blur just the pills (waybar has no
+     * ext-background-effect; forced blur would cover the whole bar
+     * width), so translucency here would only smear sharp content. */
+    background: rgba(1, 11, 23, 0.92);
     border-radius: 14px;
     padding: 8px 20px;
     margin: 8px 6px 4px 6px;
@@ -86,7 +87,7 @@ window#waybar {
 }
 
 tooltip {
-    background: rgba(1, 11, 23, 0.80);
+    background: rgba(1, 11, 23, 0.97);
     border-radius: 8px;
     color: #E1E2E6;
 }
