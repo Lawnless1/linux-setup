@@ -60,7 +60,9 @@ default = [
   "files",
 ] # providers to be queried by default (order = rank priority)
 empty = ["desktopapplications"] # providers to be queried when query is empty
-ignore_preview = [] # side preview panel for files/clipboard (adds width on demand)
+ignore_preview = ["clipboard"] # side preview panel would widen the fixed 480px
+# clipboard popup on every image entry; files/desktopapplications previews
+# in the pill omnibar are unaffected (pill only sees this provider via ":")
 max_results = 15 # global max results (compact pill list)
 
 [providers.argument_delimiter] # define the argument delimiter per provider
