@@ -145,6 +145,74 @@ index 8a9dfe0..3d4b4b8 100644
          let (width, height) = (pixbuf.width(), pixbuf.height());
  
          let (new_width, new_height) = if width > max_width || height > max_height {
+diff --git a/src/providers/clipboard.rs b/src/providers/clipboard.rs
+index c0be5d9..3dac102 100644
+--- a/src/providers/clipboard.rs
++++ b/src/providers/clipboard.rs
+@@ -1,5 +1,8 @@
++use std::path::Path;
++
+ use chrono::DateTime;
+ use chrono_humanize::HumanTime;
++use gtk4::{Builder, Image, ListItem, gdk, gdk_pixbuf, gio, glib, prelude::*};
+ 
+ use crate::{
+     config::get_config, protos::generated_proto::query::query_response::Item, providers::Provider,
+@@ -38,6 +41,54 @@ impl Provider for Clipboard {
+         label.set_label(truncated.as_str());
+     }
+ 
++    // ubuntu-i3-setup: inline thumbnails for copied images, so the clipboard
++    // popup needs no side preview panel (fixed size). Text entries keep the
++    // row imageless.
++    fn image_transformer(&self, b: &Builder, _: &ListItem, item: &Item) {
++        let Some(image) = b.object::<Image>("ItemImage") else {
++            return;
++        };
++
++        if item.preview_type != "file" || item.preview.is_empty() {
++            image.set_visible(false);
++            return;
++        }
++
++        let path = item.preview.clone();
++        if !Path::new(&path).exists() {
++            image.set_visible(false);
++            return;
++        }
++
++        image.set_visible(true);
++        glib::spawn_future_local(async move {
++            let Ok((bytes, _)) = gio::File::for_path(&path).load_bytes_future().await
++            else {
++                return;
++            };
++            let stream = gio::MemoryInputStream::from_bytes(&bytes);
++            let cancellable = gio::Cancellable::new();
++            let Ok(pixbuf) = gdk_pixbuf::Pixbuf::from_stream(&stream, Some(&cancellable))
++            else {
++                return;
++            };
++            let (width, height) = (pixbuf.width(), pixbuf.height());
++            let thumb = if width > 128 || height > 128 {
++                let ratio = (128.0 / width as f64).min(128.0 / height as f64);
++                pixbuf.scale_simple(
++                    (width as f64 * ratio) as i32,
++                    (height as f64 * ratio) as i32,
++                    gdk_pixbuf::InterpType::Bilinear,
++                )
++            } else {
++                Some(pixbuf)
++            };
++            if let Some(pixbuf) = thumb {
++                image.set_paintable(Some(&gdk::Texture::for_pixbuf(&pixbuf)));
++            }
++        });
++    }
++
+     fn subtext_transformer(&self, item: &Item, label: &gtk4::Label) {
+         let Ok(dt) = DateTime::parse_from_rfc2822(&item.subtext) else {
+             label.set_label(&item.subtext);
 diff --git a/src/ui/window.rs b/src/ui/window.rs
 index 58599a3..3007319 100644
 --- a/src/ui/window.rs

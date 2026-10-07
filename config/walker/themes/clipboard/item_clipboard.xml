@@ -11,6 +11,18 @@
     <property name="orientation">horizontal</property>
     <property name="spacing">8</property>
     <child>
+      <!-- Inline thumbnail for copied images (populated by the clipboard
+        provider from the entry's image path). Hidden for text entries, so
+        rows stay compact; the popup needs no side preview panel. -->
+      <object class="GtkImage" id="ItemImage">
+        <style>
+          <class name="item-image"></class>
+        </style>
+        <property name="pixel-size">64</property>
+        <property name="valign">center</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
         <property name="spacing">1</property>
