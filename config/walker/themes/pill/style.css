@@ -131,7 +131,9 @@ row:selected .item-box {
 }
 
 .preview {
-  border: 1px solid alpha(@frame_color, 0.25);
+  /* No border: the panel slides in/out of the fixed box (animated reveal),
+   * so it blends like vicinae's detail pane instead of ringing the box.
+   * An empty collapsed panel must also stay invisible. */
   border-radius: 10px;
   color: @theme_fg_color;
 }

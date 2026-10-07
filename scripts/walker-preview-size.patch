@@ -1,27 +1,115 @@
+diff --git a/resources/themes/default/preview.xml b/resources/themes/default/preview.xml
+index f8d6c74..c257883 100644
+--- a/resources/themes/default/preview.xml
++++ b/resources/themes/default/preview.xml
+@@ -5,8 +5,10 @@
+     <style>
+       <class name="preview-box"></class>
+     </style>
++    <!-- ubuntu-i3-setup: 400px panel keeps list + panel + spacing inside
++      the fixed 770px omnibar box. -->
+     <property name="height-request">300</property>
+-    <property name="width-request">500</property>
++    <property name="width-request">400</property>
+     <child>
+       <object class="GtkStack" id="PreviewStack">
+         <style>
 diff --git a/src/preview/mod.rs b/src/preview/mod.rs
-index 8a9dfe0..9fb865c 100644
+index 8a9dfe0..3d4b4b8 100644
 --- a/src/preview/mod.rs
 +++ b/src/preview/mod.rs
-@@ -193,6 +193,9 @@ impl PreviewWidget {
+@@ -6,7 +6,8 @@ use gtk4::gio::{self, Cancellable};
+ use gtk4::glib::{self, Bytes};
+ use gtk4::{
+     Box as GtkBox, Builder, ContentFit, Image, Label, Orientation, Picture, PolicyType,
+-    ScrolledWindow, Stack, TextView, Video, WrapMode, gdk_pixbuf, prelude::*,
++    Revealer, RevealerTransitionType, ScrolledWindow, Stack, TextView, Video, WrapMode,
++    gdk_pixbuf, prelude::*,
+ };
+ use poppler::{Document, Page};
+ use std::cell::RefCell;
+@@ -98,16 +99,45 @@ impl UnifiedPreviewHandler {
+             return;
+         }
+ 
+-        // Clear existing preview and add new one
++        // Clear existing preview and add the new panel wrapped in a revealer,
++        // so it slides in instead of snapping the window wider.
+         while let Some(child) = preview.first_child() {
+             child.unparent();
+         }
+ 
+-        preview.append(&preview_widget.box_widget);
+-        preview.set_visible(get_selected_item().is_some_and(|current| current == *item));
++        let revealer = Revealer::new();
++        revealer.set_transition_type(RevealerTransitionType::SlideLeft);
++        revealer.set_transition_duration(200);
++        revealer.set_child(Some(&preview_widget.box_widget));
++        preview.append(&revealer);
++
++        if get_selected_item().is_some_and(|current| current == *item) {
++            preview.set_visible(true);
++            revealer.set_reveal_child(true);
++            ACTIVE_REVEALER.with(|active| {
++                *active.borrow_mut() = Some(revealer.clone());
++            });
++        } else {
++            revealer.set_reveal_child(false);
++        }
+     }
+ }
+ 
++thread_local! {
++    static ACTIVE_REVEALER: std::cell::RefCell<Option<Revealer>> =
++        std::cell::RefCell::new(None);
++}
++
++/// Slide the preview panel shut (window follows smoothly). The outer box
++/// stays visible but collapses to zero width; it is replaced on next open.
++pub fn preview_hide() {
++    ACTIVE_REVEALER.with(|active| {
++        if let Some(revealer) = active.borrow().as_ref() {
++            revealer.set_reveal_child(false);
++        }
++    });
++}
++
+ pub fn handle_preview(item: &Item, preview: &GtkBox, builder: &Builder) {
+     thread_local! {
+         static PREVIEW_HANDLER: std::cell::RefCell<UnifiedPreviewHandler> = std::cell::RefCell::new(UnifiedPreviewHandler::new());
+@@ -192,7 +222,10 @@ impl PreviewWidget {
+         let scrolled = ScrolledWindow::new();
          scrolled.set_child(Some(&label));
          scrolled.set_policy(PolicyType::Automatic, PolicyType::Automatic);
-         scrolled.set_size_request(400, 300);
+-        scrolled.set_size_request(400, 300);
++        scrolled.set_size_request(380, 300);
 +        // ubuntu-i3-setup: cap panel height so tall content scrolls instead
 +        // of growing our fixed-size omnibar box.
 +        scrolled.set_max_content_height(300);
          scrolled.set_vadjustment(Some(&gtk4::Adjustment::new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)));
  
          self.preview_area.add_child(&scrolled);
-@@ -262,6 +265,8 @@ impl PreviewWidget {
+@@ -253,7 +286,7 @@ impl PreviewWidget {
+         text_view.set_editable(false);
+         text_view.set_monospace(true);
+         text_view.set_wrap_mode(WrapMode::Word);
+-        text_view.set_size_request(400, 300);
++        text_view.set_size_request(380, 300);
+ 
+         let buffer = text_view.buffer();
+         buffer.set_text(&combined_output);
+@@ -261,7 +294,9 @@ impl PreviewWidget {
+         let scrolled = ScrolledWindow::new();
          scrolled.set_child(Some(&text_view));
          scrolled.set_policy(PolicyType::Automatic, PolicyType::Automatic);
-         scrolled.set_size_request(400, 300);
+-        scrolled.set_size_request(400, 300);
++        scrolled.set_size_request(380, 300);
 +        // ubuntu-i3-setup: cap panel height (see above).
 +        scrolled.set_max_content_height(300);
  
          self.preview_area.add_child(&scrolled);
          self.preview_area.set_visible_child(&scrolled);
-@@ -366,7 +371,9 @@ impl PreviewWidget {
+@@ -366,7 +401,9 @@ impl PreviewWidget {
          let scrolled = ScrolledWindow::new();
          scrolled.set_child(Some(&pdf));
          scrolled.set_policy(PolicyType::Never, PolicyType::Automatic);
@@ -32,7 +120,7 @@ index 8a9dfe0..9fb865c 100644
  
          self.preview_area.add_child(&scrolled);
          self.preview_area.set_visible_child(&scrolled);
-@@ -381,7 +388,9 @@ impl PreviewWidget {
+@@ -381,7 +418,9 @@ impl PreviewWidget {
  
          let (width, height) = page.size();
  
@@ -43,7 +131,7 @@ index 8a9dfe0..9fb865c 100644
          let display_scale = target_width / width;
  
          let render_scale = (display_scale * 1.5).min(2.0);
-@@ -614,9 +623,10 @@ impl PreviewWidget {
+@@ -614,9 +653,10 @@ impl PreviewWidget {
          let cancellable = gio::Cancellable::new();
          let pixbuf = gdk_pixbuf::Pixbuf::from_stream(&stream, Some(&cancellable))?;
  
@@ -57,3 +145,31 @@ index 8a9dfe0..9fb865c 100644
          let (width, height) = (pixbuf.width(), pixbuf.height());
  
          let (new_width, new_height) = if width > max_width || height > max_height {
+diff --git a/src/ui/window.rs b/src/ui/window.rs
+index 58599a3..3007319 100644
+--- a/src/ui/window.rs
++++ b/src/ui/window.rs
+@@ -1156,20 +1156,20 @@ pub fn handle_preview() {
+         };
+ 
+         let Some(item) = get_selected_item() else {
+-            preview.set_visible(false);
++            crate::preview::preview_hide();
+             return;
+         };
+ 
+         // Check if preview should be shown (not in ignore list and has preview content)
+         let config = crate::config::get_config();
+         if config.providers.ignore_preview.contains(&item.provider) {
+-            preview.set_visible(false);
++            crate::preview::preview_hide();
+             return;
+         }
+ 
+         // Only show preview if there's preview content or preview_type specified
+         if item.preview.is_empty() && item.preview_type.is_empty() {
+-            preview.set_visible(false);
++            crate::preview::preview_hide();
+             return;
+         }
+ 
