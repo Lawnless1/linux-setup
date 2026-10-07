@@ -114,6 +114,74 @@ window-rule {
     clip-to-geometry true
 }
 
+// Background blur (niri >= 26.04, PR #3483). Global tuning for all blur,
+// whether requested by the client (ext-background-effect) or forced below.
+blur {
+    passes 3
+    offset 3.0
+    noise 0.02
+    saturation 1.5
+}
+
+// Top/overlay layers sit above windows: use true content blur, not the
+// cheap wallpaper-only xray default (xray stays on for bottom/background).
+layer-rule {
+    match layer="top"
+    match layer="overlay"
+
+    background-effect {
+        xray false
+    }
+}
+
+// Waybar pills: blur behind the bar. Bar CSS must stay semi-transparent
+// (see config/waybar/style.css) or there is nothing to see through.
+layer-rule {
+    match namespace="^waybar$"
+
+    geometry-corner-radius 14
+
+    background-effect {
+        blur true
+    }
+
+    popups {
+        geometry-corner-radius 6
+        opacity 0.85
+
+        background-effect {
+            blur true
+        }
+    }
+}
+
+// Fuzzel omnibar + dmenu menus (launcher, power, wifi, files): same
+// treatment. Fuzzel colors stay semi-transparent (config/fuzzel/*.ini).
+// (Walker needs no forced rule: it requests shaped blur itself via
+// ext_background_effect_blur in config/walker/config.toml, which follows
+// its rounded pill exactly instead of blurring the whole surface rect.)
+layer-rule {
+    match namespace="^launcher$"
+
+    geometry-corner-radius 16
+
+    background-effect {
+        blur true
+    }
+}
+
+// Dunst banners: blur behind notifications. Needs a semi-transparent
+// background in config/dunst/dunstrc to be visible.
+layer-rule {
+    match namespace="^notifications$"
+
+    geometry-corner-radius 12
+
+    background-effect {
+        blur true
+    }
+}
+
 binds {
     // ---- terminal / launcher (i3: $mod+Return, $mod+d, $mod+space) ----
     // foot runs `tmux new-session`: every window gets its own fresh session

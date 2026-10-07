@@ -3,7 +3,8 @@
  * Palette sampled from vicinae's default dark theme (NOT Tokyo Night):
  * near-black window (#0F111A), dim 1px slate frame (#373842), white text,
  * selection (#353946), blue accent (#7AA2F7) for matches.
- * Muted grey (#565F89) for placeholders. Window is fully opaque. */
+ * Muted grey (#565F89) for placeholders. Box is semi-transparent (0.78)
+ * so niri's ext-background-effect blur shows through. */
 @define-color window_bg_color #0f111a;
 @define-color accent_bg_color #353946;
 @define-color theme_fg_color #ffffff;
@@ -43,9 +44,9 @@ scrollbar {
   box-shadow:
     0 19px 38px rgba(0, 0, 0, 0.35),
     0 15px 12px rgba(0, 0, 0, 0.22);
-  /* Fully opaque (was 0.94): any translucency lets the desktop bleed
-   * through and reads as a lighter palette next to solid vicinae. */
-  background: @window_bg_color;
+  /* Semi-transparent so niri's ext-background-effect blur shows through
+   * (enabled via ext_background_effect_blur in config.toml). */
+  background: alpha(@window_bg_color, 0.78);
   padding: 14px 16px;
   border-radius: 16px;
   border: 1px solid @frame_color;

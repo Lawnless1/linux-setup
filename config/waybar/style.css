@@ -18,7 +18,9 @@ window#waybar {
 #clock,
 #left,
 #status {
-    background: rgba(1, 11, 23, 0.92);
+    /* Semi-transparent so niri's layer-rule blur shows through
+     * (match namespace="^waybar$", background-effect { blur true }). */
+    background: rgba(1, 11, 23, 0.68);
     border-radius: 14px;
     padding: 8px 20px;
     margin: 8px 6px 4px 6px;
@@ -84,7 +86,7 @@ window#waybar {
 }
 
 tooltip {
-    background: rgba(1, 11, 23, 0.97);
+    background: rgba(1, 11, 23, 0.80);
     border-radius: 8px;
     color: #E1E2E6;
 }

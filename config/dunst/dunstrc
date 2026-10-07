@@ -36,6 +36,8 @@
 
     # Subtle translucency matching waybar rgba(1,11,23,0.92). X11-only;
     # harmless under Wayland (niri composites the window itself).
+    # On Wayland the alpha channel lives in `background` below (#RRGGBBAA),
+    # which is what niri's layer-rule blur sees through.
     transparency = 8
 
     # Modern gaps instead of the stock 2px separator line.
@@ -108,20 +110,23 @@
 
 # All urgencies share the same dark pill — urgency is signalled by
 # timeout + frame only, not the stock blue/red bodies.
+# Backgrounds carry an alpha channel (E0 ≈ 0.88) so niri's
+# layer-rule blur (match namespace="^notifications$") shows through
+# on Wayland (`transparency` above is X11-only).
 [urgency_low]
-    background = "#010B17"
+    background = "#010B17E0"
     foreground = "#E1E2E6"
     frame_color = "#C5C8C6"
     timeout = 5
 
 [urgency_normal]
-    background = "#010B17"
+    background = "#010B17E0"
     foreground = "#E1E2E6"
     frame_color = "#C5C8C6"
     timeout = 8
 
 [urgency_critical]
-    background = "#010B17"
+    background = "#010B17E0"
     foreground = "#E1E2E6"
     # Warning amber (same as waybar battery.warning) so critical
     # stands out without the old alarm-red body.

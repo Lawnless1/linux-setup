@@ -22,7 +22,7 @@ keybind_symbols = true             # render keybind hints with key symbols (e.g.
 resume_last_query = false          # open walker with the last query in place
 actions_as_menu = false            # display all possible actions in a submenu
 autoplay_videos = false            # auto-play video previews
-ext_background_effect_blur = false # request the compositor to blur behind the box-wrapper via ext-background-effect-v1 (compositor must support it)
+ext_background_effect_blur = true  # request the compositor to blur behind the box-wrapper via ext-background-effect-v1 (niri >= 26.04; needs semi-transparent theme bg to be visible)
 
 [shell]
 exclusive_zone = -1
