@@ -12,6 +12,13 @@ clipboard_enabled = false    # walker owns clipboard history (Mod+V)
 polkit_agent = false         # polkit-gnome-authentication-agent-1 stays
 telemetry_enabled = false
 
+# Custom palette (palettes/NavyGlass.json): stock Noctalia accents
+# (yellow primary, purple secondary, mint tertiary, white text) on the
+# omnibar/top-bar navy (#010B17) instead of Noctalia blue (#11112D).
+[theme]
+source = "custom"
+custom_palette = "NavyGlass"
+
 # Noctalia owns notifications in the niri session; dunst stays for the i3
 # session (Noctalia doesn't run on X11).
 [notification]
