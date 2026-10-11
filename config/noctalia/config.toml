@@ -81,7 +81,7 @@ reserve_space = true
 # Shadow off: the full-width soft drop shadow reads as blur smear in the
 # gaps between pills. Re-enable if pills need grounding.
 shadow = false
-margin_edge = 8
+margin_edge = 4 # float gap + reserved zone above the bar (was 8; tighter top)
 margin_ends = 8
 padding = 8
 widget_spacing = 6
