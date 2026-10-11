@@ -78,6 +78,7 @@ link_to config/waybar                   .config/waybar
 link_to config/fuzzel/fuzzel.ini        .config/fuzzel/fuzzel.ini
 link_to config/fuzzel/fuzzel-dmenu.ini  .config/fuzzel/fuzzel-dmenu.ini
 link_to config/walker                   .config/walker
+link_to config/noctalia                 .config/noctalia
 link_to config/dunst/dunstrc            .config/dunst/dunstrc
 link_to config/foot/foot.ini            .config/foot/foot.ini
 link_to config/swaylock/config          .config/swaylock/config
@@ -178,6 +179,8 @@ if [ "$WITH_NIRI" -eq 1 ]; then
     # shellcheck disable=SC2046
     sudo apt install -y $(grep -v '^\s*#' "$REPO_DIR/packages/apt-niri.txt" | grep -v '^\s*$' | xargs)
     log "niri binary still needed (not in Ubuntu repos): run ./scripts/build-niri.sh"
+    # Noctalia bar (third-party APT repo; no-op if already installed).
+    "$REPO_DIR/scripts/install-noctalia.sh"
 else
     log "skipping niri apt set (re-run with --with-niri; then scripts/build-niri.sh)"
 fi

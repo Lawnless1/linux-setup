@@ -1,0 +1,110 @@
+# Noctalia config — ubuntu-i3-setup (niri session).
+# Bar-only deployment: replaces waybar's 3-pill bar with shaped,
+# per-pill blur (ext-background-effect). Everything else stays:
+# walker (search + clipboard), fuzzel menus, dunst, swaybg, swaylock,
+# swayidle, polkit-gnome agent.
+# Deployed to ~/.config/noctalia/config.toml (see install.sh).
+
+[shell]
+font_family = "Inter Nerd Font"
+setup_wizard_enabled = false # no first-run wizard; this file is the setup
+clipboard_enabled = false    # walker owns clipboard history (Mod+V)
+polkit_agent = false         # polkit-gnome-authentication-agent-1 stays
+telemetry_enabled = false
+
+# dunst stays (shared i3 + niri).
+[notification]
+enable_daemon = false
+
+# swaylock stays (see niri swayidle spawn).
+[lockscreen]
+enabled = false
+
+# swaybg stays (see niri swaybg spawn-sh).
+[wallpaper]
+enabled = false
+
+# 3-pill bar mirroring config/waybar (left = workspaces + sysmon,
+# center = clock, right = status group). Transparent bar surface with
+# floating capsule groups; blur follows the pill shapes via
+# ext-background-effect (no full-width blur band like forced waybar blur).
+[bar.default]
+position = "top"
+layer = "top"
+thickness = 38
+reserve_space = true
+margin_edge = 8
+margin_ends = 8
+padding = 8
+widget_spacing = 6
+background_opacity = 0.0
+compositor_blur = true
+radius = 14
+color = "#E1E2E6"
+font_weight = 700
+capsule = false # pills come from the groups below, not per-widget capsules
+
+start = ["group:left"]
+center = ["group:clockpill"]
+end = ["group:status"]
+
+# No middle-click-opens-settings anywhere (waybar has no middle actions).
+[bar.default.actions]
+middle = "none"
+
+[[bar.default.capsule_group]]
+id = "left"
+members = ["workspaces", "cpu", "ram"]
+fill = "#010B17"
+opacity = 0.72
+radius = 14
+padding = 8
+
+[[bar.default.capsule_group]]
+id = "clockpill"
+members = ["clock"]
+fill = "#010B17"
+opacity = 0.72
+radius = 14
+padding = 8
+
+[[bar.default.capsule_group]]
+id = "status"
+members = ["network", "bluetooth", "volume", "battery", "powermenu"]
+fill = "#010B17"
+opacity = 0.72
+radius = 14
+padding = 8
+
+# Waybar parity: cpu% + mem% beside the workspaces.
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+
+[widget.ram]
+type = "sysmon"
+stat = "ram_used"
+
+# Waybar clock parity ("11 - 03:49 PM").
+[widget.clock]
+format = "{:%d - %I:%M %p}"
+
+# Network/bluetooth use Noctalia's native controls (no overrides):
+# left opens the Network / Bluetooth tab in the control center,
+# right toggles wifi reconnect / adapter power — same as the old
+# wifi-fuzzel.sh / bluetooth-fuzzel.sh scripts did.
+
+# Waybar parity: click toggles mute, scroll steps volume 5%.
+[widget.volume.actions]
+left = "volume-mute"
+scroll_up = "volume-up 5%"
+scroll_down = "volume-down 5%"
+
+# Power button (waybar custom/powermenu parity).
+[widget.powermenu]
+type = "custom_button"
+glyph = "power"
+tooltip = "Power menu (Ctrl+Alt+Delete)"
+
+[widget.powermenu.actions]
+left = "exec ~/.config/niri/scripts/powermenu-fuzzel.sh"

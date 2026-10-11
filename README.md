@@ -1,8 +1,8 @@
 # ubuntu-i3-setup
 
-Private, replicable i3 desktop for Ubuntu 24.04. Symlinked configs + one installer.
+Private, replicable i3 desktop for Ubuntu 26.04. Symlinked configs + one installer.
 
-![stack](https://img.shields.io/badge/Ubuntu-24.04-E95420) ![wm](https://img.shields.io/badge/i3-4.23-blue) ![bar](https://img.shields.io/badge/polybar-3.7-yellow)
+![stack](https://img.shields.io/badge/Ubuntu-26.04-E95420) ![wm](https://img.shields.io/badge/i3-4.23-blue) ![bar](https://img.shields.io/badge/polybar-3.7-yellow)
 
 ## What's inside
 
@@ -13,7 +13,8 @@ Private, replicable i3 desktop for Ubuntu 24.04. Symlinked configs + one install
 | `config/niri/config.kdl` | `~/.config/niri/config.kdl` | niri Wayland session; keybindings mirror i3 (see below) |
 | `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu (`Ctrl+Alt+Del`), grim/slurp screenshot (`$mod+Shift+s`) |
 | `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals for niri |
-| `config/waybar/` | `~/.config/waybar/` | waybar bar + scripts (niri session; mirrors polybar modules) |
+| `config/waybar/` | `~/.config/waybar/` | retired waybar bar + scripts (dormant since the Noctalia switch; keep for revert) |
+| `config/noctalia/config.toml` | `~/.config/noctalia/config.toml` | Noctalia 3-pill bar (niri session; needs `scripts/install-noctalia.sh` on 26.04+) |
 | `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Spotlight-like pill theme for the app grid (`$mod+d`) and text search (`$mod+F`; needs 1.12 from `scripts/build-fuzzel.sh`) |
 | `config/walker/` | `~/.config/walker/` | walker omnibar theme + config (`$mod+space`; apps + indexed files with icons; needs `scripts/build-walker.sh`) |
 | `config/dunst/dunstrc` | `~/.config/dunst/dunstrc` | modern minimal notifications (shared i3 + niri) |
@@ -87,7 +88,7 @@ Ubuntu 24.04's repos, so the binary is compiled from source; everything else
 **Niri** vs **i3** at the login screen.
 
 ```bash
-./install.sh --with-niri        # links niri/waybar/fuzzel configs + apt Wayland set
+./install.sh --with-niri        # links niri/noctalia/fuzzel configs + apt Wayland set + Noctalia repo
 ./scripts/build-niri.sh         # sudo: build deps, rustup, compile niri + xwayland-satellite,
                                 # install to /usr/local, add GDM session entry + systemd units
 ./scripts/build-fuzzel.sh       # sudo: build deps, compile fuzzel 1.12 (noble ships
@@ -141,13 +142,12 @@ Trial: `$mod+P` omnibar via **vicinae** (Raycast-style, user-local install —
 no apt; server autostarted from `config/niri/config.kdl`). Walker keeps
 `$mod+space`; promote vicinae if it wins.
 
-Waybar mirrors the polybar modules (workspaces/cpu/mem left, clock center,
-network/bluetooth/sound/battery/powermenu right). Two noble
-limitations, both documented in `config/waybar/config.jsonc`: waybar 0.9.24
-has no `niri/workspaces`, so a `custom/niri-workspaces` script polls
-`niri msg` (flip to the native module after upgrading waybar ≥ 0.12);
-rofi click-menus (mixer/calendar) have no Wayland port, so those
-clicks are plain mute toggles, and scroll on sound changes volume.
-Wifi and bluetooth clicks open fuzzel menus instead
-(`config/waybar/scripts/wifi-fuzzel.sh` — switch/join hidden/forget/
-rescan/toggle plus nmtui fallback; `bluetooth-fuzzel.sh` — connect/pair).
+Noctalia bar mirrors the polybar modules (workspaces/cpu/mem left, clock
+center, network/bluetooth/sound/battery/powermenu right) as three floating
+capsule groups with per-pill blur (ext-background-effect) — the forced
+waybar blur smeared the whole bar width, which is why waybar was retired
+(`config/waybar/` stays dormant). Network/bluetooth clicks open Noctalia's
+native control-center tabs; wifi and bluetooth clicks used to open fuzzel
+menus (`config/waybar/scripts/wifi-fuzzel.sh` — switch/join hidden/forget/
+rescan/toggle plus nmtui fallback; `bluetooth-fuzzel.sh` — connect/pair),
+kept as fallback.

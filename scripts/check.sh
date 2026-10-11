@@ -103,6 +103,15 @@ for p in desktopapplications files clipboard; do
 done
 [ -f "$HOME/.config/xdg-desktop-portal/niri-portals.conf" ] && echo "niri portals linked" \
     || { echo "MISSING: niri-portals.conf (run ./install.sh)"; FAIL=1; }
+# Noctalia bar (replaces waybar; needs scripts/install-noctalia.sh on 26.04+).
+[ -f "$HOME/.config/noctalia/config.toml" ] && echo "noctalia config linked" \
+    || { echo "MISSING: ~/.config/noctalia/config.toml (run ./install.sh)"; FAIL=1; }
+if command -v noctalia >/dev/null 2>&1; then
+    noctalia config validate "$HOME/.config/noctalia/config.toml" \
+        && echo "noctalia config OK" || { echo "noctalia config INVALID"; FAIL=1; }
+else
+    echo "(info: noctalia not installed yet — ./scripts/install-noctalia.sh)"
+fi
 
 [ "$FAIL" -eq 0 ] && echo "ALL CHECKS PASSED" || echo "CHECKS FAILED"
 exit "$FAIL"

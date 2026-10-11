@@ -80,7 +80,7 @@ workspace "8" {}
 workspace "9" {}
 workspace "10" {}
 
-spawn-sh-at-startup "exec ~/.config/waybar/launch.sh"
+spawn-at-startup "noctalia"
 spawn-at-startup "dunst"
 // Spotlight backend (apps + indexed files) and instant launcher service.
 spawn-at-startup "elephant"
@@ -134,23 +134,17 @@ layer-rule {
     }
 }
 
-// Waybar: NO forced surface blur. Waybar (GTK3, gtk-layer-shell) does not
-// implement ext-background-effect, so `blur true` here would blur the
-// entire full-width transparent bar surface — a blurry band across the
-// whole top, not just behind the content pills. The pills stay nearly
-// opaque instead (see config/waybar/style.css).
-// Only popups (e.g. tray menus, small rects where blur looks right) get
-// blur. Currently inert (no tray module); kept for when one is added.
+// Noctalia bar: shaped per-pill blur is published by the client itself
+// (ext-background-effect), so no forced surface blur here — that would
+// smear the whole bar width (the old waybar problem). xray off gives true
+// content blur; the generic top/overlay rule above already covers it, this
+// rule pins the documented namespace pattern explicitly.
+// (Waybar is retired: config/waybar stays dormant for easy revert.)
 layer-rule {
-    match namespace="^waybar$"
+    match namespace="^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"
 
-    popups {
-        geometry-corner-radius 6
-        opacity 0.85
-
-        background-effect {
-            blur true
-        }
+    background-effect {
+        xray false
     }
 }
 
