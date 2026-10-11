@@ -54,7 +54,6 @@ action = "reboot"
 
 [[shell.session.actions]]
 action = "shutdown"
-variant = "destructive"
 
 # swaylock stays (see niri swayidle spawn).
 [lockscreen]
