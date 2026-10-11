@@ -42,4 +42,11 @@ If you make a **meaningful change** to the user's setup, you MUST also update th
    Keep history clean (squash `wip:`/fixup noise, one logical commit per change). Never `git push --force` without explicit user approval.
 6. Leave the working tree clean (`git status --short` empty except intended untracked) and tell the user the commit hash + what synced.
 
+## Comments (no vestigial comments)
+
+- Explain *why*, never restate *what* the next line already says (`# Kill window` above `kill`).
+- Never commit commented-out code — delete it, git history keeps it. No dead CSS/TOML/shell lines.
+- No history narration for reverted experiments ("we tried X", "old Y branch removed"). Describe what IS, not what WAS.
+- Keep comments truthful when code changes: update or delete them (no "commented out, re-add to restore" when nothing is commented out).
+
 `gh` CLI is NOT installed — use `git` over SSH as above. Token in `~/.git-credentials` is for the GitHub API only; do not print, commit, or paste it.
