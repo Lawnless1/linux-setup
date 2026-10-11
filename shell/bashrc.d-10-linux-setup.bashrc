@@ -48,6 +48,22 @@ tmux-clean() {
     done
 }
 
+# Fuzzy kill-picker for panes across all sessions (re-run until Esc).
+# Complements prefix+w (navigate) and tmux-clean (bulk reap): point at a
+# pane, Enter kills it. Killing a window's last pane closes the window;
+# an emptied session exits on its own.
+tmux-pick-kill() {
+    command -v fzf >/dev/null 2>&1 || { echo "fzf not installed"; return 1; }
+    tmux ls >/dev/null 2>&1 || { echo "no tmux server running"; return 1; }
+    local target id
+    while target="$(tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{pane_current_command} #{pane_current_path}' 2>/dev/null | fzf --prompt='kill pane> ' --header='Enter kills, Esc quits')"; do
+        [ -n "$target" ] || return 0
+        id="${target%% *}"
+        echo "killing pane: $id"
+        tmux kill-pane -t "$id" 2>/dev/null
+    done
+}
+
 # --- comfort aliases ---
 alias bashrc="${EDITOR:-nvim} ~/.bashrc"
 alias reload="source ~/.bashrc"
