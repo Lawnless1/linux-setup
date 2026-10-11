@@ -323,6 +323,29 @@ index adb6f6573..35fd2802e 100644
            field<&Options::hideWhenAdapterOff>({
                .key = "hide_when_adapter_off",
                .presentation =
+diff --git a/src/shell/session/session_panel.cpp b/src/shell/session/session_panel.cpp
+index 207e6dbdd..f97f1ab0e 100644
+--- a/src/shell/session/session_panel.cpp
++++ b/src/shell/session/session_panel.cpp
+@@ -274,7 +274,18 @@ void SessionPanel::onPanelCardOpacityChanged(float opacity) {
+ }
+ 
+ void SessionPanel::onOpen(std::string_view /*context*/) {
++  // Pre-select Shut Down (falling back to the last entry) so Enter
++  // activates a sensible default without keyboard navigation first.
+   m_selectedIndex.reset();
++  for (std::size_t i = 0; i < m_visibleEntries.size(); ++i) {
++    if (m_visibleEntries[i].action == "shutdown") {
++      m_selectedIndex = i;
++      break;
++    }
++  }
++  if (!m_selectedIndex.has_value() && !m_visibleEntries.empty()) {
++    m_selectedIndex = m_visibleEntries.size() - 1;
++  }
+   m_pendingCountdown.reset();
+   m_actionQueued = false;
+   hideCountdownOverlays();
 diff --git a/src/wayland/surface.h b/src/wayland/surface.h
 index 3d16d4525..bbb683b14 100644
 --- a/src/wayland/surface.h
