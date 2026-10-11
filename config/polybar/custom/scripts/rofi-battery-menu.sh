@@ -29,11 +29,9 @@ elif [[ "$status" != "Discharging" ]]; then
     theme=$HOME/.config/polybar/custom/scripts/rofi_themes/battery_charging.rasi
 fi
 
-# Build menu options
 options="$(~/.config/polybar/custom/scripts/battery.sh) $percentage ($status)"
 if [[ -n "$time_output" ]]; then
     options="$options\n$time_output"
 fi
 
-# Launch rofi with custom theme
 echo -e "$options" | rofi -dmenu -p "Battery" -theme "$theme"

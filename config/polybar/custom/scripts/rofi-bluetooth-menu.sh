@@ -12,7 +12,6 @@ goback="Back 󰌍"
 on="ON"
 off="OFF"
 
-# Check if bluetooth is on
 power_on() {
     bluetoothctl show | grep -q "Powered: yes"
 }

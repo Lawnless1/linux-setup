@@ -108,7 +108,7 @@ middle = "none"
 
 [[bar.default.capsule_group]]
 id = "left"
-# wallpaper + tray + brightness commented out (too noisy; re-add to restore).
+# wallpaper + tray + brightness omitted (too noisy; re-add to restore).
 members = ["workspaces", "cpu", "ram"]
 fill = "#010B17"
 opacity = 0.72
@@ -137,15 +137,12 @@ hide_when_no_media = true
 
 [[bar.default.capsule_group]]
 id = "status"
-# tray + brightness commented out (too noisy; re-add to restore).
+# tray + brightness omitted (too noisy; re-add to restore).
 members = ["network", "bluetooth", "volume", "battery", "notifications", "session"]
 fill = "#010B17"
 opacity = 0.72
 radius = 14
 padding = 8
-
-# App launchers (left pill edges; photos uses the native wallpaper widget,
-# music uses the native media widget like the stock bar).
 
 # Waybar parity: cpu% + mem% beside the workspaces.
 [widget.cpu]

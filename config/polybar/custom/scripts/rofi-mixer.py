@@ -41,9 +41,6 @@ else:
 
 print(f"{use_hot_keys}{prompt}{keep_selection}{enable_markup}")
 
-# Add the Open Volume Control button
-
-# Helper functions...
 def get_device_from_desc(description):
     res = os.popen(
         f'pactl list {dev_type}s | grep -C2 "Description: {description}" | grep Name | cut -d: -f2 | xargs'

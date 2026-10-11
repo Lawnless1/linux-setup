@@ -52,8 +52,6 @@ element {
     background-color:               @background;
     text-color:                     @line;
     orientation:                    horizontal;
-    /*border-radius:                  100%;*/
-    /*padding:                        8px 32px 8px 32px;*/
 }
  
 element-text {
@@ -70,6 +68,5 @@ element selected {
     background-color:               @background;
     text-color:                     @Purple;
     border:                         0px;
-    /*border-radius:                  100%;*/
     border-color:                   @selected;
 }

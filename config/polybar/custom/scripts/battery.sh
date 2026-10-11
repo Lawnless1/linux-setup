@@ -8,7 +8,6 @@ BAT_PATH=$(dirname "${cands[0]}")
 capacity=$(cat "$BAT_PATH/capacity" 2>/dev/null) || exit 0
 status=$(cat "$BAT_PATH/status" 2>/dev/null)
 
-# Select icon based on capacity
 if [ "$capacity" -le 10 ]; then
     icon=""
 elif [ "$capacity" -le 30 ]; then
@@ -21,7 +20,6 @@ else
     icon=""
 fi
 
-# If charging, append status label
 extra=""
 if [ "$status" = "Charging" ] || [ "$status" = "Full" ]; then
     extra="󱐋 "

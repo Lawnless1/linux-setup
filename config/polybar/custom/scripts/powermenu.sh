@@ -6,7 +6,6 @@ uptime=$(uptime -p | sed -e 's/up //g')
 
 rofi_command="rofi -theme $HOME/.config/polybar/custom/scripts/rofi_themes/powermenu.rasi"
 
-# Options
 shutdown=" Shutdown"
 reboot=" Reboot"
 lock=" Lock"

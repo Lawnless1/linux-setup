@@ -32,7 +32,6 @@ floating_modifier $mod
 # going through i3-sensible-terminal.
 bindsym $mod+Return exec --no-startup-id gnome-terminal -- tmux new-session
 
-# Kill window
 bindsym Ctrl+Delete kill
 
 # Launcher
@@ -69,7 +68,6 @@ bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
-# Floating toggle
 bindsym $mod+Shift+space floating toggle
 
 # Parent/child focus
@@ -142,7 +140,6 @@ gaps inner 10
 bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
-# Window borders
 for_window [class="^.*"] border pixel 0
 client.focused          #000000 #0000FF #000000 #CDA4FF #9BF6FF
 client.unfocused        #000000 #000000 #000000 #000000 #000000
@@ -172,6 +169,5 @@ exec_always --no-startup-id sh ~/.config/input/pointer.sh
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-# Brightness
 bindsym XF86MonBrightnessUp exec "brightnessctl set +5%"
 bindsym XF86MonBrightnessDown exec "brightnessctl set 5%-"

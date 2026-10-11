@@ -15,13 +15,11 @@ get_volume_info() {
     fi
 }
 
-# Icons for different volume levels
 icon_muted=""
 icon_low=""
 icon_med=""
 icon_high=""
 
-# Main logic based on script argument
 case "$1" in
     # These actions are now handled by i3/pactl, but kept for script compatibility
     up)

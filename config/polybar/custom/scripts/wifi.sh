@@ -5,7 +5,6 @@
 IFACE=$(iw dev 2>/dev/null | awk '$1=="Interface"{print $2; exit}')
 [ -z "$IFACE" ] && { echo "󰤮"; exit 0; }
 
-# Get current SSID
 ssid=$(iw dev "$IFACE" link 2>/dev/null | awk -F': ' '/SSID/{print $2}')
 
 # Get signal strength (0-100)
@@ -17,7 +16,6 @@ s=$2;
     print p;
 }')
 
-# Choose icon
 if [ -z "$ssid" ]; then
     icon="󰤮"
 else

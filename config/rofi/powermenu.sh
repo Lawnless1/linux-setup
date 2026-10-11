@@ -10,14 +10,12 @@ SYSTEMCTL="/usr/bin/systemctl"
 
 powermenu_theme="$HOME/.config/rofi/themes/powermenu.rasi"
 
-# Options for powermenu
 lock=""
 logout=""
 shutdown=""
 reboot=""
 sleep=""
 
-# Rofi command
 rofi_cmd() {
     "$ROFI" -dmenu \
         -i \
@@ -25,7 +23,6 @@ rofi_cmd() {
         -theme "$powermenu_theme"
 }
 
-# Get answer from user via rofi
 selected_option=$(printf '%s\n' "$lock" "$logout" "$sleep" "$reboot" "$shutdown" | rofi_cmd)
 
 run_power() {
@@ -36,7 +33,6 @@ run_power() {
     fi
 }
 
-# Do something based on selected option
 case "$selected_option" in
     "$lock" | "$logout")
         "$LOGINCTL" terminate-user "$(whoami)"

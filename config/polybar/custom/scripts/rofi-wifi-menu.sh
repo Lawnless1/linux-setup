@@ -14,7 +14,6 @@ get_current_ssid() {
     fi
 }
 
-# Function to get Wi-Fi status
 get_wifi_status() {
     nmcli -fields WIFI g | grep -q "enabled" && echo "enabled" || echo "disabled"
 }
@@ -24,12 +23,10 @@ get_wifi_list() {
     nmcli --fields "SECURITY,SSID" device wifi list --rescan no | sed 1d | sed 's/  */ /g' | sed -E "s/WPA*.?\S/ /g" | sed "s/^--/ /g" | sed "s/  //g" | sed "/--/d"
 }
 
-# Function to force a Wi-Fi rescan
 rescan_wifi() {
     nmcli device wifi list --rescan yes > /dev/null
 }
 
-# Main logic
 current_ssid=$(get_current_ssid)
 wifi_status=$(get_wifi_status)
 raw_list=$(get_wifi_list)

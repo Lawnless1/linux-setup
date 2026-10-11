@@ -42,8 +42,7 @@ scrollbar {
   box-shadow:
     0 19px 38px rgba(0, 0, 0, 0.35),
     0 15px 12px rgba(0, 0, 0, 0.22);
-  /* Fully opaque like the pill theme: translucency lets the desktop bleed
-   * through and reads as a lighter palette. */
+  /* Solid background: translucency lets the desktop bleed through and hurts readability. */
   background: @window_bg_color;
   padding: 10px 12px;
   border-radius: 14px;
@@ -99,7 +98,6 @@ scrollbar {
   margin: 0;
 }
 
-/* child:hover .item-box, */
 child:selected .item-box,
 row:selected .item-box {
   background: @accent_bg_color;

@@ -112,7 +112,6 @@ child {
   padding: 8px;
 }
 
-/* child:hover .item-box, */
 child:selected .item-box,
 row:selected .item-box {
   background: @accent_bg_color;

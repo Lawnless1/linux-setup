@@ -36,16 +36,13 @@ if [[ "$TARGET_YEAR" == "$TODAY_YEAR" && "$TARGET_MONTH" == "$TODAY_MONTH" ]]; t
     CAL=$(echo "$CAL" | sed -E "s/(^|[^0-9])($TODAY_DAY)([^0-9]|$)/\1<span foreground='#0860f2e6'><b>\2<\/b><\/span>\3/g")
 fi
 
-# Build menu
 MENU=$(echo -e "$CAL\n▶ Next Month\n◀ Previous Month")
 
-# Count calendar lines
 CAL_LINES=$(echo "$CAL" | wc -l)
 
 # Show Rofi with default selection on "Next Month"
 CHOICE=$(echo -e "$MENU" | rofi -dmenu -markup-rows -theme ~/.config/polybar/custom/scripts/rofi_themes/calendar.rasi -p "Calendar" -selected-row "$CAL_LINES")
 
-# Handle selection
 case "$CHOICE" in
     "◀ Previous Month") "$0" prev ;;
     "▶ Next Month") "$0" next ;;
