@@ -37,6 +37,9 @@ order = ["default"]
 # center = clock, right = status group). Transparent bar surface with
 # floating capsule groups; blur follows the pill shapes via
 # ext-background-effect (no full-width blur band like forced waybar blur).
+# Palette parity with the walker Super+Space omnibar (themes/pill/style.css):
+# near-black navy pills (#0F111A at 0.78) + white text, so the bar reads as
+# the same frosted glass as the omnibar and the unfocused niri panes.
 [bar.default]
 position = "top"
 layer = "top"
@@ -56,7 +59,7 @@ compositor_blur = true
 # stock builds (unknown keys warn, default "bar" applies).
 blur_region = "capsules"
 radius = 14
-color = "#E1E2E6"
+color = "#FFFFFF" # omnibar text color (was Noctalia default #E1E2E6)
 font_weight = 700
 capsule = false # pills come from the groups below, not per-widget capsules
 
@@ -72,16 +75,16 @@ middle = "none"
 id = "left"
 # wallpaper + tray + brightness commented out (too noisy; re-add to restore).
 members = ["workspaces", "cpu", "ram"]
-fill = "#010B17"
-opacity = 0.72
+fill = "#0F111A"
+opacity = 0.78
 radius = 14
 padding = 8
 
 [[bar.default.capsule_group]]
 id = "clockpill"
 members = ["clock"]
-fill = "#010B17"
-opacity = 0.72
+fill = "#0F111A"
+opacity = 0.78
 radius = 14
 padding = 8
 
@@ -89,8 +92,8 @@ padding = 8
 [[bar.default.capsule_group]]
 id = "media"
 members = ["media"]
-fill = "#010B17"
-opacity = 0.72
+fill = "#0F111A"
+opacity = 0.78
 radius = 14
 padding = 8
 
@@ -101,8 +104,8 @@ hide_when_no_media = true
 id = "status"
 # tray + brightness commented out (too noisy; re-add to restore).
 members = ["network", "bluetooth", "volume", "battery", "notifications", "powermenu"]
-fill = "#010B17"
-opacity = 0.72
+fill = "#0F111A"
+opacity = 0.78
 radius = 14
 padding = 8
 
