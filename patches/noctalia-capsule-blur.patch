@@ -1,0 +1,387 @@
+diff --git a/src/config/config_export.cpp b/src/config/config_export.cpp
+index 50226da89..4c042055e 100644
+--- a/src/config/config_export.cpp
++++ b/src/config/config_export.cpp
+@@ -153,6 +153,8 @@ namespace config_export {
+         resolved.backgroundOpacity = *ovr.backgroundOpacity;
+       if (ovr.compositorBlur)
+         resolved.compositorBlur = *ovr.compositorBlur;
++      if (ovr.blurRegion)
++        resolved.blurRegion = *ovr.blurRegion;
+       if (ovr.border)
+         resolved.border = *ovr.border;
+       if (ovr.borderWidth)
+diff --git a/src/config/config_overrides.cpp b/src/config/config_overrides.cpp
+index 877807136..c61acfac6 100644
+--- a/src/config/config_overrides.cpp
++++ b/src/config/config_overrides.cpp
+@@ -191,6 +191,9 @@ namespace {
+     if (ovr.compositorBlur) {
+       resolved.compositorBlur = *ovr.compositorBlur;
+     }
++    if (ovr.blurRegion) {
++      resolved.blurRegion = *ovr.blurRegion;
++    }
+     if (ovr.border) {
+       resolved.border = *ovr.border;
+     }
+diff --git a/src/config/config_service.cpp b/src/config/config_service.cpp
+index 7a1987ab2..c9e1a81c7 100644
+--- a/src/config/config_service.cpp
++++ b/src/config/config_service.cpp
+@@ -950,6 +950,8 @@ BarConfig ConfigService::resolveForOutput(const BarConfig& base, const WaylandOu
+       resolved.backgroundOpacity = *ovr.backgroundOpacity;
+     if (ovr.compositorBlur)
+       resolved.compositorBlur = *ovr.compositorBlur;
++    if (ovr.blurRegion)
++      resolved.blurRegion = *ovr.blurRegion;
+     if (ovr.border)
+       resolved.border = *ovr.border;
+     if (ovr.borderWidth)
+diff --git a/src/config/config_types.h b/src/config/config_types.h
+index bad0c2415..7893cca6b 100644
+--- a/src/config/config_types.h
++++ b/src/config/config_types.h
+@@ -75,6 +75,9 @@ struct BarMonitorOverride {
+   std::optional<std::int32_t> thickness;
+   std::optional<float> backgroundOpacity;
+   std::optional<bool> compositorBlur;
++  // Compositor blur geometry: "bar" blurs the whole bar background rect,
++  // "capsules" blurs only visible widget capsule backgrounds (island style).
++  std::optional<std::string> blurRegion;
+   std::optional<ColorSpec> border;
+   std::optional<float> borderWidth;
+   std::optional<std::int32_t> radius;
+@@ -145,6 +148,8 @@ struct BarConfig {
+   std::int32_t thickness = Style::barThicknessDefault;
+   float backgroundOpacity = 1.0F;
+   bool compositorBlur = true;
++  // Compositor blur geometry: "bar" (default) or "capsules" (island style).
++  std::string blurRegion = "bar";
+   // Inside outline for the bar background; attached panels inherit the resolved values.
+   ColorSpec border = colorSpecFromRole(ColorRole::Outline);
+   float borderWidth = 0.0F;
+diff --git a/src/config/config_validate.cpp b/src/config/config_validate.cpp
+index 14745c625..5212d41ef 100644
+--- a/src/config/config_validate.cpp
++++ b/src/config/config_validate.cpp
+@@ -710,6 +710,10 @@ namespace noctalia::config {
+         } catch (const std::exception& e) {
+           diag.error(base, e.what());
+         }
++        if (!tmpBar.blurRegion.empty() && tmpBar.blurRegion != "bar" && tmpBar.blurRegion != "capsules") {
++          diag.warn(base + ".blur_region",
++                    "unknown blur_region \"" + tmpBar.blurRegion + "\"; expected \"bar\" or \"capsules\"");
++        }
+         if (const auto* monitors = (*barTbl)["monitor"].as_table()) {
+           for (const auto& [match, monNode] : *monitors) {
+             const auto* monTbl = monNode.as_table();
+@@ -728,6 +732,10 @@ namespace noctalia::config {
+             } catch (const std::exception& e) {
+               diag.error(monBase, e.what());
+             }
++            if (tmpOvr.blurRegion.has_value() && *tmpOvr.blurRegion != "bar" && *tmpOvr.blurRegion != "capsules") {
++              diag.warn(monBase + ".blur_region",
++                        "unknown blur_region \"" + *tmpOvr.blurRegion + "\"; expected \"bar\" or \"capsules\"");
++            }
+           }
+         }
+       }
+diff --git a/src/config/schema/config_schema.cpp b/src/config/schema/config_schema.cpp
+index ef45b41bf..893db42ec 100644
+--- a/src/config/schema/config_schema.cpp
++++ b/src/config/schema/config_schema.cpp
+@@ -2284,6 +2284,7 @@ namespace noctalia::config::schema {
+         field(&BarConfig::thickness, "thickness", kBarThicknessRange),
+         field(&BarConfig::backgroundOpacity, "background_opacity", kBarOpacityRange),
+         field(&BarConfig::compositorBlur, "compositor_blur"),
++        field(&BarConfig::blurRegion, "blur_region"),
+         colorField(&BarConfig::border, "border"),
+         field(&BarConfig::borderWidth, "border_width", kBarBorderWidthRange),
+         barRadiusField(),
+@@ -2359,6 +2360,7 @@ namespace noctalia::config::schema {
+         optionalIntField(&BarMonitorOverride::thickness, "thickness", kBarThicknessRange),
+         optionalFloatField(&BarMonitorOverride::backgroundOpacity, "background_opacity", kBarOpacityRange),
+         optionalBoolField(&BarMonitorOverride::compositorBlur, "compositor_blur"),
++        field(&BarMonitorOverride::blurRegion, "blur_region"),
+         optionalColorField(&BarMonitorOverride::border, "border"),
+         optionalFloatField(&BarMonitorOverride::borderWidth, "border_width", kBarBorderWidthRange),
+         optionalIntField(&BarMonitorOverride::radius, "radius", kBarRadiusRange),
+diff --git a/src/shell/bar/bar.cpp b/src/shell/bar/bar.cpp
+index ff71f3d99..2a2b0a85c 100644
+--- a/src/shell/bar/bar.cpp
++++ b/src/shell/bar/bar.cpp
+@@ -3167,14 +3167,74 @@ void Bar::syncBarSlideLayerTransform(BarInstance& instance) const {
+   }
+ }
+ 
++void Bar::applyBarCapsuleCompositorBlur(BarInstance& instance) const {
++  LayerSurface* surface = instance.surface.get();
++  const int surfW = static_cast<int>(surface->width());
++  const int surfH = static_cast<int>(surface->height());
++
++  std::vector<InputRect> strips;
++  const std::vector<BarCapsuleRun>* lanes[3] = {
++      &instance.startCapsuleRuns, &instance.centerCapsuleRuns, &instance.endCapsuleRuns};
++  for (const auto* lane : lanes) {
++    for (const auto& run : *lane) {
++      if (run.bg == nullptr || !run.hasPaintedCapsuleBackground) {
++        continue;
++      }
++      float absX = 0.0F;
++      float absY = 0.0F;
++      Node::absolutePosition(run.bg, absX, absY);
++      const RoundedRectStyle& style = run.bg->style();
++      // Same body+inset convention as the bar-background path: tessellateShape
++      // expects the body rect and expands it outward by logicalInset itself.
++      const int insetL = static_cast<int>(std::lround(style.logicalInset.left));
++      const int insetT = static_cast<int>(std::lround(style.logicalInset.top));
++      const int insetR = static_cast<int>(std::lround(style.logicalInset.right));
++      const int insetB = static_cast<int>(std::lround(style.logicalInset.bottom));
++      const int px = static_cast<int>(std::lround(absX));
++      const int py = static_cast<int>(std::lround(absY));
++      const int pw = static_cast<int>(std::lround(std::max(0.0F, run.bg->width())));
++      const int ph = static_cast<int>(std::lround(std::max(0.0F, run.bg->height())));
++      auto runStrips = Surface::tessellateShape(px + insetL, py + insetT, pw - insetL - insetR, ph - insetT - insetB,
++                                                style.corners, style.logicalInset, style.radius);
++      for (const auto& r : runStrips) {
++        const int x0 = std::max(r.x, 0);
++        const int y0 = std::max(r.y, 0);
++        const int x1 = std::min(r.x + r.width, surfW);
++        const int y1 = std::min(r.y + r.height, surfH);
++        if (x1 > x0 && y1 > y0) {
++          strips.push_back(InputRect{x0, y0, x1 - x0, y1 - y0});
++        }
++      }
++    }
++  }
++
++  if (instance.lastBlurRegionValid && strips == instance.lastBlurRects) {
++    return;
++  }
++  instance.lastBlurRects = strips;
++  instance.lastBlurRegionValid = true;
++  if (strips.empty()) {
++    // No visible capsules: no blur at all (deliberately no full-bar fallback).
++    surface->clearBlurRegion();
++    return;
++  }
++  surface->setBlurRegion(strips);
++}
++
+ void Bar::applyBarCompositorBlur(BarInstance& instance) const {
+   if (instance.surface == nullptr) {
+     return;
+   }
+   if (!instance.barConfig.compositorBlur || !barContentVisuallyShown(instance)) {
++    instance.lastBlurRegionValid = false;
+     instance.surface->clearBlurRegion();
+     return;
+   }
++  if (instance.barConfig.blurRegion == "capsules") {
++    applyBarCapsuleCompositorBlur(instance);
++    return;
++  }
++  instance.lastBlurRegionValid = false;
+ 
+   if (instance.bg == nullptr) {
+     return;
+@@ -3198,7 +3258,14 @@ void Bar::applyBarCompositorBlur(BarInstance& instance) const {
+       px + insetL, py + insetT, pw - insetL - insetR, ph - insetT - insetB, concave.corners, concave.logicalInset,
+       concave.radii
+   );
+-  instance.surface->setBlurRegion(blurStrips);
++  // Same strip cache as the capsules path: this now runs after every layout,
++  // so skip the compositor round-trip while the region is unchanged.
++  if (instance.lastBlurRegionValid && blurStrips == instance.lastBlurRects) {
++    return;
++  }
++  instance.lastBlurRects = std::move(blurStrips);
++  instance.lastBlurRegionValid = true;
++  instance.surface->setBlurRegion(instance.lastBlurRects);
+ }
+ 
+ void Bar::startHideFadeOut(BarInstance& instance) {
+@@ -3467,6 +3534,10 @@ void Bar::updateWidgets(BarInstance& instance) {
+   updateSection(instance.centerWidgets);
+   updateSection(instance.endWidgets);
+   layoutBarSections(instance, renderer, barAreaW, barAreaH, padding, isVertical);
++  // Capsule membership changes here (media appear/vanish, tray icons, workspace
++  // peek). Re-sync the compositor blur so islands track the painted pills;
++  // the call is a cheap no-op while the strips are unchanged.
++  applyBarCompositorBlur(instance);
+ }
+ 
+ void Bar::prepareFrame(BarInstance& instance, bool needsUpdate, bool needsLayout) {
+@@ -3509,6 +3580,9 @@ void Bar::prepareFrame(BarInstance& instance, bool needsUpdate, bool needsLayout
+       widget->layout(renderer, barAreaW, barAreaH);
+     }
+     layoutBarSections(instance, renderer, barAreaW, barAreaH, padding, isVertical);
++    // Same re-sync as updateWidgets(): layout-only passes can also add or
++    // remove capsule pills (e.g. a widget hiding itself during layout).
++    applyBarCompositorBlur(instance);
+   }
+ }
+ 
+diff --git a/src/shell/bar/bar.h b/src/shell/bar/bar.h
+index 1075ae392..e11d0e4ee 100644
+--- a/src/shell/bar/bar.h
++++ b/src/shell/bar/bar.h
+@@ -140,6 +140,7 @@ private:
+   void prepareFrame(BarInstance& instance, bool needsUpdate, bool needsLayout);
+   void updateWidgets(BarInstance& instance);
+   void applyBarCompositorBlur(BarInstance& instance) const;
++  void applyBarCapsuleCompositorBlur(BarInstance& instance) const;
+   void syncBarSlideLayerTransform(BarInstance& instance) const;
+   void syncBarAutoHideInputRegion(BarInstance& instance) const;
+   void syncBarExclusiveZone(BarInstance& instance);
+diff --git a/src/shell/bar/bar_instance.h b/src/shell/bar/bar_instance.h
+index 0d68a7774..865964db0 100644
+--- a/src/shell/bar/bar_instance.h
++++ b/src/shell/bar/bar_instance.h
+@@ -100,6 +100,11 @@ struct BarInstance {
+   std::vector<BarCapsuleRun> startCapsuleRuns;
+   std::vector<BarCapsuleRun> centerCapsuleRuns;
+   std::vector<BarCapsuleRun> endCapsuleRuns;
++  // Last compositor blur region submitted for this bar, to avoid duplicate
++  // Wayland requests when capsule geometry did not change. Invalidated
++  // whenever the full-bar path submits or clears.
++  std::vector<InputRect> lastBlurRects;
++  bool lastBlurRegionValid = false;
+ 
+   // Maps each widget's root node to its Widget so hover-change events resolve to the owning widget.
+   std::unordered_map<const Node*, Widget*> widgetByRoot;
+diff --git a/src/shell/bar/widgets/bluetooth_widget.cpp b/src/shell/bar/widgets/bluetooth_widget.cpp
+index 388d41022..4ceec9085 100644
+--- a/src/shell/bar/widgets/bluetooth_widget.cpp
++++ b/src/shell/bar/widgets/bluetooth_widget.cpp
+@@ -45,7 +45,8 @@ namespace {
+ } // namespace
+ 
+ BluetoothWidget::BluetoothWidget(BluetoothService* bluetooth, wl_output* /*output*/, Options options)
+-    : m_bluetooth(bluetooth), m_showLabel(options.showLabel), m_hideWhenAdapterOff(options.hideWhenAdapterOff),
++    : m_bluetooth(bluetooth), m_showLabel(options.showLabel), m_showCount(options.showCount),
++      m_hideWhenAdapterOff(options.hideWhenAdapterOff),
+       m_hideWhenNoConnectedDevice(options.hideWhenNoConnectedDevice) {}
+ 
+ void BluetoothWidget::create() {
+@@ -60,7 +61,7 @@ void BluetoothWidget::create() {
+       })
+   );
+ 
+-  if (m_showLabel) {
++  if (m_showLabel || m_showCount) {
+     area->addChild(
+         ui::label({
+             .out = &m_label,
+@@ -117,7 +118,12 @@ void BluetoothWidget::syncState(Renderer& renderer) {
+   const auto& s = m_bluetooth->state();
+   const auto& devices = m_bluetooth->devices();
+   const int numConnected = connectedCount(devices);
+-  const std::string alias = m_showLabel ? firstConnectedAlias(devices) : std::string{};
++  std::string alias;
++  if (m_showCount) {
++    alias = numConnected > 0 ? std::to_string(numConnected) : std::string{};
++  } else if (m_showLabel) {
++    alias = firstConnectedAlias(devices);
++  }
+ 
+   if (m_haveLastState && s == m_lastState && numConnected == m_lastConnectedCount && alias == m_lastConnectedAlias) {
+     return;
+diff --git a/src/shell/bar/widgets/bluetooth_widget.h b/src/shell/bar/widgets/bluetooth_widget.h
+index 5557f83d0..59c6f4a5e 100644
+--- a/src/shell/bar/widgets/bluetooth_widget.h
++++ b/src/shell/bar/widgets/bluetooth_widget.h
+@@ -13,6 +13,8 @@ class BluetoothWidget : public Widget {
+ public:
+   struct Options {
+     bool showLabel = false;
++    // Show the connected-device count instead of the device name (empty when zero).
++    bool showCount = false;
+     bool hideWhenAdapterOff = false;
+     bool hideWhenNoConnectedDevice = false;
+   };
+@@ -29,6 +31,7 @@ private:
+ 
+   BluetoothService* m_bluetooth = nullptr;
+   bool m_showLabel = false;
++  bool m_showCount = false;
+   bool m_hideWhenAdapterOff = false;
+   bool m_hideWhenNoConnectedDevice = false;
+   Glyph* m_glyph = nullptr;
+diff --git a/src/shell/bar/widgets/bluetooth_widget_definition.cpp b/src/shell/bar/widgets/bluetooth_widget_definition.cpp
+index adb6f6573..35fd2802e 100644
+--- a/src/shell/bar/widgets/bluetooth_widget_definition.cpp
++++ b/src/shell/bar/widgets/bluetooth_widget_definition.cpp
+@@ -22,6 +22,9 @@ const noctalia::bar::WidgetDefinition<BluetoothWidget::Options>& bluetoothWidget
+           field<&Options::showLabel>({
+               .key = "show_label",
+           }),
++          field<&Options::showCount>({
++              .key = "show_count",
++          }),
+           field<&Options::hideWhenAdapterOff>({
+               .key = "hide_when_adapter_off",
+               .presentation =
+diff --git a/src/wayland/surface.h b/src/wayland/surface.h
+index 3d16d4525..bbb683b14 100644
+--- a/src/wayland/surface.h
++++ b/src/wayland/surface.h
+@@ -29,6 +29,8 @@ struct InputRect {
+   int y = 0;
+   int width = 0;
+   int height = 0;
++
++  bool operator==(const InputRect&) const = default;
+ };
+ 
+ struct SurfaceIdleProfileEntry {
+diff --git a/tests/config_schema_roundtrip_test.cpp b/tests/config_schema_roundtrip_test.cpp
+index 63b17c0e2..bed88a47b 100644
+--- a/tests/config_schema_roundtrip_test.cpp
++++ b/tests/config_schema_roundtrip_test.cpp
+@@ -205,6 +205,7 @@ location = "https://example.invalid/bad"
+     bar.thickness = 44;
+     bar.backgroundOpacity = 0.85F;
+     bar.compositorBlur = false;
++    bar.blurRegion = "capsules";
+     bar.border = colorSpecFromConfigString("#123456");
+     bar.borderWidth = 2.0F;
+     bar.radius = 18;
+@@ -279,6 +280,7 @@ location = "https://example.invalid/bad"
+     ovr.thickness = 50;
+     ovr.backgroundOpacity = 0.7F;
+     ovr.compositorBlur = true;
++    ovr.blurRegion = "bar";
+     ovr.border = colorSpecFromConfigString("#a1a2a3");
+     ovr.borderWidth = 3.0F;
+     ovr.radius = 22;
+@@ -731,6 +733,12 @@ location = "https://example.invalid/bad"
+     if (!computeConfigChangeSet(before, blurChanged).bars) {
+       fail("monitor compositor_blur override did not mark bars changed");
+     }
++
++    Config regionChanged = before;
++    regionChanged.bars.front().monitorOverrides.front().blurRegion = "capsules";
++    if (!computeConfigChangeSet(before, regionChanged).bars) {
++      fail("monitor blur_region override did not mark bars changed");
++    }
+   }
+ 
+   std::pair<PluginsConfig, Diagnostics> parsePlugins(std::string_view config) {
+@@ -1080,6 +1088,7 @@ int main() {
+ [default]
+ auto_hide = true
+ background_opacity = 0.85000002384185791
++blur_region = "capsules"
+ border = "#123456"
+ border_width = 2.0
+ capsule = true
+@@ -1140,6 +1149,7 @@ widget_spacing = 8
+     [default.monitor.DP-1]
+     auto_hide = false
+     background_opacity = 0.69999998807907104
++    blur_region = "bar"
+     border = "#A1A2A3"
+     border_width = 3.0
+     capsule = false
