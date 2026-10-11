@@ -111,6 +111,18 @@ window-rule {
     clip-to-geometry true
 }
 
+// Focus transparency: focused pane fully opaque, unfocused panes very
+// slightly translucent (0.95 — raise/lower to taste, 1.0 = opaque).
+window-rule {
+    match is-focused=true
+    opacity 1.0
+}
+
+window-rule {
+    match is-focused=false
+    opacity 0.95
+}
+
 // Background blur (niri >= 26.04, PR #3483). Global tuning for all blur,
 // whether requested by the client (ext-background-effect) or forced below.
 blur {
