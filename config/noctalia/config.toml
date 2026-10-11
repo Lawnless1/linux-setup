@@ -66,7 +66,7 @@ middle = "none"
 
 [[bar.default.capsule_group]]
 id = "left"
-members = ["photos", "workspaces", "cpu", "ram", "music"]
+members = ["wallpaper", "workspaces", "cpu", "ram", "music"]
 fill = "#010B17"
 opacity = 0.72
 radius = 14
@@ -88,15 +88,7 @@ opacity = 0.72
 radius = 14
 padding = 8
 
-# App launchers (left pill edges).
-[widget.photos]
-type = "custom_button"
-glyph = "photo"
-tooltip = "Photos (Shotwell)"
-
-[widget.photos.actions]
-left = "exec shotwell"
-
+# App launchers (left pill edges; photos uses the native wallpaper widget).
 [widget.music]
 type = "custom_button"
 glyph = "music"
