@@ -30,6 +30,9 @@ enable_daemon = true
 [shell.panel]
 control_center_placement = "floating"
 session_placement = "floating"
+# Frosted floating panels (calendar, session, control center): soft
+# translucency over the shaped panel blur, matching the omnibar/pills.
+transparency_mode = "soft"
 
 # Native session panel buttons (opened from the bar's power button).
 # Stock defaults minus lock/lock_and_suspend (hidden while noctalia's own
