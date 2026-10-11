@@ -62,7 +62,7 @@ color = "#E1E2E6"
 font_weight = 700
 capsule = false # pills come from the groups below, not per-widget capsules
 
-start = ["group:left"]
+start = ["group:left", "group:media"]
 center = ["group:clockpill"]
 end = ["group:status"]
 
@@ -73,7 +73,7 @@ middle = "none"
 [[bar.default.capsule_group]]
 id = "left"
 # wallpaper + tray + brightness commented out (too noisy; re-add to restore).
-members = ["workspaces", "cpu", "ram", "media"]
+members = ["workspaces", "cpu", "ram"]
 fill = "#010B17"
 opacity = 0.72
 radius = 14
@@ -86,6 +86,18 @@ fill = "#010B17"
 opacity = 0.72
 radius = 14
 padding = 8
+
+# Media gets its own pill: visible only while something plays.
+[[bar.default.capsule_group]]
+id = "media"
+members = ["media"]
+fill = "#010B17"
+opacity = 0.72
+radius = 14
+padding = 8
+
+[widget.media]
+hide_when_no_media = true
 
 [[bar.default.capsule_group]]
 id = "status"
