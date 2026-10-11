@@ -1,4 +1,4 @@
-# swaylock config — ubuntu-i3-setup (niri session).
+# swaylock config — linux-setup (niri session).
 # Screen locker behind Super+Alt+L, the fuzzel power menu, and swayidle.
 # Deployed to ~/.config/swaylock/config.
 color=1f1f1f

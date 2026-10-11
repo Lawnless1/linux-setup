@@ -1,4 +1,4 @@
-# Walker config — ubuntu-i3-setup (niri session, Super+Space).
+# Walker config — linux-setup (niri session, Super+Space).
 # Adapted from walker v2.17.0 resources/config.toml: unified Spotlight
 # (apps always, files always — no prefix needed), pill theme.
 # Deployed to ~/.config/walker/config.toml.

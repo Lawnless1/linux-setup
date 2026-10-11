@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Walker "pill" theme layout — ubuntu-i3-setup (niri Super+Space).
+<!-- Walker "pill" theme layout — linux-setup (niri Super+Space).
   Copy of walker's default layout with fixed vicinae-like geometry, so the
   box NEVER resizes with result count: BoxWrapper is pinned 770x480, the
   list scrolls internally past max-content-height 330 (input + separator +

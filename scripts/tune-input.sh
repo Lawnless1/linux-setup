@@ -70,7 +70,7 @@ echo "persisted to $POINTER_FILE"
 if ! grep -q "config/input/pointer.sh" "$HOME/.xprofile" 2>/dev/null; then
     cat >> "$HOME/.xprofile" <<'EOF'
 
-# ubuntu-i3-setup: pointer sensitivity (tune with scripts/tune-input.sh)
+# linux-setup: pointer sensitivity (tune with scripts/tune-input.sh)
 if [ -f "$HOME/.config/input/pointer.sh" ]; then
     . "$HOME/.config/input/pointer.sh"
 fi

@@ -1,4 +1,4 @@
-# >>> ubuntu-i3-setup — shell additions (appended by install.sh) >>>
+# >>> linux-setup — shell additions (appended by install.sh) >>>
 # Kept separate from Ubuntu's default ~/.bashrc so updates stay mergeable.
 # Source order: interactive shells read ~/.bashrc, which sources
 # ~/.bashrc.d/*.bashrc when present.
@@ -82,4 +82,4 @@ if [ -n "${GTK_MODULES:-}" ]; then
     export GTK_MODULES="$_i3s_gtk"; unset _i3s_gtk
 fi
 export UBUNTU_MENUPROXY=0
-# <<< ubuntu-i3-setup <<<
+# <<< linux-setup <<<

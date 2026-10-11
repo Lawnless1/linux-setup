@@ -1,4 +1,4 @@
-// Waybar config — ubuntu-i3-setup (niri session).
+// Waybar config — linux-setup (niri session).
 // Minimal 3-pill bar (see style.css): left = workspaces + cpu/mem,
 // center = clock, right = essential status (network, bluetooth, sound,
 // battery, powermenu). Weather/tray dropped from the bar (kept out of the

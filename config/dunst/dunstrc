@@ -1,4 +1,4 @@
-# dunst config — ubuntu-i3-setup (shared i3 + niri sessions).
+# dunst config — linux-setup (shared i3 + niri sessions).
 # Modern minimal theme matching waybar (`config/waybar/style.css`):
 # dark-navy pill (#010B17), light-grey text (#E1E2E6), 1px muted-grey
 # frame (#C5C8C6, same as fuzzel border), 12px rounding.

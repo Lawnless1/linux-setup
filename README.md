@@ -1,4 +1,4 @@
-# ubuntu-i3-setup
+# linux-setup
 
 Private, replicable i3 desktop for Ubuntu 26.04. Symlinked configs + one installer.
 
@@ -35,24 +35,24 @@ Private, replicable i3 desktop for Ubuntu 26.04. Symlinked configs + one install
 Dropped from the original machine state (deliberately): 90MB of unused
 polybar example themes, `config_old`/`config_mate` backups, VPN/Telegram/player
 scripts referencing uninstalled apps, the committed OpenWeatherMap key
-(now in `~/.config/ubuntu-i3-setup/env`, gitignored).
+(now in `~/.config/linux-setup/env`, gitignored).
 
 ## Fresh machine
 
 ```bash
-git clone <this-repo> ~/ubuntu-i3-setup && cd ~/ubuntu-i3-setup
+git clone <this-repo> ~/linux-setup && cd ~/linux-setup
 ./install.sh --with-apt --with-fonts   # add --with-doas for passwordless power menu
 # log out/in, or: i3-msg restart
 ```
 `install.sh` is idempotent — anything it overwrites is backed up to
-`~/.config/ubuntu-i3-setup/backups/<timestamp>/`, and configs are symlinked
+`~/.config/linux-setup/backups/<timestamp>/`, and configs are symlinked
 so `git pull` updates the live setup.
 
 Weather module needs a free key (stays out of git):
 
 ```bash
-cp config/env.example ~/.config/ubuntu-i3-setup/env
-$EDITOR ~/.config/ubuntu-i3-setup/env   # set OPENWEATHER_API_KEY
+cp config/env.example ~/.config/linux-setup/env
+$EDITOR ~/.config/linux-setup/env   # set OPENWEATHER_API_KEY
 ```
 
 ## Daily use

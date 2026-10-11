@@ -1,9 +1,9 @@
-# AGENTS — ubuntu-i3-setup sync rule (READ THIS FIRST)
+# AGENTS — linux-setup sync rule (READ THIS FIRST)
 
 This machine's desktop setup is versioned. Live config and this repo must stay in sync.
 
-- Repo: `~/ubuntu-i3-setup` → `git@github.com:Lawnless1/ubuntu-i3-setup.git` (private, branch `main`)
-- Deploy method: symlinks via `./install.sh` (idempotent, backs up to `~/.config/ubuntu-i3-setup/backups/<ts>/`)
+- Repo: `~/linux-setup` → `git@github.com:Lawnless1/linux-setup.git` (private, branch `main`)
+- Deploy method: symlinks via `./install.sh` (idempotent, backs up to `~/.config/linux-setup/backups/<ts>/`)
 
 ## Hard rule
 
@@ -13,7 +13,7 @@ If you make a **meaningful change** to the user's setup, you MUST also update th
 - `~/.config/i3/config`, `~/.config/input/pointer.sh`, `~/.xprofile`
 - `~/.config/polybar/custom/**`, `~/.config/rofi/**`, `~/.config/picom/picom.conf`
 - `~/.screenlayout/**`, `~/.Xresources`, `~/.config/flameshot/*`, `~/.config/starship.toml`
-- `~/.bashrc.d/10-ubuntu-i3-setup.bashrc`, `shell/profile` contents, wallpaper in `~/Pictures/wallpaper/`
+- `~/.bashrc.d/10-linux-setup.bashrc`, `shell/profile` contents, wallpaper in `~/Pictures/wallpaper/`
 - `packages/apt.txt`, `system/doas.conf.d/*`, `scripts/*`, `assets/wallpapers/*`
 - niri session: `~/.config/niri/config.kdl`, `~/.config/niri/scripts/*`,
   `~/.config/xdg-desktop-portal/niri-portals.conf`, `~/.config/waybar/**`,
@@ -31,7 +31,7 @@ If you make a **meaningful change** to the user's setup, you MUST also update th
    - `bash scripts/check.sh` (must end `ALL CHECKS PASSED`)
    - `i3 -C -c ~/.config/i3/config`
    - New/edited shell scripts: `bash -n` (or `sh -n`); `rofi-mixer.py`: `python3 -c "import ast; ast.parse(...)"`
-4. No secrets, ever: no API keys, tokens (`ghp_`, `github_pat_`), private keys, or `~/.git-credentials` contents. Weather key goes in gitignored `~/.config/ubuntu-i3-setup/env` (see `config/env.example`); scan with `grep -rn "ghp_\|2ab04c7e\|BEGIN.*PRIVATE" . --exclude-dir=.git` plus `git grep -n "ghp_\|2ab04c7e" $(git rev-list --all)`.
+4. No secrets, ever: no API keys, tokens (`ghp_`, `github_pat_`), private keys, or `~/.git-credentials` contents. Weather key goes in gitignored `~/.config/linux-setup/env` (see `config/env.example`); scan with `grep -rn "ghp_\|2ab04c7e\|BEGIN.*PRIVATE" . --exclude-dir=.git` plus `git grep -n "ghp_\|2ab04c7e" $(git rev-list --all)`.
 5. Commit + push:
    ```bash
    git add -A && git status --short

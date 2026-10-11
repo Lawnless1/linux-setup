@@ -125,7 +125,7 @@ else
 fi
 log "checking out walker $WALKER_TAG"
 git -C "$SRC_DIR/walker" checkout -q "$WALKER_TAG"
-# ubuntu-i3-setup: pin preview panels to the fixed 770px omnibar box
+# linux-setup: pin preview panels to the fixed 770px omnibar box
 # (images/PDFs render at 380px, tall content scrolls at 300px).
 if [ -f "$REPO_DIR/scripts/walker-preview-size.patch" ]; then
     log "applying walker-preview-size.patch..."

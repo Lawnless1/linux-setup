@@ -1,4 +1,4 @@
-// niri config — ubuntu-i3-setup (Wayland session, side-by-side with i3).
+// niri config — linux-setup (Wayland session, side-by-side with i3).
 // Mirrors ~/.config/i3/config keybindings as closely as niri's scrollable-tiling
 // model allows. i3 concepts with no niri equivalent are noted at the bind site.
 // Full mapping rationale: README.md ("Niri session" section).

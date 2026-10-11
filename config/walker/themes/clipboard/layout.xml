@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Walker "clipboard" theme layout — ubuntu-i3-setup (niri Super+V).
+<!-- Walker "clipboard" theme layout — linux-setup (niri Super+V).
   Slimmer sibling of the pill theme: narrower window, shorter list, no
   keybind hint bar (pin/clear keys still work, see README). All other
   item layouts fall back to the default theme. -->

@@ -1,4 +1,4 @@
-# Elephant desktopapplications provider — ubuntu-i3-setup (niri session).
+# Elephant desktopapplications provider — linux-setup (niri session).
 # Backend for the walker omnibar on Super+Space (apps provider).
 # Deployed to ~/.config/elephant/desktopapplications.toml.
 #

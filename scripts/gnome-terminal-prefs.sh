@@ -1,5 +1,5 @@
 #!/bin/bash
-# GNOME Terminal prefs for ubuntu-i3-setup (both i3 and niri spawn it via
+# GNOME Terminal prefs for linux-setup (both i3 and niri spawn it via
 # i3-sensible-terminal). Idempotent: safe to re-run.
 # - scrollbar-policy 'never': no permanent scrollbar gutter (was 'always').
 set -euo pipefail

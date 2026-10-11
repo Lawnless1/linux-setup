@@ -90,7 +90,7 @@ index 15185ff..385aeb6 100644
 +        prompt_text(wayl->prompt)[0] == '\0';
 +    bool skip_list = hide_list;
 +    if (hide_list != wayl->list_hidden) {
-+        /* ubuntu-i3-setup pill mode: grow/shrink the window with the list.
++        /* linux-setup pill mode: grow/shrink the window with the list.
 +         * The list is (re)painted by the fresh frame the configure event
 +         * triggers: painting it here would render full-size rows into the
 +         * old-size buffer while render workers may still be active. */
@@ -120,7 +120,7 @@ index 15185ff..385aeb6 100644
          },
      };
  
-+    /* ubuntu-i3-setup pill mode: start at the right size so the first
++    /* linux-setup pill mode: start at the right size so the first
 +     * frame never flashes the full-height box (or a clipped list when
 +     * launched with --search text). */
 +    wayl->list_hidden = conf->hide_when_prompt_empty &&

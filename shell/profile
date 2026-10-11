@@ -1,5 +1,5 @@
 # ~/.profile: executed by the command interpreter for login shells.
-# Ubuntu stock file + ubuntu-i3-setup PATH entries (guarded, $HOME-based).
+# Ubuntu stock file + linux-setup PATH entries (guarded, $HOME-based).
 # See https://help.ubuntu.com/community/EnvironmentVariables for stock docs.
 
 # the default umask is set in /etc/profile; for setting the umask
@@ -24,7 +24,7 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
-# ubuntu-i3-setup: micromamba + opencode CLIs when present (no hard-coded user)
+# linux-setup: micromamba + opencode CLIs when present (no hard-coded user)
 if [ -d "$HOME/.local/share/mamba/bin" ] ; then
     case ":$PATH:" in
         *":$HOME/.local/share/mamba/bin:"*) ;;
@@ -38,7 +38,7 @@ if [ -d "$HOME/.opencode/bin" ] ; then
     esac
 fi
 
-# ubuntu-i3-setup: GTK_MODULES hygiene — appmenu-gtk-module segfaults
+# linux-setup: GTK_MODULES hygiene — appmenu-gtk-module segfaults
 # blueman-manager (even a single copy; /etc/profile.d/vala-panel-appmenu.sh
 # from removed vala-panel-appmenu-common re-appends it every login shell).
 # Neither i3 nor niri uses a global menu, so strip it user-wide.

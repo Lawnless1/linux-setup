@@ -6,7 +6,7 @@ index f8d6c74..c257883 100644
      <style>
        <class name="preview-box"></class>
      </style>
-+    <!-- ubuntu-i3-setup: 400px panel keeps list + panel + spacing inside
++    <!-- linux-setup: 400px panel keeps list + panel + spacing inside
 +      the fixed 770px omnibar box. -->
      <property name="height-request">300</property>
 -    <property name="width-request">500</property>
@@ -34,7 +34,7 @@ index 8a9dfe0..2efb9d5 100644
          scrolled.set_policy(PolicyType::Automatic, PolicyType::Automatic);
 -        scrolled.set_size_request(400, 300);
 +        scrolled.set_size_request(380, 300);
-+        // ubuntu-i3-setup: cap panel height so tall content scrolls instead
++        // linux-setup: cap panel height so tall content scrolls instead
 +        // of growing our fixed-size omnibar box.
 +        scrolled.set_max_content_height(300);
          scrolled.set_vadjustment(Some(&gtk4::Adjustment::new(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)));
@@ -55,7 +55,7 @@ index 8a9dfe0..2efb9d5 100644
          scrolled.set_policy(PolicyType::Automatic, PolicyType::Automatic);
 -        scrolled.set_size_request(400, 300);
 +        scrolled.set_size_request(380, 300);
-+        // ubuntu-i3-setup: cap panel height (see above).
++        // linux-setup: cap panel height (see above).
 +        scrolled.set_max_content_height(300);
  
          self.preview_area.add_child(&scrolled);
@@ -66,7 +66,7 @@ index 8a9dfe0..2efb9d5 100644
          scrolled.set_policy(PolicyType::Never, PolicyType::Automatic);
 -        scrolled.set_width_request(800);
 +        scrolled.set_width_request(380);
-+        // ubuntu-i3-setup: cap panel height (see above).
++        // linux-setup: cap panel height (see above).
 +        scrolled.set_max_content_height(300);
  
          self.preview_area.add_child(&scrolled);
@@ -76,7 +76,7 @@ index 8a9dfe0..2efb9d5 100644
          let (width, height) = page.size();
  
 -        let target_width = 800.0;
-+        // ubuntu-i3-setup: render at split-panel width so the page fits our
++        // linux-setup: render at split-panel width so the page fits our
 +        // fixed-size omnibar box instead of widening it.
 +        let target_width = 380.0;
          let display_scale = target_width / width;
@@ -113,7 +113,7 @@ index c0be5d9..3dac102 100644
          label.set_label(truncated.as_str());
      }
  
-+    // ubuntu-i3-setup: inline thumbnails for copied images, so the clipboard
++    // linux-setup: inline thumbnails for copied images, so the clipboard
 +    // popup needs no side preview panel (fixed size). Text entries keep the
 +    // row imageless.
 +    fn image_transformer(&self, b: &Builder, _: &ListItem, item: &Item) {

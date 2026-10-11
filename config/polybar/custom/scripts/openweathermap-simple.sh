@@ -1,12 +1,12 @@
 #!/bin/sh
 # Weather icon for polybar (OpenWeatherMap).
 # No secrets in repo: set OPENWEATHER_API_KEY and OPENWEATHER_CITY in
-# ~/.config/ubuntu-i3-setup/env (see env.example). Falls back to $OPENWEATHER_*.
+# ~/.config/linux-setup/env (see env.example). Falls back to $OPENWEATHER_*.
 # Deps: curl, jq
 set -u
 
 WEATHER_FILE="${TMPDIR:-/tmp}/polybar-weather.json"
-ENV_FILE="$HOME/.config/ubuntu-i3-setup/env"
+ENV_FILE="$HOME/.config/linux-setup/env"
 [ -f "$ENV_FILE" ] && . "$ENV_FILE"
 
 get_icon() {

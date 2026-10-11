@@ -1,7 +1,7 @@
 #!/bin/bash
-# ubuntu-i3-setup installer — Ubuntu 24.04 + i3.
+# linux-setup installer — Ubuntu 26.04 + i3 + niri.
 # Idempotent: safe to re-run. Backs up anything it overwrites to
-# ~/.config/ubuntu-i3-setup/backups/<timestamp>/.
+# ~/.config/linux-setup/backups/<timestamp>/.
 #
 # Usage:
 #   ./install.sh                 # link configs, shell additions, wallpaper, input
@@ -13,7 +13,7 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BACKUP_DIR="$HOME/.config/ubuntu-i3-setup/backups/$(date +%Y%m%d-%H%M%S)"
+BACKUP_DIR="$HOME/.config/linux-setup/backups/$(date +%Y%m%d-%H%M%S)"
 WITH_APT=0; WITH_DOAS=0; WITH_FONTS=0; WITH_NIRI=0
 
 for arg in "$@"; do
@@ -118,15 +118,15 @@ fi
 
 # --- 5. shell additions ---------------------------------------------------------
 mkdir -p "$HOME/.bashrc.d"
-link_to shell/bashrc.d-10-ubuntu-i3-setup.bashrc .bashrc.d/10-ubuntu-i3-setup.bashrc
-HOOK_MARKER="ubuntu-i3-setup (managed by install.sh"
+link_to shell/bashrc.d-10-linux-setup.bashrc .bashrc.d/10-linux-setup.bashrc
+HOOK_MARKER="linux-setup (managed by install.sh"
 if ! grep -q "$HOOK_MARKER" "$HOME/.bashrc" 2>/dev/null; then
     touch "$HOME/.bashrc"
     mkdir -p "$BACKUP_DIR"
     cp "$HOME/.bashrc" "$BACKUP_DIR/dot_bashrc.pre-hook"
     cat >> "$HOME/.bashrc" <<'EOF'
 
-# ubuntu-i3-setup (managed by install.sh; safe to keep)
+# linux-setup (managed by install.sh; safe to keep)
 if [ -d "$HOME/.bashrc.d" ]; then
     for _f in "$HOME"/.bashrc.d/*.bashrc; do
         [ -r "$_f" ] && . "$_f"
@@ -143,11 +143,11 @@ else
 fi
 
 # --- 6. secrets skeleton ----------------------------------------------------------
-mkdir -p "$HOME/.config/ubuntu-i3-setup"
-if [ ! -e "$HOME/.config/ubuntu-i3-setup/env" ]; then
-    cp "$REPO_DIR/config/env.example" "$HOME/.config/ubuntu-i3-setup/env"
-    chmod 600 "$HOME/.config/ubuntu-i3-setup/env"
-    log "created ~/.config/ubuntu-i3-setup/env — add your OPENWEATHER_API_KEY"
+mkdir -p "$HOME/.config/linux-setup"
+if [ ! -e "$HOME/.config/linux-setup/env" ]; then
+    cp "$REPO_DIR/config/env.example" "$HOME/.config/linux-setup/env"
+    chmod 600 "$HOME/.config/linux-setup/env"
+    log "created ~/.config/linux-setup/env — add your OPENWEATHER_API_KEY"
 fi
 
 # --- 7. optional: doas power rule ---------------------------------------------------

@@ -1,4 +1,4 @@
-# Noctalia config — ubuntu-i3-setup (niri session).
+# Noctalia config — linux-setup (niri session).
 # Bar-only deployment: replaces waybar's 3-pill bar with shaped,
 # per-pill blur (ext-background-effect). Everything else stays:
 # walker (search + clipboard), fuzzel menus, dunst, swaybg, swaylock,

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Sanity checks for ubuntu-i3-setup: required binaries, i3 syntax, script syntax.
+# Sanity checks for linux-setup: required binaries, i3 syntax, script syntax.
 # Exit 0 = all good. Used by install.sh and CI-ish local runs.
 set -u
 FAIL=0

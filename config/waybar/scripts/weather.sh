@@ -1,12 +1,12 @@
 #!/bin/sh
 # Weather module for waybar (custom/weather).
 # Same data source as the polybar module: OPENWEATHER_API_KEY and
-# OPENWEATHER_CITY in ~/.config/ubuntu-i3-setup/env (see config/env.example).
+# OPENWEATHER_CITY in ~/.config/linux-setup/env (see config/env.example).
 # Shows "icon temp°"; blank output (module hidden) when no key is set.
 # Deps: curl, jq
 set -u
 
-ENV_FILE="$HOME/.config/ubuntu-i3-setup/env"
+ENV_FILE="$HOME/.config/linux-setup/env"
 [ -f "$ENV_FILE" ] && . "$ENV_FILE"
 
 get_icon() {
