@@ -17,6 +17,7 @@ Private, replicable i3 desktop for Ubuntu 26.04. Symlinked configs + one install
 | `config/noctalia/config.toml` | `~/.config/noctalia/config.toml` | Noctalia 3-pill bar (niri session; needs `scripts/install-noctalia.sh` on 26.04+) |
 | `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Spotlight-like pill theme for the app grid (`$mod+d`) and text search (`$mod+F`; needs 1.12 from `scripts/build-fuzzel.sh`) |
 | `config/walker/` | `~/.config/walker/` | walker omnibar theme + config (`$mod+space`; apps + indexed files with icons; needs `scripts/build-walker.sh`) |
+| `config/elephant/desktopapplications.toml` | `~/.config/elephant/desktopapplications.toml` | elephant apps provider: `history_when_empty` so empty `$mod+space` ranks MRU/MFU, not alphabetical |
 | `config/dunst/dunstrc` | `~/.config/dunst/dunstrc` | modern minimal notifications (shared i3 + niri) |
 | `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu) |
 | `config/polybar/custom/` | `~/.config/polybar/custom/` | single `center` bar + curated scripts (wifi, sound, battery, bluetooth, weather, calendar, powermenu) |

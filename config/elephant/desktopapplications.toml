@@ -1,0 +1,11 @@
+# Elephant desktopapplications provider — ubuntu-i3-setup (niri session).
+# Backend for the walker omnibar on Super+Space (apps provider).
+# Deployed to ~/.config/elephant/desktopapplications.toml.
+#
+# The empty-query list (what you see right after Super+Space, before typing)
+# is alphabetical UNLESS history is consulted. Upstream default is
+# history_when_empty = false, which is why the omnibar looked purely
+# alphabetical. Setting it true ranks the empty list by most-recently /
+# most-often used (from ~/.cache/elephant/desktopapplications_history.gob).
+history = true
+history_when_empty = true

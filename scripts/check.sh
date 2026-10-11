@@ -94,6 +94,8 @@ fi
     || { echo "MISSING: ~/.config/dunst/dunstrc (run ./install.sh)"; FAIL=1; }
 [ -f "$HOME/.config/walker/config.toml" ] && echo "walker config linked" \
     || { echo "MISSING: ~/.config/walker/config.toml (run ./install.sh)"; FAIL=1; }
+[ -f "$HOME/.config/elephant/desktopapplications.toml" ] && echo "elephant desktopapplications config linked" \
+    || { echo "MISSING: ~/.config/elephant/desktopapplications.toml (run ./install.sh)"; FAIL=1; }
 for b in elephant walker; do
     command -v "$b" >/dev/null 2>&1 || echo "(info: $b not installed yet — ./scripts/build-walker.sh)"
 done

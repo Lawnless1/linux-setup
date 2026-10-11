@@ -17,7 +17,7 @@ If you make a **meaningful change** to the user's setup, you MUST also update th
 - `packages/apt.txt`, `system/doas.conf.d/*`, `scripts/*`, `assets/wallpapers/*`
 - niri session: `~/.config/niri/config.kdl`, `~/.config/niri/scripts/*`,
   `~/.config/xdg-desktop-portal/niri-portals.conf`, `~/.config/waybar/**`,
-  `~/.config/fuzzel/fuzzel.ini`, `~/.config/walker/**`, `~/.config/swaylock/config`,
+  `~/.config/fuzzel/fuzzel.ini`, `~/.config/walker/**`, `~/.config/elephant/desktopapplications.toml`, `~/.config/swaylock/config`,
   `~/.config/dunst/dunstrc` (shared i3 + niri),
   `packages/apt-niri.txt`, `config/niri/niri.desktop`, `config/niri/systemd/*`
 

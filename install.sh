@@ -78,6 +78,7 @@ link_to config/waybar                   .config/waybar
 link_to config/fuzzel/fuzzel.ini        .config/fuzzel/fuzzel.ini
 link_to config/fuzzel/fuzzel-dmenu.ini  .config/fuzzel/fuzzel-dmenu.ini
 link_to config/walker                   .config/walker
+link_to config/elephant/desktopapplications.toml .config/elephant/desktopapplications.toml
 link_to config/noctalia                 .config/noctalia
 link_to config/dunst/dunstrc            .config/dunst/dunstrc
 link_to config/foot/foot.ini            .config/foot/foot.ini
