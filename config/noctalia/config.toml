@@ -49,10 +49,9 @@ margin_edge = 8
 margin_ends = 8
 padding = 8
 widget_spacing = 6
-# Faint full-width veil (no blur here, just dimming): mutes the bright pink
-# wallpaper showing in the gaps between pill islands. Pills (0.72) stay
-# distinct above it. Tune 0.2-0.35 to taste.
-background_opacity = 0.28
+# No full-width veil: it renders as its own translucent band with visible
+# top/bottom edges across the strip. Gaps stay fully transparent.
+background_opacity = 0.0
 compositor_blur = true
 # Custom Noctalia build (branch capsule-blur-region): blur only the pill
 # shapes instead of the whole bar strip. Falls back to whole-bar blur on
