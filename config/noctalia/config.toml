@@ -58,7 +58,7 @@ capsule = false # pills come from the groups below, not per-widget capsules
 
 start = ["group:left"]
 center = ["group:clockpill"]
-end = ["group:status"]
+end = ["group:tasks", "group:status"]
 
 # No middle-click-opens-settings anywhere (waybar has no middle actions).
 [bar.default.actions]
@@ -66,7 +66,7 @@ middle = "none"
 
 [[bar.default.capsule_group]]
 id = "left"
-members = ["workspaces", "cpu", "ram"]
+members = ["photos", "workspaces", "cpu", "ram", "music"]
 fill = "#010B17"
 opacity = 0.72
 radius = 14
@@ -82,11 +82,37 @@ padding = 8
 
 [[bar.default.capsule_group]]
 id = "status"
-members = ["network", "bluetooth", "volume", "battery", "powermenu"]
+members = ["network", "bluetooth", "volume", "brightness", "battery", "notifications", "powermenu"]
 fill = "#010B17"
 opacity = 0.72
 radius = 14
 padding = 8
+
+# Windows-like taskbar pill (running windows with icons; click focuses).
+[[bar.default.capsule_group]]
+id = "tasks"
+members = ["taskbar"]
+fill = "#010B17"
+opacity = 0.72
+radius = 14
+padding = 8
+
+# App launchers (left pill edges).
+[widget.photos]
+type = "custom_button"
+glyph = "photo"
+tooltip = "Photos (Shotwell)"
+
+[widget.photos.actions]
+left = "exec shotwell"
+
+[widget.music]
+type = "custom_button"
+glyph = "music"
+tooltip = "Music (Spotify)"
+
+[widget.music.actions]
+left = "exec spotify"
 
 # Waybar parity: cpu% + mem% beside the workspaces.
 [widget.cpu]
