@@ -39,6 +39,10 @@ padding = 8
 widget_spacing = 6
 background_opacity = 0.0
 compositor_blur = true
+# Custom Noctalia build (branch capsule-blur-region): blur only the pill
+# shapes instead of the whole bar strip. Falls back to whole-bar blur on
+# stock builds (unknown keys warn, default "bar" applies).
+blur_region = "capsules"
 radius = 14
 color = "#E1E2E6"
 font_weight = 700

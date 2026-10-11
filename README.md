@@ -14,7 +14,7 @@ Private, replicable i3 desktop for Ubuntu 26.04. Symlinked configs + one install
 | `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu (`Ctrl+Alt+Del`), grim/slurp screenshot (`$mod+Shift+s`) |
 | `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals for niri |
 | `config/waybar/` | `~/.config/waybar/` | retired waybar bar + scripts (dormant since the Noctalia switch; keep for revert) |
-| `config/noctalia/config.toml` | `~/.config/noctalia/config.toml` | Noctalia 3-pill bar (niri session; needs `scripts/install-noctalia.sh` on 26.04+) |
+| `config/noctalia/config.toml` | `~/.config/noctalia/config.toml` | Noctalia 3-pill bar (niri session; needs `scripts/install-noctalia.sh` on 26.04+, plus `scripts/build-noctalia.sh` for the per-pill `blur_region` feature) |
 | `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Spotlight-like pill theme for the app grid (`$mod+d`) and text search (`$mod+F`; needs 1.12 from `scripts/build-fuzzel.sh`) |
 | `config/walker/` | `~/.config/walker/` | walker omnibar theme + config (`$mod+space`; apps + indexed files with icons; needs `scripts/build-walker.sh`) |
 | `config/elephant/desktopapplications.toml` | `~/.config/elephant/desktopapplications.toml` | elephant apps provider: `history_when_empty` so empty `$mod+space` ranks MRU/MFU, not alphabetical |
