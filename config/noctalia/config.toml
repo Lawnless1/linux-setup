@@ -104,9 +104,9 @@ type = "sysmon"
 stat = "ram_used"
 visualization = "none"
 
-# Waybar clock parity ("11 - 03:49 PM").
+# Clock: "Oct-11 - 05:56 PM".
 [widget.clock]
-format = "{:%d - %I:%M %p}"
+format = "{:%b-%d - %I:%M %p}"
 
 # Show only workspaces that have windows (plus the active one) instead of
 # all 11 niri reports.
