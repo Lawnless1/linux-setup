@@ -111,8 +111,8 @@ window-rule {
     clip-to-geometry true
 }
 
-// Focus transparency: focused pane fully opaque, unfocused panes very
-// slightly translucent (0.95 — raise/lower to taste, 1.0 = opaque) with
+// Focus transparency: focused pane fully opaque, unfocused panes clearly
+// translucent (0.85 — raise/lower to taste, 1.0 = opaque) with
 // the background behind them blurred (strength from the `blur` block below).
 window-rule {
     match is-focused=true
@@ -121,7 +121,7 @@ window-rule {
 
 window-rule {
     match is-focused=false
-    opacity 0.95
+    opacity 0.85
 
     background-effect {
         blur true
@@ -130,9 +130,11 @@ window-rule {
 
 // Background blur (niri >= 26.04, PR #3483). Global tuning for all blur,
 // whether requested by the client (ext-background-effect) or forced below.
+// offset is the blur radius — raised so the frosted unfocused panes (and the
+// fuzzel/noctalia surfaces) read as clearly blurred, not just softened.
 blur {
     passes 3
-    offset 3.0
+    offset 6.0
     noise 0.02
     saturation 1.5
 }
