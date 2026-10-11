@@ -30,13 +30,8 @@ enabled = false
 [wallpaper]
 enabled = false
 
-# TEMPORARY comparison bar: stock Noctalia defaults (full-width opaque
-# bar, default lanes) stacked above ours. Remove once compared.
 [bar]
-order = ["stock", "default"]
-
-[bar.stock]
-# (intentionally empty: all stock defaults for comparison)
+order = ["default"]
 
 # 3-pill bar mirroring config/waybar (left = workspaces + sysmon,
 # center = clock, right = status group). Transparent bar surface with
@@ -47,6 +42,9 @@ position = "top"
 layer = "top"
 thickness = 38
 reserve_space = true
+# Shadow off: the full-width soft drop shadow reads as blur smear in the
+# gaps between pills. Re-enable if pills need grounding.
+shadow = false
 margin_edge = 8
 margin_ends = 8
 padding = 8

@@ -80,6 +80,7 @@ workspace "8" {}
 workspace "9" {}
 workspace "10" {}
 
+spawn-at-startup "noctalia"
 spawn-at-startup "dunst"
 // Spotlight backend (apps + indexed files) and instant launcher service.
 spawn-at-startup "elephant"
