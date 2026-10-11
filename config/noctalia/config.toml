@@ -101,10 +101,12 @@ left = "exec spotify"
 [widget.cpu]
 type = "sysmon"
 stat = "cpu_usage"
+visualization = "none"
 
 [widget.ram]
 type = "sysmon"
 stat = "ram_used"
+visualization = "none"
 
 # Waybar clock parity ("11 - 03:49 PM").
 [widget.clock]
