@@ -37,9 +37,6 @@ order = ["default"]
 # center = clock, right = status group). Transparent bar surface with
 # floating capsule groups; blur follows the pill shapes via
 # ext-background-effect (no full-width blur band like forced waybar blur).
-# Palette parity with the walker Super+Space omnibar (themes/pill/style.css):
-# near-black navy pills (#0F111A at 0.78) + white text, so the bar reads as
-# the same frosted glass as the omnibar and the unfocused niri panes.
 [bar.default]
 position = "top"
 layer = "top"
@@ -52,14 +49,17 @@ margin_edge = 8
 margin_ends = 8
 padding = 8
 widget_spacing = 6
-background_opacity = 0.0
+# Faint full-width veil (no blur here, just dimming): mutes the bright pink
+# wallpaper showing in the gaps between pill islands. Pills (0.72) stay
+# distinct above it. Tune 0.2-0.35 to taste.
+background_opacity = 0.28
 compositor_blur = true
 # Custom Noctalia build (branch capsule-blur-region): blur only the pill
 # shapes instead of the whole bar strip. Falls back to whole-bar blur on
 # stock builds (unknown keys warn, default "bar" applies).
 blur_region = "capsules"
 radius = 14
-color = "#FFFFFF" # omnibar text color (was Noctalia default #E1E2E6)
+color = "#E1E2E6"
 font_weight = 700
 capsule = false # pills come from the groups below, not per-widget capsules
 
@@ -75,20 +75,22 @@ middle = "none"
 id = "left"
 # wallpaper + tray + brightness commented out (too noisy; re-add to restore).
 members = ["workspaces", "cpu", "ram"]
-fill = "#0F111A"
-opacity = 0.78
+fill = "#010B17"
+opacity = 0.72
 radius = 14
 padding = 8
 
 [[bar.default.capsule_group]]
 id = "clockpill"
 members = ["clock"]
-fill = "#0F111A"
-opacity = 0.78
+fill = "#010B17"
+opacity = 0.72
 radius = 14
 padding = 8
 
 # Media gets its own pill: visible only while something plays.
+# This appearing pill alone uses the walker omnibar frosted glass
+# (#0F111A at 0.78); the other pills keep their stock colors.
 [[bar.default.capsule_group]]
 id = "media"
 members = ["media"]
@@ -104,8 +106,8 @@ hide_when_no_media = true
 id = "status"
 # tray + brightness commented out (too noisy; re-add to restore).
 members = ["network", "bluetooth", "volume", "battery", "notifications", "powermenu"]
-fill = "#0F111A"
-opacity = 0.78
+fill = "#010B17"
+opacity = 0.72
 radius = 14
 padding = 8
 
