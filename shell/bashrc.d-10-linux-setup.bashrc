@@ -31,6 +31,23 @@ git_stash_pull_pop() {
     git stash push -m "current work" && git pull && git stash pop
 }
 
+# --- tmux hygiene: every foot window is its own session, so closing windows
+# orphans detached sessions holding idle shells. Reap those; attached
+# sessions and anything running real commands (background agents) survive.
+tmux-clean() {
+    local s attached cmds
+    tmux ls -F '#{session_name} #{session_attached}' 2>/dev/null | while read -r s attached; do
+        [ "${attached:-0}" -gt 0 ] 2>/dev/null && continue
+        cmds="$(tmux list-panes -t "$s" -F '#{pane_current_command}' 2>/dev/null)"
+        [ -z "$cmds" ] && continue
+        if printf '%s\n' "$cmds" | grep -qvE '^(bash|sh|zsh|fish|dash)$'; then
+            continue
+        fi
+        echo "killing detached idle session: $s"
+        tmux kill-session -t "$s"
+    done
+}
+
 # --- comfort aliases ---
 alias bashrc="${EDITOR:-nvim} ~/.bashrc"
 alias reload="source ~/.bashrc"
