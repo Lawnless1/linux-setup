@@ -16,6 +16,12 @@ telemetry_enabled = false
 [notification]
 enable_daemon = false
 
+# Floating (not bar-attached) control center: a plain rounded rectangle.
+# Attached panels shape their top edge to merge into the bar, which looks
+# broken against our transparent bar.
+[shell.panel]
+control_center_placement = "floating"
+
 # swaylock stays (see niri swayidle spawn).
 [lockscreen]
 enabled = false
@@ -113,10 +119,10 @@ format = "{:%b %d - %I:%M %p}"
 [widget.workspaces]
 hide_when_empty = true
 
-# Bluetooth: show the connected device name (empty when none connected).
-# (Noctalia has no connected-count display like waybar's {num_connections}.)
+# Bluetooth: show the connected-device COUNT (empty when zero), like the
+# old waybar {num_connections}. (Custom build: show_count option.)
 [widget.bluetooth]
-show_label = true
+show_count = true
 
 # Waybar parity: click toggles mute, scroll steps volume 5%.
 [widget.volume.actions]
