@@ -112,7 +112,7 @@ window-rule {
 }
 
 // Focus transparency: focused pane fully opaque, unfocused panes clearly
-// translucent (0.90 — raise/lower to taste, 1.0 = opaque) with
+// translucent (0.87 — raise/lower to taste, 1.0 = opaque) with
 // the background behind them blurred (strength from the `blur` block below).
 window-rule {
     match is-focused=true
@@ -121,7 +121,7 @@ window-rule {
 
 window-rule {
     match is-focused=false
-    opacity 0.90
+    opacity 0.87
 
     background-effect {
         blur true
