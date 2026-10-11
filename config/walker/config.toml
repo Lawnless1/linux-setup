@@ -2,26 +2,26 @@
 # Adapted from walker v2.17.0 resources/config.toml: unified Spotlight
 # (apps always, files always — no prefix needed), pill theme.
 # Deployed to ~/.config/walker/config.toml.
-force_keyboard_focus = false       # forces keyboard forcus to stay in Walker
-close_when_open = true             # close walker when invoking while already opened
-click_to_close = true              # closes walker if clicking outside of the main content area
-as_window = false                  # launch walker as a regular window instead of layer shell application
-single_click_activation = true     # activate items with a single click opposed to a double click
-selection_wrap = false             # wrap list if at bottom or top
+force_keyboard_focus = false
+close_when_open = true
+click_to_close = true
+as_window = false
+single_click_activation = true
+selection_wrap = false
 global_argument_delimiter = "#"    # query: firefox#https://benz.dev => part after delimiter will be ignored when querying. this should be the same as in the elephant config
-exact_search_prefix = "'"          # disable fuzzy searching
-theme = "pill"                     # themes/pill/style.css (dark-navy, matches waybar)
-disable_mouse = false              # disable mouse (on input and list only)
-debug = false                      # enables debug printing for some stuff, f.e. keybinds
-page_jump_items = 10               # number of items to skip with Page Up/Down
-hide_quick_activation = true       # globally hide the quick activation buttons
-hide_action_hints = false          # globally hide the action hints
-hide_action_hints_dmenu = true     # hide the actions hints for dmenu
-hide_return_action = false         # hide actions that are bound to Return
+exact_search_prefix = "'"
+theme = "pill"                     # themes/pill/style.css (dark-navy, matches bar)
+disable_mouse = false
+debug = false
+page_jump_items = 10
+hide_quick_activation = true
+hide_action_hints = false
+hide_action_hints_dmenu = true
+hide_return_action = false
 keybind_symbols = true             # render keybind hints with key symbols (e.g. ⌃+⏎) instead of plain text ("ctrl Return")
-resume_last_query = false          # open walker with the last query in place
-actions_as_menu = false            # display all possible actions in a submenu
-autoplay_videos = false            # auto-play video previews
+resume_last_query = false
+actions_as_menu = false
+autoplay_videos = false
 ext_background_effect_blur = true  # request the compositor to blur behind the box-wrapper via ext-background-effect-v1 (niri >= 26.04; needs semi-transparent theme bg to be visible)
 
 [shell]
@@ -59,14 +59,13 @@ default = [
   "desktopapplications",
   "files",
 ] # providers to be queried by default (order = rank priority)
-empty = ["desktopapplications"] # providers to be queried when query is empty
+empty = ["desktopapplications"]
 ignore_preview = ["clipboard"] # side preview panel would widen the fixed 480px
 # clipboard popup on every image entry; files/desktopapplications previews
 # in the pill omnibar are unaffected (pill only sees this provider via ":")
 max_results = 15 # global max results (compact pill list)
 
 [providers.argument_delimiter] # define the argument delimiter per provider
-# runner = " "
 
 [providers.sets] # define your own defaults/empty sets of providers
 [providers.max_results_provider] # define max results per provider in here
@@ -113,7 +112,7 @@ prefix = "$"
 provider = "windows"
 
 [providers.clipboard]
-time_format = "relative" # format for the clipboard item date
+time_format = "relative"
 
 [providers.actions] # This will be MERGED/OVERWRITTEN with what the user specifies
 fallback = [

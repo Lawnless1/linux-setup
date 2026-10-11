@@ -76,7 +76,7 @@ order = ["default"]
 [bar.default]
 position = "top"
 layer = "top"
-thickness = 34 # slimmed to hug the pills (was 38; less dead space below them)
+thickness = 32 # slimmed to hug the pills (was 38; less dead space below them)
 reserve_space = true
 # Shadow off: the full-width soft drop shadow reads as blur smear in the
 # gaps between pills. Re-enable if pills need grounding.
