@@ -18,7 +18,7 @@ If you make a **meaningful change** to the user's setup, you MUST also update th
 - niri session: `~/.config/niri/config.kdl`, `~/.config/niri/scripts/*`,
   `~/.config/xdg-desktop-portal/niri-portals.conf`, `~/.config/waybar/**`,
   `~/.config/fuzzel/fuzzel.ini`, `~/.config/walker/**`, `~/.config/elephant/desktopapplications.toml`, `~/.config/swaylock/config`,
-  `~/.config/dunst/dunstrc` (shared i3 + niri),
+  `~/.config/dunst/dunstrc` (i3 session; niri uses the Noctalia daemon),
   `packages/apt-niri.txt`, `config/niri/niri.desktop`, `config/niri/systemd/*`
 
 **Not meaningful** (skip repo update): read-only probes (`xinput list`, `i3 -C`), transient testing reverted before finishing, files outside the table in `README.md`.

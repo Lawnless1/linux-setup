@@ -12,15 +12,42 @@ clipboard_enabled = false    # walker owns clipboard history (Mod+V)
 polkit_agent = false         # polkit-gnome-authentication-agent-1 stays
 telemetry_enabled = false
 
-# dunst stays (shared i3 + niri).
+# Noctalia owns notifications in the niri session; dunst stays for the i3
+# session (Noctalia doesn't run on X11).
 [notification]
-enable_daemon = false
+enable_daemon = true
 
-# Floating (not bar-attached) control center: a plain rounded rectangle.
-# Attached panels shape their top edge to merge into the bar, which looks
-# broken against our transparent bar.
+# Floating (not bar-attached) control center and session panel: attached
+# panels shape their top edge to merge into the bar, which looks broken
+# against our transparent bar.
 [shell.panel]
 control_center_placement = "floating"
+session_placement = "floating"
+
+# Native session panel buttons (opened from the bar's power button).
+# Stock defaults minus lock/lock_and_suspend (hidden while noctalia's own
+# lockscreen is off — swaylock owns locking here), plus our working Lock
+# (swaylock) and Sleep (systemd suspend; swayidle locks on before-sleep).
+# Logout/reboot/shutdown are the stock builtins.
+[[shell.session.actions]]
+action = "command"
+label = "Lock"
+glyph = "lock"
+command = "swaylock -f"
+
+[[shell.session.actions]]
+action = "logout"
+
+[[shell.session.actions]]
+action = "suspend"
+label = "Sleep"
+
+[[shell.session.actions]]
+action = "reboot"
+
+[[shell.session.actions]]
+action = "shutdown"
+variant = "destructive"
 
 # swaylock stays (see niri swayidle spawn).
 [lockscreen]
@@ -102,7 +129,7 @@ hide_when_no_media = true
 [[bar.default.capsule_group]]
 id = "status"
 # tray + brightness commented out (too noisy; re-add to restore).
-members = ["network", "bluetooth", "volume", "battery", "notifications", "powermenu"]
+members = ["network", "bluetooth", "volume", "battery", "notifications", "session"]
 fill = "#010B17"
 opacity = 0.72
 radius = 14
@@ -142,11 +169,8 @@ left = "volume-mute"
 scroll_up = "volume-up 5%"
 scroll_down = "volume-down 5%"
 
-# Power button (waybar custom/powermenu parity).
-[widget.powermenu]
-type = "custom_button"
+# Power button (waybar custom/powermenu parity): native session widget,
+# opens the floating session panel above. (Ctrl+Alt+Delete still opens
+# the fuzzel menu.)
+[widget.session]
 glyph = "power"
-tooltip = "Power menu (Ctrl+Alt+Delete)"
-
-[widget.powermenu.actions]
-left = "exec ~/.config/niri/scripts/powermenu-fuzzel.sh"

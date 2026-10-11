@@ -81,7 +81,10 @@ workspace "9" {}
 workspace "10" {}
 
 spawn-at-startup "noctalia"
-spawn-at-startup "dunst"
+// Notifications come from the Noctalia daemon ([notification] enable_daemon
+// in config/noctalia/config.toml). dunst stays for the i3 session only
+// (see config/i3/config) — never spawn it here or the two daemons fight
+// over org.freedesktop.Notifications.
 // Spotlight backend (apps + indexed files) and instant launcher service.
 spawn-at-startup "elephant"
 spawn-sh-at-startup "exec walker --gapplication-service"
