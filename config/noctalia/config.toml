@@ -66,7 +66,8 @@ middle = "none"
 
 [[bar.default.capsule_group]]
 id = "left"
-members = ["workspaces", "cpu", "ram", "wallpaper", "media"]
+# wallpaper + tray + brightness commented out (too noisy; re-add to restore).
+members = ["workspaces", "cpu", "ram", "media"]
 fill = "#010B17"
 opacity = 0.72
 radius = 14
@@ -82,7 +83,8 @@ padding = 8
 
 [[bar.default.capsule_group]]
 id = "status"
-members = ["tray", "network", "bluetooth", "volume", "brightness", "battery", "notifications", "powermenu"]
+# tray + brightness commented out (too noisy; re-add to restore).
+members = ["network", "bluetooth", "volume", "battery", "notifications", "powermenu"]
 fill = "#010B17"
 opacity = 0.72
 radius = 14
