@@ -85,9 +85,6 @@ spawn-at-startup "dunst"
 // Spotlight backend (apps + indexed files) and instant launcher service.
 spawn-at-startup "elephant"
 spawn-sh-at-startup "exec walker --gapplication-service"
-// Raycast-style omnibar (vicinae.com; user-local install, no apt). Server must
-// run for `vicinae toggle` to work; try it on Mod+P, walker stays on Mod+Space.
-spawn-at-startup "vicinae" "server"
 spawn-sh-at-startup "swaybg -i \"$HOME/Pictures/wallpaper/dark.jpg\" -m fill"
 spawn-sh-at-startup "[ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && exec /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1"
 // Idle: lock after 5 min, lock before suspend.
@@ -185,15 +182,11 @@ binds {
     // i3 `$mod+space` ran `rofi -show drun`; unified Spotlight search instead:
     // walker (apps + files, real icons). $mod+d keeps the fuzzel grid,
     // $mod+f keeps the fuzzel text search as fallback.
-    // Fixed 770x480 box like vicinae (see pill/layout.xml: BoxWrapper
-    // requests pin it, list scrolls past 330px). Stable regardless of
-    // result count; empty space when few results instead of shrinking.
-    // -N hides the bottom action/keybind hint bar (vicinae has none).
+    // Fixed 770x480 box (see pill/layout.xml: BoxWrapper requests pin it,
+    // list scrolls past 330px). Stable regardless of result count; empty
+    // space when few results instead of shrinking.
+    // -N hides the bottom action/keybind hint bar.
     Mod+Space hotkey-overlay-title="Search: walker" { spawn "walker" "-N"; }
-    // Raycast-style omnibar (vicinae): extensions, clipboard, emoji, calculator.
-    // Trial alongside walker (walker keeps Mod+Space); promote to Mod+Space if
-    // it wins. Needs `vicinae server` (see spawn-at-startup above).
-    Mod+P hotkey-overlay-title="Omnibar: vicinae" { spawn "vicinae" "toggle"; }
     // No i3 counterpart: Spotlight-style file search (fd + fuzzel dmenu).
     Mod+F hotkey-overlay-title="File search: fuzzel" { spawn-sh "~/.config/niri/scripts/file-search-fuzzel.sh"; }
 
