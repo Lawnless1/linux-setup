@@ -251,8 +251,9 @@ binds {
     // requires wl-clipboard + imagemagick, provider built by
     // scripts/build-walker.sh). Minimal clipboard theme (-t), no
     // quick-activation chips (-H), no keybind hint bar (-N).
-    // Enter copies back to clipboard.
-    Mod+V hotkey-overlay-title="Clipboard history: walker" { spawn "walker" "-m" "clipboard" "-t" "clipboard" "-H" "-N"; }
+    // Selecting an entry copies it AND pastes straight into the
+    // refocused window (clipboard-pick-paste.sh); cancelling pastes nothing.
+    Mod+V hotkey-overlay-title="Clipboard history: walker" { spawn-sh "~/.config/niri/scripts/clipboard-pick-paste.sh"; }
 
     // ---- fullscreen (i3: $mod+Up, single press) ----
     // NOTE: Ctrl+F intentionally unbound — it belongs to apps (find).
