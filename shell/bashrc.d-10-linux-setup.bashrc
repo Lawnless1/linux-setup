@@ -48,6 +48,34 @@ tmux-clean() {
     done
 }
 
+# Dual pane picker (replaces stock prefix+w tree): Enter jumps to the pane,
+# Backspace kills it and reloads the list, Esc quits. Stock tree keys are
+# compiled into tmux and can't gain Backspace, so this fzf view stands in.
+tmux-pick-pane() {
+    command -v fzf >/dev/null 2>&1 || { echo "fzf not installed"; return 1; }
+    tmux ls >/dev/null 2>&1 || { echo "no tmux server running"; return 1; }
+    local list sel key id sid
+    while true; do
+        list="$(tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index} #{pane_current_command} #{pane_current_path}' 2>/dev/null)"
+        [ -n "$list" ] || return 0
+        sel="$(printf '%s\n' "$list" | fzf --expect=enter,bspace --prompt='pane> ' --header='Enter jumps, Backspace kills, Esc quits')" || return 0
+        key="$(head -n 1 <<<"$sel")"
+        id="$(sed -n '2p' <<<"$sel" | cut -d' ' -f1)"
+        [ -n "$id" ] || continue
+        case "$key" in
+            enter)
+                sid="${id%%:*}"
+                tmux switch-client -t "$sid" \; select-pane -t "$id" 2>/dev/null
+                return 0
+                ;;
+            bspace)
+                echo "killing pane: $id"
+                tmux kill-pane -t "$id" 2>/dev/null
+                ;;
+        esac
+    done
+}
+
 # Fuzzy kill-picker for panes across all sessions (re-run until Esc).
 # Complements prefix+w (navigate) and tmux-clean (bulk reap): point at a
 # pane, Enter kills it. Killing a window's last pane closes the window;
