@@ -1,4 +1,4 @@
-# APT packages for a fresh Ubuntu 24.04 install running this setup.
+# APT packages for a fresh Ubuntu 26.04 install running this setup.
 # Install with: sudo apt install $(grep -v '^#' packages/apt.txt | xargs)
 # Lines starting with # are comments. Packages marked OPTIONAL are only
 # needed for specific bar menus / hardware.
@@ -16,6 +16,11 @@ picom
 feh
 x11-xserver-utils
 xrdb
+
+# --- terminal (tmux + oh-my-tmux framework clone; fzf for tmux-pick-kill) ---
+tmux
+fzf
+git
 
 # --- tray / settings / notifications ---
 network-manager-gnome

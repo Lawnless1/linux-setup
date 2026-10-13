@@ -83,6 +83,21 @@ link_to config/noctalia                 .config/noctalia
 link_to config/dunst/dunstrc            .config/dunst/dunstrc
 link_to config/foot/foot.ini            .config/foot/foot.ini
 link_to config/swaylock/config          .config/swaylock/config
+# --- tmux: oh-my-tmux framework (upstream clone, not vendored) + our overrides ---
+if [ ! -d "$HOME/.tmux/.git" ]; then
+    if command -v git >/dev/null 2>&1; then
+        git clone --depth 1 https://github.com/gpakosz/.tmux.git "$HOME/.tmux"
+        log "cloned oh-my-tmux into ~/.tmux"
+    else
+        log "(warn: git missing — cannot clone oh-my-tmux; ~/.tmux.conf left as is)"
+    fi
+fi
+if [ -f "$HOME/.tmux/.tmux.conf" ]; then
+    backup "$HOME/.tmux.conf" "$HOME/.tmux/.tmux.conf"
+    ln -sfn "$HOME/.tmux/.tmux.conf" "$HOME/.tmux.conf"
+    log "linked ~/.tmux.conf -> ~/.tmux/.tmux.conf"
+fi
+link_to config/tmux/tmux.conf.local     .tmux.conf.local
 
 # --- 3. home files ------------------------------------------------------------
 link_to home/.Xresources            .Xresources

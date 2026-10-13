@@ -13,6 +13,7 @@ If you make a **meaningful change** to the user's setup, you MUST also update th
 - `~/.config/i3/config`, `~/.config/input/pointer.sh`, `~/.xprofile`
 - `~/.config/polybar/custom/**`, `~/.config/rofi/**`, `~/.config/picom/picom.conf`
 - `~/.screenlayout/**`, `~/.Xresources`, `~/.config/flameshot/*`, `~/.config/starship.toml`
+- `~/.tmux.conf.local` (repo: `config/tmux/tmux.conf.local`; `~/.tmux/` is the upstream oh-my-tmux clone — never edit it), `~/.config/foot/foot.ini`
 - `~/.bashrc.d/10-linux-setup.bashrc`, `shell/profile` contents, wallpaper in `~/Pictures/wallpaper/`
 - `packages/apt.txt`, `system/doas.conf.d/*`, `scripts/*`, `assets/wallpapers/*`
 - niri session: `~/.config/niri/config.kdl`, `~/.config/niri/scripts/*`,

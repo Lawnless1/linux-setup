@@ -19,16 +19,18 @@ Private, replicable i3 desktop for Ubuntu 26.04. Symlinked configs + one install
 | `config/walker/` | `~/.config/walker/` | walker omnibar theme + config (`$mod+space`; apps + indexed files with icons; needs `scripts/build-walker.sh`) |
 | `config/elephant/desktopapplications.toml` | `~/.config/elephant/desktopapplications.toml` | elephant apps provider: `history_when_empty` so empty `$mod+space` ranks MRU/MFU, not alphabetical |
 | `config/dunst/dunstrc` | `~/.config/dunst/dunstrc` | minimal notifications for the i3 session (niri uses the Noctalia daemon) |
+| `config/foot/foot.ini` | `~/.config/foot/foot.ini` | Wayland terminal for the niri `$mod+Return` bind |
+| `config/tmux/tmux.conf.local` | `~/.tmux.conf.local` | overrides for [oh-my-tmux](https://github.com/gpakosz/.tmux) (installer clones it to `~/.tmux`, links `~/.tmux.conf`): `C-b` prefix + `C-a` secondary, mouse, OS clipboard, extended keys, `prefix+X` kill session, `prefix+Backspace` fuzzy pane killer |
 | `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu) |
 | `config/polybar/custom/` | `~/.config/polybar/custom/` | single `center` bar + curated scripts (wifi, sound, battery, bluetooth, weather, calendar, powermenu) |
 | `config/rofi/` | `~/.config/rofi/` | drun config + Ctrl+Alt+Del power menu |
 | `config/picom/picom.conf` | `~/.config/picom/picom.conf` | glx backend, rounded corners, blur |
 | `config/flameshot/` | `~/.config/flameshot/` | screenshot tool (`$mod+Shift+s`) |
-| `config/starship.toml` | `~/.config/starship.toml` | prompt theme (opt-in, see shell) |
+| `config/starship.toml` | `~/.config/starship.toml` | prompt theme (opt-in: `export LINUX_SETUP_STARSHIP=1`) |
 | `home/.xprofile` | `~/.xprofile` | X-login loader for pointer speeds |
 | `home/.screenlayout/` | `~/.screenlayout/` | laptop / docked-dual layouts, auto-selected |
 | `home/.Xresources` | `~/.Xresources` | cursor theme (`wincursors` via `scripts/install-windows-cursors.sh`) |
-| `shell/` | `~/.bashrc.d/` | prompt, git helpers, guarded tool init (zoxide, micromamba) |
+| `shell/` | `~/.bashrc.d/` | prompt, git helpers, `tmux-clean` / `tmux-pick-kill`, guarded tool init (zoxide, micromamba, fzf) |
 | `assets/wallpapers/` | `~/Pictures/wallpaper/` | `dark.jpg` (the active one) |
 | `system/doas.conf.d/` | `/etc/doas.conf.d/` | optional passwordless power actions |
 
@@ -84,7 +86,7 @@ Pointer speeds persist in `config/input/pointer.sh` (`POINTER_MOUSE_SPEED`,
 
 Niri is a scrollable-tiling Wayland compositor: windows form a horizontal
 strip of columns you scroll through, instead of i3's tree. It is **not** in
-Ubuntu 24.04's repos, so the binary is compiled from source; everything else
+Ubuntu's repos, so the binary is compiled from source; everything else
 (bar, launcher, locker) comes from apt. i3 stays untouched — pick
 **Niri** vs **i3** at the login screen.
 

@@ -24,6 +24,8 @@ need bluetoothctl "apt: bluez"
 need flameshot "apt: flameshot"
 need dex "apt: dex"
 need nm-applet "apt: network-manager-gnome"
+need tmux "apt: tmux"
+need fzf "apt: fzf (tmux-pick-kill, shell keybinds)"
 
 echo "--- gtk env (blueman crash guard) ---"
 case ":${GTK_MODULES:-}:" in
@@ -40,6 +42,22 @@ if command -v i3 >/dev/null 2>&1; then
 else
     echo "(skip: i3 not installed)"
 fi
+
+echo "--- tmux config ---"
+if command -v tmux >/dev/null 2>&1 && [ -f "$HOME/.tmux.conf.local" ]; then
+    # Throwaway server on its own socket, so errors surface without touching
+    # live sessions. Only our overrides: oh-my-tmux's main file needs a real
+    # client and kills a bare detached server.
+    tmux -L linux-setup-check -f /dev/null new-session -d \; source-file "$HOME/.tmux.conf.local" \
+        && echo "tmux overrides OK" || { echo "tmux overrides INVALID"; FAIL=1; }
+    tmux -L linux-setup-check kill-server >/dev/null 2>&1
+else
+    echo "(skip: tmux or ~/.tmux.conf.local missing — ./install.sh)"
+fi
+[ -L "$HOME/.tmux.conf.local" ] && echo "tmux overrides linked" \
+    || { echo "MISSING: ~/.tmux.conf.local symlink (run ./install.sh)"; FAIL=1; }
+[ -f "$HOME/.tmux/.tmux.conf" ] && echo "oh-my-tmux present" \
+    || { echo "MISSING: ~/.tmux (oh-my-tmux clone; run ./install.sh)"; FAIL=1; }
 
 echo "--- shell syntax ---"
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
