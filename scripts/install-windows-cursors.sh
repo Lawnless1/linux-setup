@@ -1,5 +1,5 @@
 #!/bin/bash
-# Install the Windows 10 cursor theme (wincursors) on Ubuntu 24.04.
+# Install the Windows 10 cursor theme (wincursors), any distro.
 #
 # Upstream: https://github.com/rushiiMachine/wincursors (prebuilt xcursor +
 # shape aliases, installed as ~/.local/share/icons/wincursors). Replaces the
@@ -15,8 +15,8 @@
 #   - Inherits=Adwaita safety net in index.theme (never a broken cursor)
 #   - ~/.icons/default/index.theme     (catches apps ignoring everything else)
 #   - gsettings cursor-theme/size      (native Wayland GTK apps)
-# The niri config (config.kdl: cursor{} + environment{} XZ variables) and
-# ~/.Xresources are linked separately by install.sh.
+# The niri config (config.kdl: cursor{} + environment{} XCURSOR_* variables)
+# points every client at this theme.
 #
 # Usage: ./scripts/install-windows-cursors.sh   (idempotent, safe to re-run)
 set -euo pipefail
@@ -28,7 +28,7 @@ ZIP_URL="https://github.com/rushiiMachine/wincursors/releases/latest/download/wi
 log() { printf '==> %s\n' "$*"; }
 
 command -v curl >/dev/null 2>&1 || { log "need curl"; exit 1; }
-command -v unzip >/dev/null 2>&1 || { log "need unzip (sudo apt install unzip)"; exit 1; }
+command -v unzip >/dev/null 2>&1 || { log "need unzip (install it with your package manager)"; exit 1; }
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT

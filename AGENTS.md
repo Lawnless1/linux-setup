@@ -10,29 +10,29 @@ This machine's desktop setup is versioned. Live config and this repo must stay i
 If you make a **meaningful change** to the user's setup, you MUST also update this repo, commit, and push to `origin/main` in the same session. Do not leave the repo behind live config.
 
 **Meaningful** = anything that should survive a reboot / fresh install:
-- `~/.config/i3/config`, `~/.config/input/pointer.sh`, `~/.xprofile`
-- `~/.config/polybar/custom/**`, `~/.config/rofi/**`, `~/.config/picom/picom.conf`
-- `~/.screenlayout/**`, `~/.Xresources`, `~/.config/flameshot/*`, `~/.config/starship.toml`
-- `~/.tmux.conf.local` (repo: `config/tmux/tmux.conf.local`; `~/.tmux/` is the upstream oh-my-tmux clone — never edit it), `~/.config/foot/foot.ini`
-- `~/.bashrc.d/10-linux-setup.bashrc`, `shell/profile` contents, wallpaper in `~/Pictures/wallpaper/`
-- `packages/apt.txt`, `system/doas.conf.d/*`, `scripts/*`, `assets/wallpapers/*`
 - niri session: `~/.config/niri/config.kdl`, `~/.config/niri/scripts/*`,
-  `~/.config/xdg-desktop-portal/niri-portals.conf`, `~/.config/waybar/**`,
-  `~/.config/fuzzel/fuzzel.ini`, `~/.config/walker/**`, `~/.config/elephant/desktopapplications.toml`, `~/.config/swaylock/config`,
-  `~/.config/dunst/dunstrc` (i3 session; niri uses the Noctalia daemon),
-  `packages/apt-niri.txt`, `config/niri/niri.desktop`, `config/niri/systemd/*`
+  `~/.config/xdg-desktop-portal/niri-portals.conf`, `~/.config/noctalia/**`,
+  `~/.config/fuzzel/*.ini`, `~/.config/walker/**`, `~/.config/elephant/desktopapplications.toml`,
+  `~/.config/swaylock/config`, `~/.config/foot/foot.ini`, `config/niri/niri.desktop`, `config/niri/systemd/*`
+- `~/.tmux.conf.local` (repo: `config/tmux/tmux.conf.local`; `~/.tmux/` is the upstream oh-my-tmux clone — never edit it)
+- `~/.bashrc.d/10-linux-setup.bashrc`, `shell/profile` contents, `~/.config/starship.toml`, wallpaper in `~/Pictures/wallpaper/`
+- `packages/packages.tsv`, `scripts/**`, `patches/*`, `assets/wallpapers/*`
 
-**Not meaningful** (skip repo update): read-only probes (`xinput list`, `i3 -C`), transient testing reverted before finishing, files outside the table in `README.md`.
+**Not meaningful** (skip repo update): read-only probes (`niri msg`, `niri validate`), transient testing reverted before finishing, files outside the table in `README.md`.
+
+## Portability rule
+
+`main` must install on any systemd Wayland distro. No distro-specific commands, paths or package names outside `packages/packages.tsv` (one row per dependency, pacman/apt/dnf columns) and `scripts/lib/pkg.sh`. A new dependency gets a row with all three names — verify each exists in Arch, Debian stable and Fedora repos. Patched components (fuzzel, walker, elephant, Noctalia) build from source everywhere. X11/i3 work goes to the `legacy-x11` branch only.
 
 ## Workflow
 
 1. Prefer editing the repo copy first, then `./install.sh` (or copy the file live for instant effect AND mirror it into the repo — never live-only).
-2. Repo → live mapping is in `README.md` ("What's inside"). Key one: `config/input/pointer.sh` is the single source of truth for mouse (`0.8`) / touchpad (`0.3`) speeds — use `scripts/tune-input.sh`, never hard-code `xinput` ids.
+2. Repo → live mapping is in `README.md` ("What's inside"). Pointer speeds live in the `input` block of `config/niri/config.kdl`.
 3. Validate before commit:
-   - `bash scripts/check.sh` (must end `ALL CHECKS PASSED`)
-   - `i3 -C -c ~/.config/i3/config`
-   - New/edited shell scripts: `bash -n` (or `sh -n`); `rofi-mixer.py`: `python3 -c "import ast; ast.parse(...)"`
-4. No secrets, ever: no API keys, tokens (`ghp_`, `github_pat_`), private keys, or `~/.git-credentials` contents. Weather key goes in gitignored `~/.config/linux-setup/env` (see `config/env.example`); scan with `grep -rn "ghp_\|2ab04c7e\|BEGIN.*PRIVATE" . --exclude-dir=.git` plus `git grep -n "ghp_\|2ab04c7e" $(git rev-list --all)`.
+   - `bash scripts/check.sh` (must end `ALL CHECKS PASSED`; runs `niri validate`, `noctalia config validate`, tmux and shell syntax)
+   - New/edited shell scripts: `bash -n` (or `sh -n`)
+   - Package changes: `PKG_DRY_RUN=1 ./install.sh --with-pkgs`
+4. No secrets, ever: no API keys, tokens (`ghp_`, `github_pat_`), private keys, or `~/.git-credentials` contents. Local-only secrets go in gitignored `~/.config/linux-setup/env`; scan with `grep -rn "ghp_\|2ab04c7e\|BEGIN.*PRIVATE" . --exclude-dir=.git` plus `git grep -n "ghp_\|2ab04c7e" $(git rev-list --all)`.
 5. Commit + push:
    ```bash
    git add -A && git status --short

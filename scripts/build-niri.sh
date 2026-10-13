@@ -1,9 +1,11 @@
 #!/bin/bash
-# Build + install niri (and xwayland-satellite) from source on Ubuntu 24.04.
+# Build + install niri (and xwayland-satellite) from source, for distros
+# that don't package them (Debian/Ubuntu today). Where the distro ships
+# niri, ./install.sh --with-pkgs installs it instead and --with-builds
+# skips this script.
 #
-# niri is not packaged for noble, so this compiles the latest stable release
-# tag with cargo. Run AFTER ./install.sh (which links the configs) and AFTER
-# installing packages (./install.sh --with-niri for the Wayland set).
+# Compiles the latest stable release tag with cargo. Run AFTER ./install.sh
+# (which links the configs).
 #
 # Usage:
 #   ./scripts/build-niri.sh                 # build niri + xwayland-satellite to /usr/local
@@ -11,57 +13,36 @@
 #   PREFIX=$HOME/.local ./scripts/build-niri.sh # user-local install (add ~/.local/bin to PATH,
 #                                               # and copy config/niri/niri.desktop by hand)
 #
-# Steps: apt build deps (sudo) -> rustup (if needed) -> clone/update sources
-# under ~/.local/src -> cargo build --release -> install binaries, GDM session
+# Steps: build deps (sudo) -> rustup (if needed) -> clone/update sources
+# under ~/.local/src -> cargo build --release -> install binaries, session
 # entry, systemd user units -> validation (niri validate).
 set -euo pipefail
+
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=lib/pkg.sh
+. "$REPO_DIR/scripts/lib/pkg.sh"
 
 PREFIX="${PREFIX:-/usr/local}"
 SRC_DIR="${SRC_DIR:-$HOME/.local/src}"
 NIRI_REPO="https://github.com/YaLTeR/niri.git"
 XSAT_REPO="https://github.com/Supreeeme/xwayland-satellite.git"
 
-log() { printf '==> %s\n' "$*"; }
 need_sudo_for() { # need_sudo_for <dir>: sudo iff dir is not writable.
     [ -w "$1" ] || { log "need sudo for $1"; return 0; }
     return 1
 }
 
-# --- 0. GPU groups (Intel/AMD need video+render; NVIDIA session tips in README) --
+# --- 0. GPU groups (Intel/AMD need video+render) -----------------------------------
 if ! groups | tr ' ' '\n' | grep -qx render; then
     log "NOTE: you are not in the 'render' group; GPU buffers may fail."
     log "      fix with: sudo usermod -aG render \$USER   (then log out/in)"
 fi
 
-# --- 1. build dependencies -------------------------------------------------------
-BUILD_DEPS="gcc clang pkg-config git curl libudev-dev libgbm-dev libxkbcommon-dev
-    libegl1-mesa-dev libwayland-dev libinput-dev libdbus-1-dev libsystemd-dev
-    libseat-dev libpipewire-0.3-dev libpango1.0-dev libdisplay-info-dev
-    libxcb-cursor-dev"
-# shellcheck disable=SC2086
-if ! dpkg -s $BUILD_DEPS >/dev/null 2>&1; then
-    log "installing niri build dependencies (sudo)..."
-    # NOTE: NOT `apt update && apt install`: with `set -e`, a failed update
-    # inside an &&-list silently skips the install instead of aborting.
-    sudo apt update || { log "apt update FAILED — fix broken sources (see /etc/apt/sources.list.d/) and re-run"; exit 1; }
-    # shellcheck disable=SC2086
-    sudo apt install -y $BUILD_DEPS
-else
-    log "build dependencies already present"
-fi
+# --- 1. build dependencies + Rust ---------------------------------------------------
+pkg_install build-base build-niri
+ensure_rust
 
-# --- 2. Rust toolchain ------------------------------------------------------------
-if ! command -v cargo >/dev/null 2>&1; then
-    log "installing Rust via rustup (stable)..."
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
-    # shellcheck disable=SC1091
-    . "$HOME/.cargo/env"
-else
-    log "cargo already present: $(cargo --version)"
-fi
-export PATH="$HOME/.cargo/bin:$PATH"
-
-# --- 3. niri sources (latest stable tag) ------------------------------------------
+# --- 2. niri sources (latest stable tag) ------------------------------------------
 mkdir -p "$SRC_DIR"
 if [ -d "$SRC_DIR/niri/.git" ]; then
     log "updating niri sources..."
@@ -104,6 +85,8 @@ fi
 # --- 6. xwayland-satellite (X11 apps: Zoom, Steam, old toolkits) --------------------
 if [ "${SKIP_XSATELLITE:-0}" = "1" ]; then
     log "skipping xwayland-satellite (SKIP_XSATELLITE=1)"
+elif command -v xwayland-satellite >/dev/null 2>&1; then
+    log "xwayland-satellite already installed: $(command -v xwayland-satellite)"
 else
     if [ -d "$SRC_DIR/xwayland-satellite/.git" ]; then
         git -C "$SRC_DIR/xwayland-satellite" pull -q
@@ -116,11 +99,10 @@ else
         "$PREFIX/bin/xwayland-satellite"
 fi
 
-# --- 7. GDM session entry (log in screen "Niri" choice) ------------------------------
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# --- 7. session entry (display managers list /usr/share/wayland-sessions) ----------
 if [ -w /usr/share/wayland-sessions ]; then SUDO2=; else SUDO2=sudo; fi
-log "installing GDM session entry ($SUDO2 /usr/share/wayland-sessions/niri.desktop)..."
-$SUDO2 install -m 0644 "$REPO_DIR/config/niri/niri.desktop" /usr/share/wayland-sessions/niri.desktop
+log "installing session entry ($SUDO2 /usr/share/wayland-sessions/niri.desktop)..."
+$SUDO2 install -D -m 0644 "$REPO_DIR/config/niri/niri.desktop" /usr/share/wayland-sessions/niri.desktop
 
 # --- 8. systemd user units (prefer upstream's, fall back to repo copies) --------------
 mkdir -p "$HOME/.config/systemd/user"
@@ -140,5 +122,5 @@ systemctl --user daemon-reload || true
 log "validating niri config..."
 "$PREFIX/bin/niri" validate --config "$HOME/.config/niri/config.kdl"
 
-log "done. Log out, pick 'Niri' at the login screen, log back in."
+log "done. Log out, pick 'Niri' at the login screen (or ./install.sh --with-greeter)."
 log "Binaries: $PREFIX/bin/niri{,-session}(+xwayland-satellite). Sources: $SRC_DIR."

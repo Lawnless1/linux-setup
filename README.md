@@ -1,153 +1,112 @@
 # linux-setup
 
-Private, replicable i3 desktop for Ubuntu 26.04. Symlinked configs + one installer.
+Private, replicable [niri](https://github.com/YaLTeR/niri) Wayland desktop
+for any systemd Linux distro: symlinked configs, one installer, and source
+builds for the patched pieces. Packages come from the distro's own package
+manager (pacman, apt or dnf), resolved through `packages/packages.tsv`.
 
-![stack](https://img.shields.io/badge/Ubuntu-26.04-E95420) ![wm](https://img.shields.io/badge/i3-4.23-blue) ![bar](https://img.shields.io/badge/polybar-3.7-yellow)
+The old X11 i3 session (i3, polybar, rofi, picom, flameshot, dunst) and the
+retired waybar bar live on the `legacy-x11` branch.
+
+## Fresh machine
+
+Needs: a systemd distro, a user with `sudo`, `git`, and access to this
+private repo (SSH key on GitHub, or clone over HTTPS with a token).
+
+```bash
+git clone git@github.com:Lawnless1/linux-setup.git ~/linux-setup
+cd ~/linux-setup
+./install.sh --all     # packages, configs, fonts, cursors, source builds, greeter
+reboot                 # log in at tuigreet (or your display manager's "Niri" entry)
+```
+
+`--all` runs these steps in order (each is also its own flag):
+
+| Flag | Does |
+|---|---|
+| `--with-pkgs` | installs the `session` group from `packages/packages.tsv`, enables NetworkManager + bluetooth + pipewire, adds you to `video`/`render` |
+| `--with-fonts` | Nerd Fonts (Inter, FiraCode, DroidSansM) into `~/.local/share/fonts` |
+| `--with-cursors` | `wincursors` (Windows 10) cursor theme |
+| `--with-builds` | source builds, each skipped once its binary exists: niri + xwayland-satellite (only where the distro lacks them), fuzzel 1.12 + pill patch, walker + elephant, Noctalia + capsule-blur patch |
+| `--with-greeter` | greetd + tuigreet launching `niri-session`, **only** if no display manager is set up yet |
+
+The builds take about 30 minutes on 8 cores (Rust via rustup, Go via go.dev
+when the distro's is older than 1.25). Run a `scripts/build-*.sh` directly to
+force a rebuild.
+
+### Distro support
+
+| Distro family | Package manager | niri |
+|---|---|---|
+| Arch, EndeavourOS, Manjaro | pacman | from `extra` |
+| Fedora | dnf | from Fedora repos |
+| Debian, Ubuntu, Mint, Pop!_OS | apt | built from source (`scripts/build-niri.sh`) |
+| anything else | — | the installer prints the dependency list (with Arch names as a reference); install the equivalents, then re-run with `PKG_SKIP=1` |
+
+Every package name in the manifest is checked against Arch, Debian stable
+and Fedora repos. `PKG_DRY_RUN=1 ./install.sh --with-pkgs` shows what would
+be installed without changing anything.
 
 ## What's inside
 
 | Path | Deploys to | Notes |
 |---|---|---|
-| `config/i3/config` | `~/.config/i3/config` | cleaned keybindings, gaps, volume/brightness keys |
-| `config/input/pointer.sh` | `~/.config/input/pointer.sh` | **single source of truth** for mouse + touchpad speed |
-| `config/niri/config.kdl` | `~/.config/niri/config.kdl` | niri Wayland session; keybindings mirror i3 (see below) |
-| `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu (`Ctrl+Alt+Del`), grim/slurp screenshot (`$mod+Shift+s`) |
-| `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals for niri |
-| `config/waybar/` | `~/.config/waybar/` | retired waybar bar + scripts (dormant since the Noctalia switch; keep for revert) |
-| `config/noctalia/config.toml` | `~/.config/noctalia/config.toml` | Noctalia 3-pill bar (niri session; needs `scripts/install-noctalia.sh` on 26.04+, plus `scripts/build-noctalia.sh` for the per-pill `blur_region` feature) |
-| `config/fuzzel/fuzzel.ini` | `~/.config/fuzzel/fuzzel.ini` | Spotlight-like pill theme for the app grid (`$mod+d`) and text search (`$mod+F`; needs 1.12 from `scripts/build-fuzzel.sh`) |
-| `config/walker/` | `~/.config/walker/` | walker omnibar theme + config (`$mod+space`; apps + indexed files with icons; needs `scripts/build-walker.sh`) |
-| `config/elephant/desktopapplications.toml` | `~/.config/elephant/desktopapplications.toml` | elephant apps provider: `history_when_empty` so empty `$mod+space` ranks MRU/MFU, not alphabetical |
-| `config/dunst/dunstrc` | `~/.config/dunst/dunstrc` | minimal notifications for the i3 session (niri uses the Noctalia daemon) |
-| `config/foot/foot.ini` | `~/.config/foot/foot.ini` | Wayland terminal for the niri `$mod+Return` bind |
+| `config/niri/config.kdl` | `~/.config/niri/config.kdl` | compositor, i3-style keybindings (see below), blur, window rules |
+| `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu, file search, grim/slurp screenshot, clipboard paste |
+| `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals |
+| `config/niri/niri.desktop`, `config/niri/systemd/` | `/usr/share/wayland-sessions/`, `~/.config/systemd/user/` | session entry + units, installed by `scripts/build-niri.sh` only (distro niri packages ship their own) |
+| `config/noctalia/` | `~/.config/noctalia/` | Noctalia bar, notifications and polkit agent; NavyGlass palette; per-pill blur needs `scripts/build-noctalia.sh` |
+| `config/fuzzel/` | `~/.config/fuzzel/` | Spotlight-like pill (`$mod+d`, `$mod+F`, power menu; needs `scripts/build-fuzzel.sh`) |
+| `config/walker/` | `~/.config/walker/` | walker omnibar + clipboard themes (`$mod+space`, `$mod+V`) |
+| `config/elephant/desktopapplications.toml` | `~/.config/elephant/desktopapplications.toml` | `history_when_empty` so empty `$mod+space` ranks MRU/MFU |
+| `config/foot/foot.ini` | `~/.config/foot/foot.ini` | terminal (`$mod+Return`, runs a fresh tmux session per window) |
 | `config/tmux/tmux.conf.local` | `~/.tmux.conf.local` | overrides for [oh-my-tmux](https://github.com/gpakosz/.tmux) (installer clones it to `~/.tmux`, links `~/.tmux.conf`): `C-b` prefix + `C-a` secondary, mouse, OS clipboard, extended keys, `prefix+X` kill session, `prefix+Backspace` fuzzy pane killer |
 | `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu) |
-| `config/polybar/custom/` | `~/.config/polybar/custom/` | single `center` bar + curated scripts (wifi, sound, battery, bluetooth, weather, calendar, powermenu) |
-| `config/rofi/` | `~/.config/rofi/` | drun config + Ctrl+Alt+Del power menu |
-| `config/picom/picom.conf` | `~/.config/picom/picom.conf` | glx backend, rounded corners, blur |
-| `config/flameshot/` | `~/.config/flameshot/` | screenshot tool (`$mod+Shift+s`) |
 | `config/starship.toml` | `~/.config/starship.toml` | prompt theme (opt-in: `export LINUX_SETUP_STARSHIP=1`) |
-| `home/.xprofile` | `~/.xprofile` | X-login loader for pointer speeds |
-| `home/.screenlayout/` | `~/.screenlayout/` | laptop / docked-dual layouts, auto-selected |
-| `home/.Xresources` | `~/.Xresources` | cursor theme (`wincursors` via `scripts/install-windows-cursors.sh`) |
-| `shell/` | `~/.bashrc.d/` | prompt, git helpers, `tmux-clean` / `tmux-pick-kill`, guarded tool init (zoxide, micromamba, fzf) |
-| `assets/wallpapers/` | `~/Pictures/wallpaper/` | `dark.jpg` (the active one) |
-| `system/doas.conf.d/` | `/etc/doas.conf.d/` | optional passwordless power actions |
-
-Dropped from the original machine state (deliberately): 90MB of unused
-polybar example themes, `config_old`/`config_mate` backups, VPN/Telegram/player
-scripts referencing uninstalled apps, the committed OpenWeatherMap key
-(now in `~/.config/linux-setup/env`, gitignored).
-
-## Fresh machine
-
-```bash
-git clone <this-repo> ~/linux-setup && cd ~/linux-setup
-./install.sh --with-apt --with-fonts   # add --with-doas for passwordless power menu
-# log out/in, or: i3-msg restart
-```
-`install.sh` is idempotent — anything it overwrites is backed up to
-`~/.config/linux-setup/backups/<timestamp>/`, and configs are symlinked
-so `git pull` updates the live setup.
-
-Weather module needs a free key (stays out of git):
-
-```bash
-cp config/env.example ~/.config/linux-setup/env
-$EDITOR ~/.config/linux-setup/env   # set OPENWEATHER_API_KEY
-```
+| `shell/bashrc.d-10-linux-setup.bashrc` | `~/.bashrc.d/` | prompt, git helpers, `tmux-clean` / `tmux-pick-kill`, guarded tool init (zoxide, micromamba, fzf) |
+| `shell/profile` | `~/.profile` (only if absent) | PATH for the whole session (`~/.local/bin`, micromamba, opencode) |
+| `assets/wallpapers/` | `~/Pictures/wallpaper/` | `dark.jpg` (copied, not linked) |
+| `packages/packages.tsv` | — | one row per dependency, columns for pacman / apt / dnf |
+| `scripts/lib/pkg.sh` | — | package-manager detection, install, rustup/Go helpers |
+| `patches/`, `scripts/*.patch` | — | Noctalia capsule blur, fuzzel pill, walker preview size |
 
 ## Daily use
 
 ```bash
-scripts/tune-input.sh                       # show current pointer speeds
-scripts/tune-input.sh --touchpad 0.4        # live-tune + persist
-scripts/check.sh                            # validate binaries + configs
+bash scripts/check.sh            # binaries, config links, niri/noctalia/tmux validation
+./install.sh                     # re-link after pulling (idempotent)
 ```
 
-Pointer speeds persist in `config/input/pointer.sh` (`POINTER_MOUSE_SPEED`,
-`POINTER_TOUCHPAD_SPEED`, default `0.8` / `0.3`), applied on X login
-(`~/.xprofile`) and every `i3 restart`.
+Pointer speeds live in `config/niri/config.kdl` (`input` block: touchpad
+`0.3`, mouse `0.5`); niri hot-reloads the file on save.
 
-## Keybindings (see `config/i3/config` for all)
+## Keybindings (`Mod` = Super)
 
 | Keys | Action |
 |---|---|
-| `$mod+Return` | terminal (fresh tmux session per window) |
-| `$mod+d` / `$mod+space` | dmenu / rofi drun |
-| `$mod+Shift+s` | flameshot screenshot |
-| `$mod+j/k/l/;` + arrows | focus / move with Shift |
-| `$mod+1..0` | workspaces |
-| `$mod+r` | resize mode |
-| `Ctrl+Alt+Del` | rofi power menu |
-| media keys | volume / brightness via pactl / brightnessctl |
+| `Mod+Return` | foot + fresh tmux session |
+| `Mod+D` | fuzzel app grid |
+| `Mod+Space` | walker omnibar (apps rank above folders above files; `:` queries clipboard) |
+| `Mod+F` | fuzzel file search (fd) |
+| `Mod+V` | clipboard history, pastes on select (pin `Ctrl+p`, clear `Ctrl+Shift+d`) |
+| `Ctrl+Delete` | close window |
+| `Mod+J/K/L/;` + arrows | focus (`Mod+Up` is fullscreen, not focus-up) |
+| `Mod+Shift+J/K/L/;` + arrows | move (left/right jump monitors at the edge) |
+| `Mod+H` | join/split column to the left |
+| `Mod+S` / `Mod+W` / `Mod+E` | tabbed column / maximize column / center column |
+| `Mod+Shift+Space` | toggle floating |
+| `Mod+1..0`, `Mod+Shift+1..0` | focus / move to workspace 1..10 (`Mod+Ctrl+Shift+1..6` also moves) |
+| `Mod+R` / `Mod+Shift+R` | cycle preset column widths |
+| `Mod+Minus/Equal`, `Mod+Shift+Minus/Equal` | column width / window height ±10% |
+| `Mod+Shift+S` | region screenshot (saved to `~/Pictures/Screenshots/` + copied) |
+| `Print` / `Ctrl+Print` / `Alt+Print` | niri screenshot UI / screen / window |
+| `Ctrl+Alt+Delete` | power menu (lock, logout, suspend, reboot, poweroff) |
+| `Super+Alt+L` | lock (also after 5 min idle and before sleep) |
+| `Mod+O` / `Mod+Shift+/` | overview / hotkey overlay |
+| `Mod+Shift+E` | quit niri (asks first) |
+| media keys | volume (pactl) / brightness (brightnessctl) |
 
-## Niri session (Wayland, side-by-side with i3)
-
-Niri is a scrollable-tiling Wayland compositor: windows form a horizontal
-strip of columns you scroll through, instead of i3's tree. It is **not** in
-Ubuntu's repos, so the binary is compiled from source; everything else
-(bar, launcher, locker) comes from apt. i3 stays untouched — pick
-**Niri** vs **i3** at the login screen.
-
-```bash
-./install.sh --with-niri        # links niri/noctalia/fuzzel configs + apt Wayland set + Noctalia repo
-./scripts/build-niri.sh         # sudo: build deps, rustup, compile niri + xwayland-satellite,
-                                # install to /usr/local, add GDM session entry + systemd units
-./scripts/build-fuzzel.sh       # sudo: build deps, compile fuzzel 1.12 (noble ships
-                                # 1.9.2, which lacks the omnibar keys) to /usr/local
-./scripts/build-walker.sh       # sudo: GTK4 deps, gtk4-layer-shell + elephant +
-                                # walker (none packaged for noble) to /usr/local
-bash scripts/check.sh           # must end ALL CHECKS PASSED
-# log out, choose "Niri" at the login screen
-```
-
-`scripts/build-niri.sh` env knobs: `PREFIX=$HOME/.local` (user-local install),
-`SKIP_XSATELLITE=1` (no X11 backend — Zoom/Steam/old toolkits won't run),
-`SRC_DIR=` (where git sources live, default `~/.local/src`).
-Intel/AMD GPUs need `video`+`render` group membership
-(`sudo usermod -aG render $USER` if `check.sh`/build warns).
-
-### i3 → niri keybinding map (`$mod` = Super in both)
-
-Identical unless noted:
-
-| i3 bind | niri bind | Notes |
-|---|---|---|
-| `$mod+Return` terminal | same key → **foot** running `tmux new-session` | Wayland-native instead of `gnome-terminal`; fresh tmux session per window |
-| `Ctrl+Delete` kill | same | `close-window` |
-| `$mod+d` dmenu / `$mod+space` rofi | `$mod+d` → **fuzzel** app grid; `$mod+space` → **walker** omnibar (apps + files, real icons); `$mod+F` → fuzzel text search | dmenu/rofi are X11-only |
-| `$mod+j/k/l/;` + arrows focus | same | incl. i3 quirk: `$mod+Up` is fullscreen, **not** focus-up |
-| `$mod+Shift+j/k/l/;` + arrows move | same (left/right use `move-column-*-or-to-monitor-*`) | left/right reorder on-screen, jump screens at edge |
-| `$mod+h` / `$mod+v` split | `$mod+h` → consume/expel column; `$mod+v` → **clipboard history** (walker) | split-v bind yielded to Win+V parity; expel-right dropped |
-| `$mod+Up` fullscreen | same (`Ctrl+F` left for apps/find) | `fullscreen-window` |
-| `$mod+s` stacking / `$mod+w` tabbed / `$mod+e` toggle-split | same keys → tabbed display / maximize-column / center-column | approximations, niri has no i3 layouts |
-| `$mod+Shift+space` floating | same | `toggle-window-floating` |
-| `$mod+1..0` / `$mod+Shift+1..0` workspaces | same | workspaces 1..10 pre-created |
-| `$mod+Ctrl+Shift+1..6` move to ws | same | kept for muscle memory |
-| `$mod+Shift+e` exit nagbar | same keys → `quit` | niri's own confirm dialog |
-| `$mod+r` resize mode | same key → cycle column widths | niri has no modal resize; `Minus/Equal` fine-tune size |
-| `$mod+Shift+s` flameshot | same keys → grim+slurp script | flameshot is broken on Wayland; shot saved + copied |
-| `Ctrl+Alt+Del` rofi powermenu | same keys → fuzzel powermenu | Lock uses swaylock, logout uses loginctl like i3 |
-| media keys | same | identical pactl/brightnessctl commands |
-| `$mod+a` focus parent | — | dropped: columns have no parent container |
-| `$mod+Shift+c` reload / `$mod+Shift+r` restart | — | dropped: niri hot-reloads `config.kdl` on save |
-| scratchpad (`$mod±minus`) | — | dropped: no niri equivalent; `Minus/Equal` resize instead |
-
-Niri-native extras: `$mod+O` overview, `$mod+Shift+/` hotkey overlay,
-`Super+Alt+L` lock, `Print`/`Ctrl+Print`/`Alt+Print` screenshots,
-`$mod+V` clipboard history (walker + elephant provider: text + images,
-pin with `Ctrl+p`, clear with `Ctrl+Shift+d`; `:` prefix inside
-`$mod+space` queries it too),
-`$mod+space`/`$mod+F` unified search (apps rank above folders above files; opens via entry/xdg-open),
-auto-lock after 5 min idle (swayidle+swaylock).
-
-Noctalia bar mirrors the polybar modules (workspaces/cpu/mem left, clock
-center, network/bluetooth/sound/battery/powermenu right) as three floating
-capsule groups with per-pill blur (ext-background-effect) — the forced
-waybar blur smeared the whole bar width, which is why waybar was retired
-(`config/waybar/` stays dormant). Network/bluetooth clicks open Noctalia's
-native control-center tabs; wifi and bluetooth clicks used to open fuzzel
-menus (`config/waybar/scripts/wifi-fuzzel.sh` — switch/join hidden/forget/
-rescan/toggle plus nmtui fallback; `bluetooth-fuzzel.sh` — connect/pair),
-kept as fallback.
+The Noctalia bar shows workspaces, cpu/mem, clock, network, bluetooth,
+sound, battery and power as floating capsule groups with per-pill blur
+(ext-background-effect). Network/bluetooth clicks open Noctalia's
+control-center tabs.

@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
-# Power menu for the Ctrl+Alt+Delete niri binding (fuzzel equivalent of the
-# i3/rofi powermenu.sh). Requires: fuzzel, loginctl. doas is optional
-# (poweroff/reboot/suspend fall back to plain systemctl, which works for an
-# active local session).
+# Power menu for the Ctrl+Alt+Delete niri binding. Requires: fuzzel,
+# systemd (loginctl/systemctl; logind lets the active local session power
+# off/reboot/suspend without a password).
 set -u
 
 FUZZEL="$(command -v fuzzel)"
-LOGINCTL="/usr/bin/loginctl"
-SYSTEMCTL="/usr/bin/systemctl"
 
 # Dmenu theme with the option list visible from the start (the omnibar
 # fuzzel.ini hides results until first keystroke; see fuzzel-dmenu.ini).
@@ -21,28 +18,20 @@ fi
 choice=$(printf '%s\n' "Lock" "Logout" "Suspend" "Reboot" "Poweroff" \
     | "${MENU[@]}" --prompt "Power: ")
 
-run_power() {
-    if command -v doas >/dev/null 2>&1 && doas -n true 2>/dev/null; then
-        doas "$SYSTEMCTL" "$1"
-    else
-        "$SYSTEMCTL" "$1"
-    fi
-}
-
 case "${choice:-}" in
     "Lock")
         command -v swaylock >/dev/null 2>&1 && exec swaylock
         ;;
     "Logout")
-        "$LOGINCTL" terminate-user "$(whoami)"
+        loginctl terminate-user "$(whoami)"
         ;;
     "Suspend")
-        run_power suspend
+        systemctl suspend
         ;;
     "Reboot")
-        run_power reboot
+        systemctl reboot
         ;;
     "Poweroff")
-        run_power poweroff
+        systemctl poweroff
         ;;
 esac

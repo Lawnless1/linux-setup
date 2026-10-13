@@ -1,15 +1,14 @@
 # Noctalia config — linux-setup (niri session).
-# Bar-only deployment: replaces waybar's 3-pill bar with shaped,
-# per-pill blur (ext-background-effect). Everything else stays:
-# walker (search + clipboard), fuzzel menus, dunst, swaybg, swaylock,
-# swayidle, polkit-gnome agent.
+# Bar, notifications and polkit agent, with shaped per-pill blur
+# (ext-background-effect). Search/clipboard stay with walker, menus with
+# fuzzel, wallpaper/lock/idle with swaybg/swaylock/swayidle.
 # Deployed to ~/.config/noctalia/config.toml (see install.sh).
 
 [shell]
 font_family = "Inter Nerd Font"
 setup_wizard_enabled = false # no first-run wizard; this file is the setup
 clipboard_enabled = false    # walker owns clipboard history (Mod+V)
-polkit_agent = false         # polkit-gnome-authentication-agent-1 stays
+polkit_agent = true          # no separate distro-specific agent to spawn
 telemetry_enabled = false
 
 # Custom palette (palettes/NavyGlass.json): stock Noctalia accents
@@ -19,8 +18,7 @@ telemetry_enabled = false
 source = "custom"
 custom_palette = "NavyGlass"
 
-# Noctalia owns notifications in the niri session; dunst stays for the i3
-# session (Noctalia doesn't run on X11).
+# Noctalia owns org.freedesktop.Notifications; run no other daemon.
 [notification]
 enable_daemon = true
 
@@ -69,10 +67,9 @@ enabled = false
 [bar]
 order = ["default"]
 
-# 3-pill bar mirroring config/waybar (left = workspaces + sysmon,
-# center = clock, right = status group). Transparent bar surface with
-# floating capsule groups; blur follows the pill shapes via
-# ext-background-effect (no full-width blur band like forced waybar blur).
+# 3-pill bar (left = workspaces + sysmon, center = clock, right = status
+# group). Transparent bar surface with floating capsule groups; blur
+# follows the pill shapes via ext-background-effect (no full-width band).
 [bar.default]
 position = "top"
 layer = "top"
@@ -102,13 +99,13 @@ start = ["group:left", "group:media"]
 center = ["group:clockpill"]
 end = ["group:status"]
 
-# No middle-click-opens-settings anywhere (waybar has no middle actions).
+# No middle-click-opens-settings anywhere.
 [bar.default.actions]
 middle = "none"
 
 [[bar.default.capsule_group]]
 id = "left"
-# wallpaper + tray + brightness omitted (too noisy; re-add to restore).
+# wallpaper + tray + brightness omitted (too noisy).
 members = ["workspaces", "cpu", "ram"]
 fill = "#010B17"
 opacity = 0.72
@@ -144,7 +141,7 @@ opacity = 0.72
 radius = 14
 padding = 8
 
-# Waybar parity: cpu% + mem% beside the workspaces.
+# cpu% + mem% beside the workspaces.
 [widget.cpu]
 type = "sysmon"
 stat = "cpu_usage"
@@ -164,18 +161,18 @@ format = "{:%b %d - %I:%M %p}"
 [widget.workspaces]
 hide_when_empty = true
 
-# Bluetooth: show the connected-device COUNT (empty when zero), like the
-# old waybar {num_connections}. (Custom build: show_count option.)
+# Bluetooth: show the connected-device COUNT (empty when zero).
+# (Custom build: show_count option.)
 [widget.bluetooth]
 show_count = true
 
-# Waybar parity: click toggles mute, scroll steps volume 5%.
+# Click toggles mute, scroll steps volume 5%.
 [widget.volume.actions]
 left = "volume-mute"
 scroll_up = "volume-up 5%"
 scroll_down = "volume-down 5%"
 
-# Power button (waybar custom/powermenu parity): native session widget,
+# Power button: native session widget,
 # opens the floating session panel above. (Ctrl+Alt+Delete still opens
 # the fuzzel menu.)
 [widget.session]

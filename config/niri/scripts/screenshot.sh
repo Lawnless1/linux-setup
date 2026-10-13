@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Area screenshot for the $mod+Shift+s niri binding.
-# Wayland replacement for `flameshot gui -c -s`: select a region with slurp,
-# capture with grim, save to ~/Pictures/Screenshots/ and copy to clipboard.
+# Select a region with slurp, capture with grim, save to
+# ~/Pictures/Screenshots/ and copy to clipboard.
 # Requires: slurp, grim, wl-clipboard. Cancelling the selection is silent.
 set -u
 

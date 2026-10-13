@@ -10,7 +10,8 @@
 set -u
 
 FUZZEL="$(command -v fuzzel)"
-command -v fd >/dev/null 2>&1 || { echo "need fd" >&2; exit 1; }
+# Debian/Ubuntu install the binary as fdfind.
+FD="$(command -v fd || command -v fdfind)" || { echo "need fd" >&2; exit 1; }
 
 # Nerd Font glyphs (ASCII-safe $'' quoting): app grid, folder, file.
 APP_GLYPH=$'\uf00a'
@@ -66,9 +67,9 @@ list_root() {
     for e in "${EXCLUDES[@]}"; do fd_args+=(--exclude "$e"); done
     disp="$root"
     case "$root" in "$HOME"*) disp="~${root#$HOME}";; esac
-    fd --hidden --type d "${fd_args[@]}" . "$root" 2>/dev/null \
+    "$FD" --hidden --type d "${fd_args[@]}" . "$root" 2>/dev/null \
         | sed "s|^|$DIR_GLYPH |; s|^$DIR_GLYPH $root|$DIR_GLYPH $disp|"
-    fd --hidden --type f "${fd_args[@]}" . "$root" 2>/dev/null \
+    "$FD" --hidden --type f "${fd_args[@]}" . "$root" 2>/dev/null \
         | sed "s|^|$FILE_GLYPH |; s|^$FILE_GLYPH $root|$FILE_GLYPH $disp|"
 }
 

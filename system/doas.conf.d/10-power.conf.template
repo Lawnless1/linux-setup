@@ -1,7 +1,0 @@
-# doas rule for the rofi power menu (passwordless power actions for $USER).
-# Install: /etc/doas.conf.d/10-power.conf (mode 0444, root-owned).
-# The installer writes it with the CURRENT user baked in; edit the name if
-# you fork this repo for someone else.
-permit nopass __DOTFILES_USER__ as root cmd /usr/bin/systemctl args poweroff
-permit nopass __DOTFILES_USER__ as root cmd /usr/bin/systemctl args reboot
-permit nopass __DOTFILES_USER__ as root cmd /usr/bin/systemctl args suspend

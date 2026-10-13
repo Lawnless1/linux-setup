@@ -1,8 +1,7 @@
 #!/bin/bash
-# Build + install Noctalia from source on Ubuntu 26.04+ (release mode).
+# Build + install Noctalia from source, on any distro (release mode).
 #
-# Why source instead of scripts/install-noctalia.sh (stock APT package)?
-# Stock Noctalia publishes ONE blur rectangle for the whole bar background
+# Why source instead of the distro package? Stock Noctalia publishes ONE blur rectangle for the whole bar background
 # (Bar::applyBarCompositorBlur), so a transparent bar gets a full-width
 # frosted band behind it. Our bar (config/noctalia/config.toml) is four
 # floating capsule groups on a transparent bar and needs per-pill blur.
@@ -16,8 +15,8 @@
 # a fresh machine can recreate it (the branch itself is never pushed
 # upstream).
 #
-# Installs to /usr/local (shadows /usr/bin/noctalia via PATH order),
-# same pattern as scripts/build-fuzzel.sh.
+# Installs to /usr/local (shadows a distro /usr/bin/noctalia via PATH
+# order), same pattern as scripts/build-fuzzel.sh.
 #
 # Usage:
 #   ./scripts/build-noctalia.sh   # deps (sudo) -> release build -> sudo install
@@ -26,8 +25,12 @@ set -euo pipefail
 SRC="$HOME/.local/src/noctalia"
 BRANCH="capsule-blur-v5.2.1"
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PATCH="$SCRIPT_DIR/../patches/noctalia-capsule-blur.patch"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=lib/pkg.sh
+. "$REPO_DIR/scripts/lib/pkg.sh"
+PATCH="$REPO_DIR/patches/noctalia-capsule-blur.patch"
+
+pkg_install build-base build-noctalia
 
 if [ ! -d "$SRC/.git" ]; then
     echo "cloning noctalia v5.2.1..."
@@ -39,7 +42,8 @@ if ! git -C "$SRC" rev-parse --verify --quiet "$BRANCH" >/dev/null; then
     git -C "$SRC" checkout -b "$BRANCH" v5.2.1
     git -C "$SRC" apply "$PATCH"
     git -C "$SRC" add -A
-    git -C "$SRC" commit -q -m "feat(bar): per-capsule compositor blur regions (vendored)"
+    # Fixed identity: a fresh machine has no git user configured yet.
+    git -C "$SRC" -c user.name=linux-setup -c user.email=linux-setup@localhost commit -q -m "feat(bar): per-capsule compositor blur regions (vendored)"
 fi
 if [ "$(git -C "$SRC" branch --show-current)" != "$BRANCH" ]; then
     echo "checking out $BRANCH..."
@@ -50,18 +54,6 @@ if ! grep -q "blurRegion" "$SRC/src/shell/bar/bar.cpp"; then
     exit 1
 fi
 
-echo "installing build deps (sudo)..."
-sudo apt update
-sudo apt install -y just meson libwayland-dev wayland-protocols \
-    libfreetype-dev libfontconfig-dev libcairo2-dev libpango1.0-dev \
-    librsvg2-dev libxkbcommon-dev libepoxy-dev libgles-dev libwebp-dev \
-    libcurl4-gnutls-dev libmd4c-dev nlohmann-json3-dev libsdbus-c++-dev \
-    libsecret-1-dev libsodium-dev libstb-dev libtomlplusplus-dev \
-    libpipewire-0.3-dev libpam0g-dev libpolkit-agent-1-dev \
-    libpolkit-gobject-1-dev libqalculate-dev libwireplumber-0.5-dev \
-    libxml2-dev libjemalloc-dev git libglib2.0-dev libsndfile-dev \
-    libjxl-dev libical-dev
-
 echo "release build..."
 (cd "$SRC" && just configure release && just build release)
 
@@ -69,4 +61,4 @@ echo "installing to /usr/local (sudo)..."
 (cd "$SRC" && sudo just install release)
 
 command -v noctalia
-noctalia --version
+noctalia --version || true

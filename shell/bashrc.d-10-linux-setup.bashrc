@@ -1,10 +1,10 @@
 # >>> linux-setup — shell additions (appended by install.sh) >>>
-# Kept separate from Ubuntu's default ~/.bashrc so updates stay mergeable.
+# Kept separate from the distro's default ~/.bashrc so updates stay mergeable.
 # Source order: interactive shells read ~/.bashrc, which sources
 # ~/.bashrc.d/*.bashrc when present.
 
 # --- compact two-level prompt: parent/current ---
-__i3s_prompt_dir() {
+__ls_prompt_dir() {
     local pwd_clean="${PWD%/}"
     local parent current
     parent="$(dirname "$pwd_clean")"
@@ -67,7 +67,7 @@ tmux-pick-kill() {
 # --- comfort aliases ---
 alias bashrc="${EDITOR:-nvim} ~/.bashrc"
 alias reload="source ~/.bashrc"
-alias i3config="${EDITOR:-nvim} ~/.config/i3/config"
+alias niriconfig="${EDITOR:-nvim} ~/.config/niri/config.kdl"
 alias m="micromamba"
 
 notes() {
@@ -83,7 +83,7 @@ notes() {
 if [ -n "${LINUX_SETUP_STARSHIP:-}" ] && command -v starship >/dev/null 2>&1; then
     eval "$(starship init bash)"
 elif ! command -v starship >/dev/null 2>&1; then
-    export PS1='\[\e[32m\]λ:\[\e[34m\]$(__i3s_prompt_dir)\[\e[0m\]\$ '
+    export PS1='\[\e[32m\]λ:\[\e[34m\]$(__ls_prompt_dir)\[\e[0m\]\$ '
 fi
 
 # --- tool init: guarded so a fresh machine without them still opens a shell ---
@@ -98,20 +98,17 @@ if command -v fzf >/dev/null 2>&1; then
 fi
 
 # --- GTK_MODULES hygiene: appmenu-gtk-module segfaults blueman-manager ---
-# /etc/profile.d/vala-panel-appmenu.sh (orphan config from removed
-# vala-panel-appmenu-common) appends `appmenu-gtk-module` on every login
-# shell, and even a single copy crashes blueman-manager with SIGSEGV
-# (infinite recursion in libgtk-3). Neither i3 nor niri uses a global menu,
-# so strip it user-wide and disable the proxy.
+# Global-menu packages append `appmenu-gtk-module` from /etc/profile.d, and
+# even a single copy crashes blueman-manager with SIGSEGV (infinite
+# recursion in libgtk-3). niri has no global menu, so strip it user-wide.
 if [ -n "${GTK_MODULES:-}" ]; then
-    _i3s_gtk=""; _i3s_sep=""; _i3s_oifs="$IFS"; IFS=":"
-    for _i3s_m in $GTK_MODULES; do
-        case "$_i3s_m" in ""|appmenu-gtk-module) continue;; esac
-        case ":$_i3s_gtk:" in *":$_i3s_m:"*) continue;; esac
-        _i3s_gtk="$_i3s_gtk$_i3s_sep$_i3s_m"; _i3s_sep=":"
+    _ls_gtk=""; _ls_sep=""; _ls_oifs="$IFS"; IFS=":"
+    for _ls_m in $GTK_MODULES; do
+        case "$_ls_m" in ""|appmenu-gtk-module) continue;; esac
+        case ":$_ls_gtk:" in *":$_ls_m:"*) continue;; esac
+        _ls_gtk="$_ls_gtk$_ls_sep$_ls_m"; _ls_sep=":"
     done
-    IFS="$_i3s_oifs"; unset _i3s_oifs _i3s_m _i3s_sep
-    export GTK_MODULES="$_i3s_gtk"; unset _i3s_gtk
+    IFS="$_ls_oifs"; unset _ls_oifs _ls_m _ls_sep
+    export GTK_MODULES="$_ls_gtk"; unset _ls_gtk
 fi
-export UBUNTU_MENUPROXY=0
 # <<< linux-setup <<<

@@ -1,0 +1,51 @@
+# Package manifest: one logical dependency per row, one column per package
+# manager. Read by scripts/lib/pkg.sh (`pkg_install <group>...`).
+#   - cells hold space-separated package names; `-` means nothing to install
+#   - a trailing `?` marks a package installed only if the repo carries it
+#     (its absence is handled elsewhere, e.g. built from source)
+# Distros without pacman/apt/dnf get the `logical` column printed as a
+# shopping list instead. Names verified against Arch, Debian stable and
+# Fedora repos.
+#
+# group	logical	pacman	apt	dnf
+
+# --- niri session runtime ---
+session	niri	niri?	niri?	niri?
+session	xwayland-satellite	xwayland-satellite?	xwayland-satellite?	xwayland-satellite?
+session	xwayland	xorg-xwayland	xwayland	xorg-x11-server-Xwayland
+session	terminal	foot	foot	foot
+session	tmux	tmux	tmux	tmux
+session	fzf	fzf	fzf	fzf
+session	locker	swaylock swayidle	swaylock swayidle	swaylock swayidle
+session	wallpaper	swaybg	swaybg	swaybg
+session	screenshots	grim slurp	grim slurp	grim slurp
+session	clipboard	wl-clipboard wtype	wl-clipboard wtype	wl-clipboard wtype
+session	imagemagick	imagemagick	imagemagick	ImageMagick
+session	fd	fd	fd-find	fd-find
+session	audio	pipewire pipewire-pulse wireplumber libpulse	pipewire pipewire-pulse wireplumber pulseaudio-utils	pipewire pipewire-pulseaudio wireplumber pulseaudio-utils
+session	network	networkmanager	network-manager	NetworkManager
+session	bluetooth	bluez bluez-utils	bluez	bluez
+session	power	upower brightnessctl	upower brightnessctl	upower brightnessctl
+session	portals	xdg-desktop-portal-gnome xdg-desktop-portal-gtk	xdg-desktop-portal-gnome xdg-desktop-portal-gtk	xdg-desktop-portal-gnome xdg-desktop-portal-gtk
+session	desktop-utils	xdg-utils libnotify	xdg-utils libnotify-bin	xdg-utils libnotify
+session	tools	git curl jq unzip file python	git curl jq unzip file python3	git curl jq unzip file python3
+session	fonts	fontconfig noto-fonts noto-fonts-emoji	fontconfig fonts-noto-core fonts-noto-color-emoji	fontconfig google-noto-sans-fonts google-noto-color-emoji-fonts
+
+# --- optional login screen (./install.sh --with-greeter) ---
+greeter	greetd	greetd greetd-tuigreet	greetd tuigreet	greetd tuigreet
+
+# --- toolchain shared by every source build (Rust/Go come from rustup/go.dev) ---
+build-base	toolchain	base-devel git curl meson ninja pkgconf cmake clang	build-essential git curl meson ninja-build pkg-config cmake clang	gcc gcc-c++ make git curl meson ninja-build pkgconf-pkg-config cmake clang
+
+# --- scripts/build-niri.sh (only where the distro lacks niri) ---
+build-niri	niri-deps	systemd-libs mesa libxkbcommon wayland libinput dbus seatd libpipewire pango libdisplay-info xcb-util-cursor	libudev-dev libgbm-dev libxkbcommon-dev libegl1-mesa-dev libwayland-dev libinput-dev libdbus-1-dev libsystemd-dev libseat-dev libpipewire-0.3-dev libpango1.0-dev libdisplay-info-dev libxcb-cursor-dev	systemd-devel mesa-libgbm-devel libxkbcommon-devel mesa-libEGL-devel wayland-devel libinput-devel dbus-devel libseat-devel pipewire-devel pango-devel libdisplay-info-devel xcb-util-cursor-devel
+
+# --- scripts/build-fuzzel.sh ---
+build-fuzzel	fuzzel-deps	scdoc wayland wayland-protocols libxkbcommon fcft tllist pixman cairo libpng fontconfig	scdoc libwayland-dev wayland-protocols libxkbcommon-dev libfcft-dev libpixman-1-dev libcairo2-dev libpng-dev libfontconfig-dev	scdoc wayland-devel wayland-protocols-devel libxkbcommon-devel fcft-devel tllist-devel pixman-devel cairo-devel libpng-devel fontconfig-devel
+
+# --- scripts/build-walker.sh (gtk4-layer-shell is built when not packaged) ---
+build-walker	walker-deps	gtk4 poppler-glib protobuf gobject-introspection vala wayland wayland-protocols	libgtk-4-dev libpoppler-glib-dev protobuf-compiler gobject-introspection valac libwayland-dev wayland-protocols	gtk4-devel poppler-glib-devel protobuf-compiler gobject-introspection-devel vala wayland-devel wayland-protocols-devel
+build-walker	gtk4-layer-shell	gtk4-layer-shell?	libgtk4-layer-shell-dev?	gtk4-layer-shell-devel?
+
+# --- scripts/build-noctalia.sh ---
+build-noctalia	noctalia-deps	just nlohmann-json stb wayland wayland-protocols freetype2 fontconfig cairo pango librsvg libxkbcommon libglvnd libwebp curl md4c sdbus-cpp libsecret libsodium tomlplusplus libpipewire pam polkit libqalculate libwireplumber libxml2 jemalloc glib2 libsndfile libjxl libical	just nlohmann-json3-dev libstb-dev libwayland-dev wayland-protocols libfreetype-dev libfontconfig-dev libcairo2-dev libpango1.0-dev librsvg2-dev libxkbcommon-dev libepoxy-dev libgles-dev libwebp-dev libcurl4-gnutls-dev libmd4c-dev libsdbus-c++-dev libsecret-1-dev libsodium-dev libtomlplusplus-dev libpipewire-0.3-dev libpam0g-dev libpolkit-agent-1-dev libpolkit-gobject-1-dev libqalculate-dev libwireplumber-0.5-dev libxml2-dev libjemalloc-dev libglib2.0-dev libsndfile1-dev libjxl-dev libical-dev	just json-devel stb-devel wayland-devel wayland-protocols-devel freetype-devel fontconfig-devel cairo-devel pango-devel librsvg2-devel libxkbcommon-devel libepoxy-devel libglvnd-devel libwebp-devel libcurl-devel md4c-devel sdbus-cpp-devel libsecret-devel libsodium-devel tomlplusplus-devel pipewire-devel pam-devel polkit-devel libqalculate-devel wireplumber-devel libxml2-devel jemalloc-devel glib2-devel libsndfile-devel libjxl-devel libical-devel
