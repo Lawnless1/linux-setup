@@ -2,10 +2,6 @@
 # Screen locker behind Super+Alt+L, the fuzzel power menu, and swayidle.
 # Deployed to ~/.config/swaylock/config.
 color=1f1f1f
-indicator
-clock
-timestr=%H:%M
-datestr=%A, %d %b %Y
 font=Inter Nerd Font
 indicator-radius=100
 indicator-thickness=8
@@ -15,4 +11,3 @@ text-color=ffffff
 inside-color=00000088
 line-uses-inside
 separator-color=00000000
-fade-in=0.2
