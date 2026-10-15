@@ -18,7 +18,7 @@ render_film() {
     # Blur at 1/5 scale: a large-sigma blur at full size takes seconds,
     # too slow for before-sleep locking on a cache miss.
     "$magick" "$src" -resize "${w}x${h}!" \
-        -resize 20% -blur 0x5 -resize "${w}x${h}!" \
+        -resize 20% -blur 0x3.5 -resize "${w}x${h}!" \
         -fill '#010B17' -colorize 40% \
         \( -size "${w}x${h}" gradient:'#2a3550-#000000' \) -compose screen -composite \
         \( -size "${w}x${h}" xc:gray50 -attenuate 0.6 +noise Gaussian -colorspace gray \) \
