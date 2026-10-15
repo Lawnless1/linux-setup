@@ -52,7 +52,7 @@ be installed without changing anything.
 | Path | Deploys to | Notes |
 |---|---|---|
 | `config/niri/config.kdl` | `~/.config/niri/config.kdl` | compositor, i3-style keybindings (see below), blur, window rules |
-| `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu, file search, grim/slurp screenshot, clipboard paste |
+| `config/niri/scripts/` | `~/.config/niri/scripts/` | fuzzel power menu, frosted swaylock wrapper, file search, grim/slurp screenshot, clipboard paste |
 | `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals |
 | `config/niri/niri.desktop`, `config/niri/systemd/` | `/usr/share/wayland-sessions/`, `~/.config/systemd/user/` | session entry + units, installed by `scripts/build-niri.sh` only (distro niri packages ship their own) |
 | `config/noctalia/` | `~/.config/noctalia/` | Noctalia bar, notifications and polkit agent; NavyGlass palette; per-pill blur needs `scripts/build-noctalia.sh` |
@@ -61,7 +61,7 @@ be installed without changing anything.
 | `config/elephant/desktopapplications.toml` | `~/.config/elephant/desktopapplications.toml` | `history_when_empty` so empty `$mod+space` ranks MRU/MFU |
 | `config/foot/foot.ini` | `~/.config/foot/foot.ini` | terminal (`$mod+Return`, runs a fresh tmux session per window) |
 | `config/tmux/tmux.conf.local` | `~/.tmux.conf.local` | overrides for [oh-my-tmux](https://github.com/gpakosz/.tmux) (installer clones it to `~/.tmux`, links `~/.tmux.conf`): `C-b` prefix + `C-a` secondary, mouse, OS clipboard, extended keys, `prefix+X` kill session, `prefix+Backspace` fuzzy pane killer |
-| `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu) |
+| `config/swaylock/config` | `~/.config/swaylock/config` | screen locker (`Super+Alt+L`, idle, power menu; launched via `lock.sh`) |
 | `config/starship.toml` | `~/.config/starship.toml` | prompt theme (opt-in: `export LINUX_SETUP_STARSHIP=1`) |
 | `shell/bashrc.d-10-linux-setup.bashrc` | `~/.bashrc.d/` | prompt, git helpers, `tmux-clean` / `tmux-pick-kill`, guarded tool init (zoxide, micromamba, fzf) |
 | `shell/profile` | `~/.profile` (only if absent) | PATH for the whole session (`~/.local/bin`, micromamba, opencode) |

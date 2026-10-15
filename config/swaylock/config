@@ -1,21 +1,28 @@
 # swaylock config — linux-setup (niri session).
-# Screen locker behind Super+Alt+L, the fuzzel power menu, and swayidle.
-# Deployed to ~/.config/swaylock/config.
+# Screen locker behind Super+Alt+L, the fuzzel power menu, and swayidle,
+# all via ~/.config/niri/scripts/lock.sh, which swaps the image below for a
+# frosted (blurred + tinted) copy. Plain `swaylock` still gets the wallpaper.
 # Colors follow the Noctalia NavyGlass palette (config/noctalia/palettes).
+# Deployed to ~/.config/swaylock/config.
 image=~/Pictures/wallpaper/dark.jpg
 scaling=fill
 color=010B17
 font=Inter Nerd Font
-font-size=20
+font-size=18
+# A faint glass ring at rest marks where input goes; Enter on an empty
+# field is ignored instead of counting as a wrong password.
 indicator-idle-visible
-indicator-radius=80
-indicator-thickness=4
-inside-color=010B17aa
-inside-clear-color=010B17aa
-inside-ver-color=010B17aa
-inside-wrong-color=010B17aa
-inside-caps-lock-color=010B17aa
-ring-color=233250cc
+indicator-radius=72
+indicator-thickness=5
+ignore-empty-password
+show-failed-attempts
+indicator-caps-lock
+inside-color=0B152699
+inside-clear-color=0B152699
+inside-ver-color=0B1526cc
+inside-wrong-color=2a0a14cc
+inside-caps-lock-color=0B152699
+ring-color=f3edf733
 ring-clear-color=a9aefe
 ring-ver-color=9BFECE
 ring-wrong-color=FD4663
@@ -31,6 +38,6 @@ text-wrong-color=FD4663
 text-caps-lock-color=fff59b
 line-uses-inside
 separator-color=00000000
-layout-bg-color=010B17aa
+layout-bg-color=0B152699
 layout-border-color=00000000
 layout-text-color=f3edf7
