@@ -1,10 +1,11 @@
 # swaylock config — linux-setup (niri session).
 # Screen locker behind Super+Alt+L, the fuzzel power menu, and swayidle.
-# Colors follow the Noctalia NavyGlass palette (config/noctalia/palettes).
+# Colors are sampled from the sunset-peaks wallpaper: dusk indigo, sun gold,
+# amber, ember red, lavender and periwinkle sky.
 # Deployed to ~/.config/swaylock/config.
 image=~/Pictures/wallpaper/sunset-peaks.jpg
 scaling=fill
-color=010B17
+color=2A2442
 font=Inter Nerd Font
 font-size=18
 # A faint glass ring at rest marks where input goes; Enter on an empty
@@ -15,27 +16,27 @@ indicator-thickness=5
 ignore-empty-password
 show-failed-attempts
 indicator-caps-lock
-inside-color=0B152699
-inside-clear-color=0B152699
-inside-ver-color=0B1526cc
-inside-wrong-color=2a0a14cc
-inside-caps-lock-color=0B152699
-ring-color=f3edf733
-ring-clear-color=a9aefe
-ring-ver-color=9BFECE
-ring-wrong-color=FD4663
-ring-caps-lock-color=fff59b
-key-hl-color=9BFECE
-bs-hl-color=FD4663
-caps-lock-key-hl-color=fff59b
-caps-lock-bs-hl-color=FD4663
-text-color=f3edf7
-text-clear-color=a9aefe
-text-ver-color=9BFECE
-text-wrong-color=FD4663
-text-caps-lock-color=fff59b
+inside-color=1E1B3A99
+inside-clear-color=1E1B3A99
+inside-ver-color=1E1B3Acc
+inside-wrong-color=3A141Ccc
+inside-caps-lock-color=1E1B3A99
+ring-color=F9C98144
+ring-clear-color=B7A8D6
+ring-ver-color=E5A06D
+ring-wrong-color=E0573F
+ring-caps-lock-color=8FA3E8
+key-hl-color=F9C981
+bs-hl-color=E0573F
+caps-lock-key-hl-color=8FA3E8
+caps-lock-bs-hl-color=E0573F
+text-color=F6E7E1
+text-clear-color=B7A8D6
+text-ver-color=E5A06D
+text-wrong-color=E0573F
+text-caps-lock-color=8FA3E8
 line-uses-inside
 separator-color=00000000
-layout-bg-color=0B152699
+layout-bg-color=1E1B3A99
 layout-border-color=00000000
-layout-text-color=f3edf7
+layout-text-color=F6E7E1
