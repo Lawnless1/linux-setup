@@ -65,7 +65,7 @@ be installed without changing anything.
 | `config/starship.toml` | `~/.config/starship.toml` | prompt theme (opt-in: `export LINUX_SETUP_STARSHIP=1`) |
 | `shell/bashrc.d-10-linux-setup.bashrc` | `~/.bashrc.d/` | prompt, git helpers, `tmux-clean` / `tmux-pick-kill`, guarded tool init (zoxide, micromamba, fzf) |
 | `shell/profile` | `~/.profile` (only if absent) | PATH for the whole session (`~/.local/bin`, micromamba, opencode) |
-| `assets/wallpapers/` | `~/Pictures/wallpaper/` | `dark.jpg` (copied, not linked) |
+| `assets/wallpapers/` | `~/Pictures/wallpaper/` | `dark.jpg` (desktop), `sunset-peaks.jpg` (lock screen); copied, not linked |
 | `packages/packages.tsv` | — | one row per dependency, columns for pacman / apt / dnf |
 | `scripts/lib/pkg.sh` | — | package-manager detection, install, rustup/Go helpers |
 | `patches/`, `scripts/*.patch` | — | Noctalia capsule blur, fuzzel pill, walker preview size |

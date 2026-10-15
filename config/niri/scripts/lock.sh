@@ -6,7 +6,7 @@
 # Arguments pass through to swaylock (swayidle uses -f).
 set -u
 
-src="${LOCK_WALLPAPER:-$HOME/Pictures/wallpaper/dark.jpg}"
+src="${LOCK_WALLPAPER:-$HOME/Pictures/wallpaper/sunset-peaks.jpg}"
 cache_dir="${XDG_CACHE_HOME:-$HOME/.cache}/linux-setup"
 film="$cache_dir/lock-film.png"
 

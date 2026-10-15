@@ -118,12 +118,15 @@ link_to config/tmux/tmux.conf.local     .tmux.conf.local
 
 # --- 4. wallpaper (copied: Pictures/ is data, not config) ----------------------
 mkdir -p "$HOME/Pictures/wallpaper"
-if [ ! -e "$HOME/Pictures/wallpaper/dark.jpg" ]; then
-    cp "$REPO_DIR/assets/wallpapers/dark.jpg" "$HOME/Pictures/wallpaper/dark.jpg"
-    log "installed wallpaper"
-else
-    log "wallpaper already present, skipping"
-fi
+for wp in "$REPO_DIR"/assets/wallpapers/*; do
+    name="$(basename "$wp")"
+    if [ ! -e "$HOME/Pictures/wallpaper/$name" ]; then
+        cp "$wp" "$HOME/Pictures/wallpaper/$name"
+        log "installed wallpaper $name"
+    else
+        log "wallpaper $name already present, skipping"
+    fi
+done
 
 # --- 5. shell additions ---------------------------------------------------------
 mkdir -p "$HOME/.bashrc.d"

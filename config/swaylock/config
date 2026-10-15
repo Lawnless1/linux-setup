@@ -4,7 +4,7 @@
 # frosted (blurred + tinted) copy. Plain `swaylock` still gets the wallpaper.
 # Colors follow the Noctalia NavyGlass palette (config/noctalia/palettes).
 # Deployed to ~/.config/swaylock/config.
-image=~/Pictures/wallpaper/dark.jpg
+image=~/Pictures/wallpaper/sunset-peaks.jpg
 scaling=fill
 color=010B17
 font=Inter Nerd Font
