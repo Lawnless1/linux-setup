@@ -20,7 +20,7 @@ choice=$(printf '%s\n' "Lock" "Logout" "Suspend" "Reboot" "Poweroff" \
 
 case "${choice:-}" in
     "Lock")
-        exec "$HOME/.config/niri/scripts/lock.sh"
+        exec swaylock
         ;;
     "Logout")
         loginctl terminate-user "$(whoami)"

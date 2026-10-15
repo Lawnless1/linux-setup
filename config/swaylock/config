@@ -1,7 +1,5 @@
 # swaylock config — linux-setup (niri session).
-# Screen locker behind Super+Alt+L, the fuzzel power menu, and swayidle,
-# all via ~/.config/niri/scripts/lock.sh, which swaps the image below for a
-# frosted (blurred + tinted) copy. Plain `swaylock` still gets the wallpaper.
+# Screen locker behind Super+Alt+L, the fuzzel power menu, and swayidle.
 # Colors follow the Noctalia NavyGlass palette (config/noctalia/palettes).
 # Deployed to ~/.config/swaylock/config.
 image=~/Pictures/wallpaper/sunset-peaks.jpg
