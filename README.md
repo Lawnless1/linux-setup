@@ -78,7 +78,7 @@ bash scripts/check.sh            # binaries, config links, niri/noctalia/tmux va
 ```
 
 Pointer speeds live in `config/niri/config.kdl` (`input` block: touchpad
-`0.3`, mouse `0.5`); niri hot-reloads the file on save.
+`0.3`, mouse `0.4`); niri hot-reloads the file on save.
 
 ## Keybindings (`Mod` = Super)
 
