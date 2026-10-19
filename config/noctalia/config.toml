@@ -173,7 +173,6 @@ scroll_up = "volume-up 5%"
 scroll_down = "volume-down 5%"
 
 # Power button: native session widget,
-# opens the floating session panel above. (Ctrl+Alt+Delete still opens
-# the fuzzel menu.)
+# opens the floating session panel above (Ctrl+Alt+Delete opens it too).
 [widget.session]
 glyph = "power"

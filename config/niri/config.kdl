@@ -155,7 +155,7 @@ layer-rule {
     }
 }
 
-// Fuzzel omnibar + dmenu menus (launcher, power, wifi, files): same
+// Fuzzel omnibar + dmenu menus (launcher, wifi, files): same
 // treatment. Fuzzel colors stay semi-transparent (config/fuzzel/*.ini).
 // (Walker needs no forced rule: it requests shaped blur itself via
 // ext_background_effect_blur in config/walker/config.toml, which follows
@@ -285,8 +285,8 @@ binds {
     // ---- screenshot (region via slurp + grim) ----
     Mod+Shift+S { spawn-sh "~/.config/niri/scripts/screenshot.sh"; }
 
-    // ---- power menu ----
-    Ctrl+Alt+Delete { spawn-sh "~/.config/niri/scripts/powermenu-fuzzel.sh"; }
+    // ---- power menu (Noctalia session panel, same as the bar power button) ----
+    Ctrl+Alt+Delete { spawn "noctalia" "msg" "panel-toggle" "session"; }
 
     // ---- volume (pactl via pipewire-pulse) ----
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "pactl set-sink-volume @DEFAULT_SINK@ +5%"; }

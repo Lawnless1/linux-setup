@@ -1,5 +1,5 @@
 # swaylock config — linux-setup (niri session).
-# Screen locker behind Super+Alt+L, the fuzzel power menu, and swayidle.
+# Screen locker behind Super+Alt+L, the Noctalia session panel, and swayidle.
 # Colors are sampled from the sunset-peaks wallpaper: dusk indigo, sun gold,
 # amber, ember red, lavender and periwinkle sky.
 # Deployed to ~/.config/swaylock/config.
