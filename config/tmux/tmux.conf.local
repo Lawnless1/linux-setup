@@ -14,9 +14,10 @@ bind X confirm-before -p "kill-session #S? (y/n)" kill-session
 # Backspace over the pane list: fuzzy kill-picker (see tmux-pick-kill in
 # shell). prefix+w navigates; this one deletes. Popup closes on Esc.
 bind BSpace display-popup -E -w 80% -h 60% "bash -ic 'tmux-pick-kill'"
-# Nested tmux: prefix+d detaches the innermost client (forwarded to the pane)
-# instead of this one, so you don't get kicked out of the outer session.
-bind d if -F '#{m:tmux*,#{pane_current_command}}' 'send-keys C-b d' detach-client
+# Nested tmux: prefix+d detaches the inner client (forwarded to the pane)
+# instead of this one. A remote tmux behind ssh/mosh is invisible here, so an
+# ssh pane on the alternate screen (full-screen app) is assumed to be tmux.
+bind d if -F '#{||:#{m:tmux*,#{pane_current_command}},#{&&:#{m/r:^(ssh|mosh),#{pane_current_command}},#{alternate_on}}}' 'send-keys C-b d' detach-client
 
 # -- bindings ------------------------------------------------------------------
 
