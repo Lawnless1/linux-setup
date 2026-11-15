@@ -19,6 +19,7 @@ session	fzf	fzf	fzf	fzf
 session	locker	swaylock swayidle	swaylock swayidle	swaylock swayidle
 session	wallpaper	swaybg	swaybg	swaybg
 session	screenshots	grim slurp	grim slurp	grim slurp
+session	screen-recording	obs-studio	obs-studio	obs-studio
 session	clipboard	wl-clipboard wtype	wl-clipboard wtype	wl-clipboard wtype
 session	imagemagick	imagemagick	imagemagick	ImageMagick
 session	fd	fd	fd-find	fd-find
