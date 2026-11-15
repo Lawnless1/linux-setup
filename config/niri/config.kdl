@@ -73,6 +73,9 @@ workspace "9" {}
 workspace "10" {}
 
 spawn-at-startup "noctalia"
+// Hides the bar on a monitor while its focused window is maximized to the
+// edges (Mod+Up), so that window gets the whole screen.
+spawn-sh-at-startup "exec ~/.config/niri/scripts/bar-autohide.py"
 // Notifications come from the Noctalia daemon ([notification] enable_daemon
 // in config/noctalia/config.toml) — never spawn a second notification
 // daemon here or the two fight over org.freedesktop.Notifications.
@@ -232,7 +235,8 @@ binds {
     // ---- maximize / fullscreen ----
     // Mod+Up maximizes to the screen edges without telling the app it is
     // fullscreen: fullscreen-window makes Chrome enter its own fullscreen
-    // mode and hide the tab strip and address bar.
+    // mode and hide the tab strip and address bar. bar-autohide.py hides the
+    // Noctalia bar while such a window is focused.
     // Ctrl+F intentionally unbound — it belongs to apps (find).
     Mod+Up { maximize-window-to-edges; }
     Mod+Shift+F { fullscreen-window; }

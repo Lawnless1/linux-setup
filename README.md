@@ -52,7 +52,7 @@ be installed without changing anything.
 | Path | Deploys to | Notes |
 |---|---|---|
 | `config/niri/config.kdl` | `~/.config/niri/config.kdl` | compositor, i3-style keybindings (see below), blur, window rules |
-| `config/niri/scripts/` | `~/.config/niri/scripts/` | file search, grim/slurp screenshot, clipboard paste |
+| `config/niri/scripts/` | `~/.config/niri/scripts/` | file search, grim/slurp screenshot, clipboard paste, bar auto-hide for maximized windows |
 | `config/niri/niri-portals.conf` | `~/.config/xdg-desktop-portal/niri-portals.conf` | GNOME screencast/screenshot portals |
 | `config/niri/niri.desktop`, `config/niri/systemd/` | `/usr/share/wayland-sessions/`, `~/.config/systemd/user/` | session entry + units, installed by `scripts/build-niri.sh` only (distro niri packages ship their own) |
 | `config/noctalia/` | `~/.config/noctalia/` | Noctalia bar, notifications and polkit agent; NavyGlass palette; per-pill blur needs `scripts/build-noctalia.sh` |
@@ -94,7 +94,7 @@ Pointer speeds live in `config/niri/config.kdl` (`input` block: touchpad
 | `Mod+Shift+J/K/L/;` + arrows | move (left/right jump monitors at the edge) |
 | `Mod+H` | join/split column to the left |
 | `Mod+S` / `Mod+W` / `Mod+E` | tabbed column / maximize column / center column |
-| `Mod+Up` / `Mod+Shift+F` | maximize window to screen edges (app keeps its tabs/toolbars) / true fullscreen |
+| `Mod+Up` / `Mod+Shift+F` | maximize window to screen edges, bar hides while it is focused (app keeps its tabs/toolbars) / true fullscreen |
 | `Mod+Shift+Space` | toggle floating |
 | `Mod+1..0`, `Mod+Shift+1..0` | focus / move to workspace 1..10 (`Mod+Ctrl+Shift+1..6` also moves) |
 | `Mod+R` / `Mod+Shift+R` | cycle preset column widths |
