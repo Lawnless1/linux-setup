@@ -90,10 +90,11 @@ Pointer speeds live in `config/niri/config.kdl` (`input` block: touchpad
 | `Mod+F` | fuzzel file search (fd) |
 | `Mod+V` | clipboard history, pastes on select (pin `Ctrl+p`, clear `Ctrl+Shift+d`) |
 | `Ctrl+Delete` | close window |
-| `Mod+J/K/L/;` + arrows | focus (`Mod+Up` is fullscreen, not focus-up) |
+| `Mod+J/K/L/;` + arrows | focus (`Mod+Up` is maximize, not focus-up) |
 | `Mod+Shift+J/K/L/;` + arrows | move (left/right jump monitors at the edge) |
 | `Mod+H` | join/split column to the left |
 | `Mod+S` / `Mod+W` / `Mod+E` | tabbed column / maximize column / center column |
+| `Mod+Up` / `Mod+Shift+F` | maximize window to screen edges (app keeps its tabs/toolbars) / true fullscreen |
 | `Mod+Shift+Space` | toggle floating |
 | `Mod+1..0`, `Mod+Shift+1..0` | focus / move to workspace 1..10 (`Mod+Ctrl+Shift+1..6` also moves) |
 | `Mod+R` / `Mod+Shift+R` | cycle preset column widths |

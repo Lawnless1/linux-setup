@@ -192,7 +192,7 @@ binds {
     Ctrl+Delete { close-window; }
 
     // ---- focus (j/k/l/; + arrows) ----
-    // Mod+Up is fullscreen (below), NOT focus-up, so Mod+L is the only
+    // Mod+Up is maximize (below), NOT focus-up, so Mod+L is the only
     // focus-up bind.
     Mod+J { focus-column-left; }
     Mod+K { focus-window-down; }
@@ -229,9 +229,13 @@ binds {
     // refocused window (clipboard-pick-paste.sh); cancelling pastes nothing.
     Mod+V hotkey-overlay-title="Clipboard history: walker" { spawn-sh "~/.config/niri/scripts/clipboard-pick-paste.sh"; }
 
-    // ---- fullscreen ----
-    // NOTE: Ctrl+F intentionally unbound — it belongs to apps (find).
-    Mod+Up { fullscreen-window; }
+    // ---- maximize / fullscreen ----
+    // Mod+Up maximizes to the screen edges without telling the app it is
+    // fullscreen: fullscreen-window makes Chrome enter its own fullscreen
+    // mode and hide the tab strip and address bar.
+    // Ctrl+F intentionally unbound — it belongs to apps (find).
+    Mod+Up { maximize-window-to-edges; }
+    Mod+Shift+F { fullscreen-window; }
 
     // ---- column layouts: tabbed, maximized, centered ----
     Mod+S { toggle-column-tabbed-display; }
