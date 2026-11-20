@@ -69,6 +69,7 @@ be installed without changing anything.
 | `packages/packages.tsv` | — | one row per dependency, columns for pacman / apt / dnf |
 | `scripts/lib/pkg.sh` | — | package-manager detection, install, rustup/Go helpers |
 | `patches/`, `scripts/*.patch` | — | Noctalia capsule blur, fuzzel pill, walker preview size |
+| `scripts/bt-dualboot-sync.py` | `/usr/local/sbin/bt-dualboot-sync` + boot unit | dual-boot Bluetooth: imports pairings made in Windows (read-only hive read) into BlueZ before `bluetooth.service`, so devices that re-key on every pairing (Logitech mice) work in both OSes. Pair in **Windows**; install with `sudo scripts/bt-dualboot-sync.py --install` |
 
 ## Daily use
 
