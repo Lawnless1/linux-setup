@@ -1,25 +1,33 @@
 #!/usr/bin/env python3
-"""Share Bluetooth LE pairings made in Windows with BlueZ on a dual-boot machine.
+"""Share Bluetooth pairings made in Windows with BlueZ on a dual-boot machine.
 
-Devices like Logitech mice switch to a new address and new keys on every
-pairing and keep only the latest bond, so pairing in one OS breaks the other.
-The fix is to pair once in Windows and give BlueZ the same keys: this reads
-Windows' SYSTEM hive (read-only) and writes the newest pairing per device into
-/var/lib/bluetooth, replacing stale BlueZ entries of the same device name.
+Both OSes use the same adapter address, so a device keeps one bond for this
+machine and pairing in one OS breaks the other. LE-only devices like Logitech
+mice also switch to a new address on every pairing. The fix is to pair in
+Windows and give BlueZ the same keys: this reads Windows' SYSTEM hive
+(read-only) and writes the keys into /var/lib/bluetooth.
 
-Runs as root at boot before bluetooth.service. A Windows pairing is imported
-only if it is newer than what was recorded on the previous run, so a device
-later paired in Linux is never overwritten by an old Windows key.
+  - LE-only devices: the newest pairing per device name, replacing stale BlueZ
+    entries of that name.
+  - Classic / dual-mode devices (earbuds): the link key, plus LE keys if any.
+
+Only devices BlueZ already knows are touched. Runs as root at boot before
+bluetooth.service. A Windows pairing is imported only if it changed since the
+previous run, so a device later paired in Linux is never overwritten by an old
+Windows key.
 
   bt-dualboot-sync.py --install   copy to /usr/local/sbin, enable the boot unit,
                                   record existing Windows pairings as seen
   bt-dualboot-sync.py --dry-run   show what would be imported
   bt-dualboot-sync.py --now       import now (restarts bluetooth.service)
+  bt-dualboot-sync.py --take NAME import NAME's Windows keys now even if seen
+                                  before (restarts bluetooth.service)
   bt-dualboot-sync.py             boot mode (used by the unit)
 """
 import configparser
 import datetime
 import glob
+import hashlib
 import json
 import os
 import shutil
@@ -134,7 +142,7 @@ def colon_mac(regname):
 
 
 def windows_pairings(hive):
-    """{adapter_mac: {device_name: newest pairing}} for LE devices."""
+    """{adapter_mac: {"le": {name: newest LE-only pairing}, "classic": {address: pairing}}}."""
     sel = hive.values(hive.open("Select"))["Current"]
     params = f"ControlSet{sel:03d}\\Services\\BTHPORT\\Parameters"
     keys, devs = hive.open(params + "\\Keys"), hive.open(params + "\\Devices")
@@ -144,15 +152,13 @@ def windows_pairings(hive):
         names[hive.key_name(d).lower()] = raw.split(b"\0")[0].decode("utf-8", "replace") if raw else ""
     out = {}
     for ad in hive.subkeys(keys) if keys else []:
-        newest = {}
-        classic = {n.lower() for n in hive.values(ad)}
+        newest, le = {}, {}
         for d in hive.subkeys(ad):
             v = hive.values(d)
             reg = hive.key_name(d).lower()
-            # Dual-mode devices also hold a classic link key; LE-only import would break them.
-            if "LTK" not in v or reg in classic:
+            if "LTK" not in v:
                 continue
-            p = {
+            p = le[reg] = {
                 "address": colon_mac(reg),
                 "name": names.get(reg) or colon_mac(reg),
                 "time": hive.timestamp(d).isoformat(),
@@ -164,9 +170,17 @@ def windows_pairings(hive):
                 "csrk": v["CSRK"].hex().upper() if "CSRK" in v else None,
                 "addr_type": "static" if v.get("AddressType", 0) else "public",
             }
+        classic = {}
+        for reg, key in hive.values(ad).items():
+            reg = reg.lower()
+            if len(reg) != 12 or not isinstance(key, bytes) or len(key) != 16:
+                continue
+            classic[colon_mac(reg)] = {"address": colon_mac(reg), "name": names.get(reg) or colon_mac(reg),
+                                       "link_key": key.hex().upper(), "le": le.pop(reg, None)}
+        for p in le.values():
             if p["name"] not in newest or p["time"] > newest[p["name"]]["time"]:
                 newest[p["name"]] = p
-        out[colon_mac(hive.key_name(ad).lower())] = newest
+        out[colon_mac(hive.key_name(ad).lower())] = {"le": newest, "classic": classic}
     return out
 
 
@@ -204,6 +218,43 @@ def read_info(path):
     return c
 
 
+def set_le_keys(c, p):
+    for s in ("LongTermKey", "PeripheralLongTermKey", "SlaveLongTermKey", "IdentityResolvingKey",
+              "LocalSignatureKey", "RemoteSignatureKey"):
+        c.remove_section(s)
+    c["LongTermKey"] = {"Key": p["ltk"], "Authenticated": "0", "EncSize": str(p["enc_size"]),
+                        "EDiv": str(p["ediv"]), "Rand": str(p["rand"])}
+    if p["irk"]:
+        c["IdentityResolvingKey"] = {"Key": p["irk"]}
+    if p["csrk"]:
+        c["RemoteSignatureKey"] = {"Key": p["csrk"], "Counter": "0", "Authenticated": "false"}
+
+
+def write_info(c, path):
+    with open(path, "w") as f:
+        c.write(f, space_around_delimiters=False)
+    os.chmod(path, 0o600)
+
+
+def write_classic(adapter, p, dry):
+    """Replace the link key (and LE keys) of a classic device BlueZ already has."""
+    info = os.path.join(BLUEZ, adapter, p["address"], "info")
+    if not os.path.isfile(info):
+        return False
+    c = read_info(info)
+    if c.has_section("LinkKey") and c["LinkKey"].get("Key") == p["link_key"]:
+        return True
+    print(f"  {p['name']}: Windows link key for {p['address']}")
+    if dry:
+        return True
+    lk = c["LinkKey"] if c.has_section("LinkKey") else {}
+    c["LinkKey"] = {"Key": p["link_key"], "Type": lk.get("Type", "4"), "PINLength": lk.get("PINLength", "0")}
+    if p["le"]:
+        set_le_keys(c, p["le"])
+    write_info(c, info)
+    return True
+
+
 def write_pairing(adapter, p, dry):
     """Write p into BlueZ, using the newest same-name entry as a template, and drop stale ones."""
     adir = os.path.join(BLUEZ, adapter)
@@ -224,11 +275,8 @@ def write_pairing(adapter, p, dry):
     if dry:
         return True
 
-    c = read_info(os.path.join(template, "info")) if template else configparser.ConfigParser(interpolation=None)
-    c.optionxform = str
-    for s in ("LongTermKey", "PeripheralLongTermKey", "SlaveLongTermKey", "IdentityResolvingKey",
-              "LocalSignatureKey", "RemoteSignatureKey", "LinkKey"):
-        c.remove_section(s)
+    c = read_info(os.path.join(template, "info"))
+    c.remove_section("LinkKey")
     if not c.has_section("General"):
         c.add_section("General")
     g = c["General"]
@@ -237,17 +285,10 @@ def write_pairing(adapter, p, dry):
     g.setdefault("SupportedTechnologies", "LE;")
     g["Trusted"] = "true"
     g.setdefault("Blocked", "false")
-    c["LongTermKey"] = {"Key": p["ltk"], "Authenticated": "0", "EncSize": str(p["enc_size"]),
-                        "EDiv": str(p["ediv"]), "Rand": str(p["rand"])}
-    if p["irk"]:
-        c["IdentityResolvingKey"] = {"Key": p["irk"]}
-    if p["csrk"]:
-        c["RemoteSignatureKey"] = {"Key": p["csrk"], "Counter": "0", "Authenticated": "false"}
+    set_le_keys(c, p)
 
     os.makedirs(target, mode=0o700, exist_ok=True)
-    with open(os.path.join(target, "info"), "w") as f:
-        c.write(f, space_around_delimiters=False)
-    os.chmod(os.path.join(target, "info"), 0o600)
+    write_info(c, os.path.join(target, "info"))
     cache = os.path.join(adir, "cache")
     if template and template != target and os.path.isfile(os.path.join(cache, os.path.basename(template))):
         shutil.copy2(os.path.join(cache, os.path.basename(template)), os.path.join(cache, p["address"]))
@@ -273,7 +314,7 @@ def save_state(state):
         json.dump(state, f, indent=1, sort_keys=True)
 
 
-def sync(dry=False, baseline=False):
+def sync(dry=False, baseline=False, take=None):
     part, data = find_hive()
     if not data:
         print("bt-dualboot-sync: no Windows SYSTEM hive found")
@@ -282,18 +323,24 @@ def sync(dry=False, baseline=False):
     state = load_state()
     changed = False
     print(f"bt-dualboot-sync: reading {part}")
-    for adapter, devices in pairings.items():
+    for adapter, kinds in pairings.items():
         if not os.path.isdir(os.path.join(BLUEZ, adapter)):
             continue
-        for name, p in sorted(devices.items()):
-            key = f"{adapter}/{name}"
+        # LE-only devices are tracked by pairing time (their address changes),
+        # classic ones by a hash of the link key (address is stable).
+        jobs = [(f"{adapter}/{n}", p["time"], p, write_pairing) for n, p in kinds["le"].items()]
+        jobs += [(f"{adapter}/classic/{a}", hashlib.sha256(p["link_key"].encode()).hexdigest(), p, write_classic)
+                 for a, p in kinds["classic"].items()]
+        for key, mark, p, write in sorted(jobs, key=lambda j: j[0]):
             if baseline:
-                state[key] = p["time"]
+                state[key] = mark
                 continue
-            if state.get(key, "") >= p["time"]:
+            forced = take is not None and take in (p["name"], p["address"])
+            if not forced and (take is not None or state.get(key) == mark
+                               or (write is write_pairing and state.get(key, "") > mark)):
                 continue
-            if write_pairing(adapter, p, dry) and not dry:
-                state[key] = p["time"]
+            if write(adapter, p, dry) and not dry:
+                state[key] = mark
                 changed = True
     if baseline:
         print(f"  recorded {len(state)} existing Windows pairing(s) as already seen")
@@ -315,8 +362,16 @@ def install():
 
 
 def main():
-    args = set(sys.argv[1:])
-    if args - {"--install", "--dry-run", "--now"}:
+    argv = sys.argv[1:]
+    take = None
+    if "--take" in argv:
+        i = argv.index("--take")
+        if i + 1 >= len(argv):
+            print(__doc__)
+            return 2
+        take = argv.pop(i + 1)
+    args = set(argv)
+    if args - {"--install", "--dry-run", "--now", "--take"}:
         print(__doc__)
         return 2
     if os.geteuid() != 0:
@@ -325,11 +380,11 @@ def main():
     if "--install" in args:
         install()
     elif "--dry-run" in args:
-        sync(dry=True)
-    elif "--now" in args:
+        sync(dry=True, take=take)
+    elif "--now" in args or take is not None:
         subprocess.run(["systemctl", "stop", "bluetooth.service"])
         try:
-            sync()
+            sync(take=take)
         finally:
             subprocess.run(["systemctl", "start", "bluetooth.service"])
     else:
